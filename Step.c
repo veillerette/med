@@ -1,0 +1,521 @@
+#include "Step.h"
+
+Note *Note_Alloc(char note, Note_Flags flags, Note_Duration duration, char rest)
+{
+	Note *temp = (Note *)malloc(sizeof(Note));
+	memtest(temp);
+	
+	temp->note = note;
+	temp->flags = flags;
+	temp->duration = duration;
+	temp->rest = rest;
+	
+	return temp;
+}
+
+void Note_Free(Note **note)
+{
+	if(*note != NULL)
+	{
+		free(*note);
+		*note = NULL;
+	}
+}
+
+int Note_RealDuration(Note *note)
+{
+	int dur = 64 / note->duration;
+	if(note->flags & NOTE_POINTED)
+		return (int)(dur + dur/2);
+	else if(note->flags & NOTE_DOUBLEPOINTED)
+		return (int)(2 * dur);
+	return dur;
+}
+
+char ConvertStringToID(const char *note)
+{
+	char res = 0;
+	int tab[] = {9, 11, 0, 2, 4, 5, 7};
+	int n = strlen(note);
+	if(NULL == note)
+		return 0;
+	
+	if((note[n - 1] - '0') < 0 || (note[n - 1] - '0') > 8)
+		return 0;
+	
+	if(note[0] >= 'A' && note[0] <= 'G')
+		res += (tab[(note[0] - 'A')]);
+	else if(note[0] >= 'a' && note[0] <= 'g')
+		res += (tab[(note[0] - 'a')]);
+	else
+		return 0;
+	
+	switch(n)
+	{
+		case 2:
+			res += (note[1] - '0' + 1) * 12;
+			break;
+		case 3:
+		case 4:
+			switch(note[1])
+			{
+				case 'f':
+					res--;
+					break;
+				case 's':
+					res++;
+					break;
+			}
+			if(4 == n)
+			{
+				switch(note[2])
+				{
+					case 'f':
+						res--;
+						break;
+					case 's':
+						res++;
+						break;
+				}
+			}
+			res += (note[n - 1] - '0' + 1) * 12;
+			break;
+		default:
+			return 0;
+			break;
+	}
+	return res;
+}
+
+
+ToNote *ToNote_Alloc(char note, Note_Flags flags, int duration, char rest)
+{
+	ToNote *temp = (ToNote *)malloc(sizeof(ToNote));
+	memtest(temp);
+	
+	temp->note = Note_Alloc(note, flags, duration, rest);
+	temp->next = NULL;
+	
+	return temp;
+}
+
+
+void ToNote_Free(ToNote **tonote)
+{
+	if(*tonote != NULL)
+	{
+		if((*tonote)->note != NULL)
+			Note_Free(&(*tonote)->note);
+		free(*tonote);
+		*tonote = NULL;
+	}
+}
+
+void ToNote_FreeAll(ToNote **tonote)
+{
+	if(*tonote != NULL)
+	{
+		ToNote_FreeAll(&(*tonote)->next);
+		ToNote_Free(tonote);
+	}
+}
+
+Step *Step_Alloc(int num, Note_Duration den, int cle, char sign, Step_Flags flags)
+{
+	Step *temp = (Step *)malloc(sizeof(Step));
+	memtest(temp);
+	
+	temp->notes = NULL;
+	temp->num = num;
+	temp->den = den;
+	temp->cle = cle;
+	temp->sign = sign;
+	temp->flags = flags;
+	
+	return temp;
+}
+
+void Step_Free(Step **step)
+{
+	if(*step != NULL)
+	{
+		if((*step)->notes != NULL)
+			ToNote_FreeAll(&(*step)->notes);
+		free(*step);
+		*step = NULL;
+	}
+}
+
+int ToNote_ChangeRestStatus(ToNote *notes, int id, char newStatus)
+{
+	if(NULL == notes)
+		return 0;
+	if(!id)
+	{
+		if(notes->note != NULL)
+			notes->note->rest = newStatus;
+		return 0;
+	}
+	return ToNote_ChangeRestStatus(notes->next, id - 1, newStatus);
+}
+
+int Step_ChangeRestStatus(Step *step, int id, char newStatus)
+{
+	if(NULL == step)
+		return 0;
+	return ToNote_ChangeRestStatus(step->notes, id, newStatus);
+}
+
+int ToNote_DiviseRest(ToNote *tonote, int id, int newDuration, int stepNum)
+{
+	if(NULL == tonote)
+		return 0;
+	if(!id)
+	{
+		ToNote *sauv_next = tonote->next;
+		int nDiv = 0;
+		
+		if(tonote->note->duration == QUADRUPLECROCHE)
+			return -1;
+		if(!tonote->note->rest)
+			return -2;
+			
+		if(tonote->note->duration == RONDE)
+			nDiv = stepNum;
+		else
+		{
+			newDuration = tonote->note->duration * 2;
+			nDiv = 2;
+		}
+		
+		tonote->note->duration = newDuration;
+		nDiv--;
+
+		while(nDiv > 0)
+		{
+			tonote->next = ToNote_Alloc(0, NOTE_DEFAULT, newDuration, 1);
+			tonote = tonote->next;
+			nDiv--;
+		}
+		tonote->next = sauv_next;
+	
+		return 1;
+	}
+	return ToNote_DiviseRest(tonote->next, id - 1, newDuration, stepNum);
+	
+}
+
+int Step_DiviseRest(Step *step, int id)
+{
+	if(NULL == step)
+		return 0;
+	return ToNote_DiviseRest(step->notes, id, step->den, step->num);
+}
+
+int Step_Init(Step *step)
+{
+	if(NULL == step)
+		return 0;
+	
+	if(step->notes != NULL)
+		ToNote_FreeAll(&(step->notes));
+	step->notes = ToNote_Alloc(0, NOTE_DEFAULT, RONDE, 1);
+	
+	return 1;
+}
+
+int Step_Change(Step *step, int num, Note_Duration den, int cle, 
+					Step_Flags flags, char sign)
+{
+	if(NULL == step)
+		return 0;
+	
+	step->num = num;
+	step->den = den;
+	step->cle = cle;
+	step->flags = flags;
+	step->sign = sign;
+	
+	return 1;
+}
+
+void Note_ConsolePrintf(Note *note)
+{
+	if(note != NULL)
+	{
+		printf("(%d, %d, %d, %d) -> ",
+			note->note, (int)note->flags, (int)note->duration, note->rest);
+	}
+}
+void ToNote_ConsolePrintf(ToNote *notes)
+{
+	if(notes != NULL)
+	{
+		Note_ConsolePrintf(notes->note);
+		ToNote_ConsolePrintf(notes->next);	
+	}
+	else
+		printf("(NULL)\n");
+}
+
+void Step_ConsolePrintf(Step *step)
+{
+	if(step != NULL)
+	{
+		printf("---------------- STEP ----------------\n");
+		printf("Ox29 notes - NUM = %d, DEN = %d, CLE = %d, SIGN = %d\n",
+						step->num, 
+						(int)step->den, step->cle,
+						step->sign);
+		printf("Special Flags = %d\n", (int)step->flags);
+		printf("--------------------------------------\n");
+		printf("Format notes : (Note, Flags, Duration, Rest)\n");
+		if(NULL == step->notes)
+			printf("- No Notes -\n");
+		else
+			ToNote_ConsolePrintf(step->notes);
+		printf("\n");
+	}
+	else
+		printf("Step 'NULL'\n");
+}
+
+int ToNote_Regularise(ToNote *notes)
+{	
+	ToNote *sauv = NULL;
+	if(NULL == notes || NULL == notes->next)
+		return 0;
+	if(notes->note->duration == notes->next->note->duration
+		&& notes->note->rest && notes->next->note->rest)
+	{
+		notes->note->duration /= 2;
+		sauv = notes->next;
+		notes->next = notes->next->next;
+		ToNote_Free(&sauv);
+		return 1;
+	}
+	return ToNote_Regularise(notes->next);
+	
+}
+
+int Step_Regularise(Step *step)
+{
+	if(NULL == step)
+		return 0;
+	
+	while(ToNote_Regularise(step->notes));
+	return 1;
+}
+
+int ToNote_AddNote(ToNote *notes, int id, char note, Note_Flags flags, 
+							Note_Duration duration)
+{
+	if(NULL == notes)
+		return 0;
+	
+	if(!id)
+	{
+		if(!notes->note->rest)
+		{
+			if(notes->note->duration == duration)
+			{
+				notes->note->rest = 0;
+				return 1;
+			}
+			
+		}
+		
+		return 1;
+	}
+	return ToNote_AddNote(notes->next, id, note, flags, duration);
+}
+
+int find2min(int n)
+{
+	int i, f;
+	for(i = 1; i < n; i++)
+	{
+		f = pow(2, i);
+		if(n == f)
+			return n;
+		else if(f > n)
+			return pow(2, i - 1);
+	}
+	return n;
+}
+
+int Step_AddNote(Step *step, int id, char note, Note_Flags flags,
+							Note_Duration duration)
+{
+	ToNote **cur = NULL;
+	ToNote *new_note = NULL;
+	int note_duration = 0;
+	int tmp_duration = 0;
+	ToNote *sauv = NULL;
+	
+	if(NULL == step)
+		return 0;
+	if(NULL == step->notes)
+		return 0;
+	cur = &(step->notes);
+
+	while(id > 0)
+	{
+		if(NULL == (*cur)->next)
+			return 0;
+		cur = &((*cur)->next);
+		id--;
+	}
+	
+	new_note = ToNote_Alloc(note, flags, duration, 0);
+	new_note->next = (*cur)->next;
+	note_duration = Note_RealDuration(new_note->note);
+	
+	if((*cur)->note->rest)
+	{
+		tmp_duration = Note_RealDuration((*cur)->note);
+		if(note_duration == tmp_duration)
+		{
+			ToNote_Free(cur);
+			*cur = new_note;
+			return 1;
+		}
+	}
+	if((*cur)->note->duration == RONDE)
+		tmp_duration = step->num * (64 / step->den);
+	else
+		tmp_duration = Note_RealDuration((*cur)->note);
+
+	ToNote_Free(cur);
+	*cur = new_note;
+	note_duration -= tmp_duration;
+	cur = &((*cur)->next);
+	
+	while(note_duration > 0)
+	{
+		tmp_duration = Note_RealDuration((*cur)->note);
+		sauv = (*cur)->next;
+		note_duration -= tmp_duration;
+		ToNote_Free(cur);
+		*cur = sauv;
+	}
+	
+	if(0 == note_duration)
+		return 1;
+		
+	note_duration = -note_duration;
+	ToNote_ConsolePrintf(step->notes);
+	
+	while(note_duration > 0)
+	{
+		sauv = *cur;
+		*cur = ToNote_Alloc(0, NOTE_DEFAULT, 64/find2min(note_duration), 1);
+		note_duration -= find2min(note_duration);
+		(*cur)->next = sauv;
+		cur = &(*cur)->next;
+		ToNote_ConsolePrintf(step->notes);
+	}
+	
+	return 1;
+}
+
+int Step_DelLocal(Step *step, int debut, int fin)
+{
+	ToNote **cur = NULL;
+	ToNote *sauv = NULL;
+	int duration = 0;
+	
+	if(NULL == step)
+		return 0;
+	if(NULL == step->notes)
+		return 0;
+	
+	cur = &step->notes;
+	while(debut > 0)
+	{
+		cur = &((*cur)->next);
+		debut--;
+		fin--;
+	}
+	while(fin > 0)
+	{
+		if(*cur == NULL)
+			break;
+		sauv = (*cur)->next;
+		duration += Note_RealDuration((*cur)->note);
+		ToNote_Free(cur);
+		*cur = sauv;
+		fin--;
+	}
+	while(duration > 0)
+	{
+		sauv = *cur;
+		*cur = ToNote_Alloc(0, NOTE_DEFAULT, 64/find2min(duration), 1);
+		duration -= find2min(duration);
+		(*cur)->next = sauv;
+		cur = &(*cur)->next;
+	}
+	return 1;
+}
+
+int Step_Verif(Step *step)
+{
+	int goal = 0;
+	int sum = 0;
+	ToNote *cur = NULL;
+	
+	if(NULL == step)
+		return 0;
+	if(NULL == step->notes)
+		return 0;
+	
+	goal = step->num * 64 / step->den;
+	cur = step->notes;
+	while(cur != NULL)
+	{
+		sum += Note_RealDuration(cur->note);
+		cur = cur->next;
+	}
+	
+	return (goal == sum)?1:0;
+}
+
+
+
+int main(int argc, char *argv[])
+{
+	/*Step *step = NULL;
+	
+	step = Step_Alloc(4, NOIRE, 0, 0, STEP_DEFAULT);
+	Step_Init(step);
+	Step_ConsolePrintf(step);
+	
+	Step_AddNote(step, 0, 7 * 5, NOTE_DEFAULT, QUADRUPLECROCHE);
+
+	ToNote_ConsolePrintf(step->notes);
+	
+	Step_Regularise(step);
+	ToNote_ConsolePrintf(step->notes);
+	
+	printf("Verif value time : %d\n", Step_TestTime(step));
+	Step_Free(&step);*/
+	char note[10] = "";
+	while(1)
+	{
+		colorprintf(CYAN, "note = ");
+		text_color(WHITE);
+		scanf("%s", note);
+		colorprintf(GREEN, "Res = %d\n", (int)ConvertStringToID(note));
+	}
+	exit(EXIT_SUCCESS);
+}
+
+
+
+
+
+
+
+
+
+
