@@ -28,7 +28,7 @@ struct Score
 };
 */
 
-Staff *Staff_Alloc(void);
+Staff *Staff_Alloc(const char *name);
 
 int Staff_Init(Staff *staff, int num, Note_Duration den, int cle, char sign);
 
@@ -41,6 +41,8 @@ int Staff_AddEmptyStep(Staff *staff);
 int Staff_InsereEmptyStep(Staff *staff, int pos);
 
 int Staff_DeleteStep(Staff *staff, int pos);
+
+int Staff_Transpose(Staff *staff, char value);
 
 
 #endif

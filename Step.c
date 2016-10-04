@@ -120,7 +120,7 @@ void ToNote_FreeAll(ToNote **tonote)
 	}
 }
 
-Step *Step_Alloc(int num, Note_Duration den, int cle, char sign, Step_Flags flags)
+Step *Step_Alloc(int num, Note_Duration den, Cle cle, char sign, Step_Flags flags)
 {
 	Step *temp = (Step *)malloc(sizeof(Step));
 	memtest(temp);
@@ -224,7 +224,7 @@ int Step_Init(Step *step)
 	return 1;
 }
 
-int Step_Change(Step *step, int num, Note_Duration den, int cle, 
+int Step_Change(Step *step, int num, Note_Duration den, Cle cle, 
 					Step_Flags flags, char sign)
 {
 	if(NULL == step)
@@ -265,7 +265,7 @@ void Step_ConsolePrintf(Step *step)
 		printf("---------------- STEP ----------------\n");
 		printf("Ox29 notes - NUM = %d, DEN = %d, CLE = %d, SIGN = %d\n",
 						step->num, 
-						(int)step->den, step->cle,
+						(int)step->den, (int)step->cle,
 						step->sign);
 		printf("Special Flags = %d\n", (int)step->flags);
 		printf("--------------------------------------\n");
@@ -480,6 +480,80 @@ int Step_Verif(Step *step)
 	return (goal == sum)?1:0;
 }
 
+Cle Cle_GetFromString(const char *str)
+{
+	Cle cle = 0;
+	if(NULL == str)
+		return 0;
+	
+	if(strlen(str) == 2)
+	{
+		if(!strcmp(str, "fa") || !strcmp(str, "FA") || !strcmp(str, "Fa"))
+			return CLE_FA;
+		if(!strcmp(str, "ut") || !strcmp(str, "UT") || !strcmp(str, "Ut"))
+			return CLE_UT3;
+	}
+	else if(strlen(str) == 3)
+	{
+		if(!strcmp(str, "SOL") || !strcmp(str, "sol") || !strcmp(str, "Sol"))
+			return CLE_SOL;
+		if(str[0] == 'U' || str[0] == 'u')
+			if(str[1] == 'T' || str[1] == 't')
+				if(str[2] == '3')
+					return CLE_UT3;
+				else if(str[2] == '4')
+					return CLE_UT4;
+	}
+	return 0;
+}
+
+char *Cle_GetFromId(Cle cle)
+{
+	char *res = NULL;
+	if(cle < 1 || cle > 4)
+		return NULL;
+	
+	res = (char *)malloc(sizeof(char) * (cle==2)?3:4);
+	memtest(res);
+	switch(cle)
+	{
+		case CLE_SOL:
+			strcpy(res, "SOL");
+			break;
+		case CLE_FA:
+			strcpy(res, "FA");
+			break;
+		case CLE_UT3:
+			strcpy(res, "UT3");
+			break;
+		case CLE_UT4:
+			strcpy(res, "UT4");
+			break;
+		default:
+			strcpy(res, "SOL");
+			break;
+	}
+	return res;
+}
+int ToNote_Transpose(ToNote *tonote, char value)
+{
+	if(NULL == tonote)
+		return 0;
+	while(tonote != NULL)
+	{
+		if(tonote->note != NULL && !tonote->note->rest)
+			tonote->note->note += value;
+		tonote = tonote->next;
+	}
+	return 1;
+}
+
+int Step_Transpose(Step *step, char value)
+{
+	if(NULL == step)
+		return 0;
+	return ToNote_Transpose(step->ntes, value);
+}
 
 
 int main(int argc, char *argv[])
@@ -499,7 +573,12 @@ int main(int argc, char *argv[])
 	
 	printf("Verif value time : %d\n", Step_TestTime(step));
 	Step_Free(&step);*/
+
 	char note[10] = "";
+	printf("Sizeof(Note) = %d\n", (int)sizeof(Note));
+	printf("Sizeof(Note_Flags) = %d\n", (int)sizeof(Note_Flags));
+	printf("Sizeof(Note_Duration) = %d\n", (int)sizeof(Note_Duration));
+	printf("Sizeof(ToNote) = %d\n", (int)sizeof(ToNote));
 	while(1)
 	{
 		colorprintf(CYAN, "note = ");

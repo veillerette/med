@@ -144,6 +144,21 @@ int Staff_DeleteStep(Staff *staff, int pos)
 	return 1;
 }
 
+int Staff_Transpose(Staff *staff, char value)
+{
+	int i;
+	int r = 1;
+	if(NULL == staff)
+		return 0;
+	
+	for(i = 0; i < staff->n; i++)
+		r &= Step_Transpose(*(staff->steps + i), value);
+	
+	return r;
+}
+
+
+
 
 
 

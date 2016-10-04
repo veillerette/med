@@ -32,6 +32,13 @@ typedef enum {
 	QUADRUPLECROCHE	= 64
 	} Note_Duration;
 
+typedef enum {
+	CLE_SOL 	= 1,
+	CLE_FA 		= 2,
+	CLE_UT3		= 3,
+	CLE_UT4		= 4
+	} Cle;
+
 typedef struct Note Note;
 struct Note
 {
@@ -57,7 +64,7 @@ struct Step
 	
 	int num;
 	Note_Duration den;
-	int cle;
+	Cle cle;
 	char sign;
 	Step_Flags flags;
 };
@@ -76,7 +83,7 @@ void ToNote_Free(ToNote **tonote);
 
 void ToNote_FreeAll(ToNote **tonote);
 
-Step *Step_Alloc(int num, Note_Duration den, int cle, char sign, Step_Flags flags);
+Step *Step_Alloc(int num, Note_Duration den, Cle cle, char sign, Step_Flags flags);
 
 void Step_Free(Step **step);
 
@@ -90,7 +97,7 @@ int Step_DiviseRest(Step *step, int id);
 
 int Step_Init(Step *step);
 
-int Step_Change(Step *step, int num, Note_Duration den, int cle, Step_Flags flags, char sign);
+int Step_Change(Step *step, int num, Note_Duration den, Cle cle, Step_Flags flags, char sign);
 						
 void Note_ConsolePrintf(Note *note);
 
@@ -112,11 +119,13 @@ int Step_DelLocal(Step *step, int debut, int fin);
 
 int Step_Verif(Step *step);
 
+Cle Cle_GetFromString(const char *str);
 
+char *Cle_GetFromId(Cle cle);
 
+int ToNote_Transpose(ToNote *tonote, char value);
 
-
-
+int Step_Transpose(Step *step, char value);
 
 
 
