@@ -482,7 +482,6 @@ int Step_Verif(Step *step)
 
 Cle Cle_GetFromString(const char *str)
 {
-	Cle cle = 0;
 	if(NULL == str)
 		return 0;
 	
@@ -498,11 +497,15 @@ Cle Cle_GetFromString(const char *str)
 		if(!strcmp(str, "SOL") || !strcmp(str, "sol") || !strcmp(str, "Sol"))
 			return CLE_SOL;
 		if(str[0] == 'U' || str[0] == 'u')
+		{
 			if(str[1] == 'T' || str[1] == 't')
+			{
 				if(str[2] == '3')
 					return CLE_UT3;
 				else if(str[2] == '4')
 					return CLE_UT4;
+			}
+		}
 	}
 	return 0;
 }
@@ -552,13 +555,13 @@ int Step_Transpose(Step *step, char value)
 {
 	if(NULL == step)
 		return 0;
-	return ToNote_Transpose(step->ntes, value);
+	return ToNote_Transpose(step->notes, value);
 }
 
-
+/*
 int main(int argc, char *argv[])
 {
-	/*Step *step = NULL;
+	Step *step = NULL;
 	
 	step = Step_Alloc(4, NOIRE, 0, 0, STEP_DEFAULT);
 	Step_Init(step);
@@ -572,7 +575,7 @@ int main(int argc, char *argv[])
 	ToNote_ConsolePrintf(step->notes);
 	
 	printf("Verif value time : %d\n", Step_TestTime(step));
-	Step_Free(&step);*/
+	Step_Free(&step);
 
 	char note[10] = "";
 	printf("Sizeof(Note) = %d\n", (int)sizeof(Note));
@@ -587,7 +590,7 @@ int main(int argc, char *argv[])
 		colorprintf(GREEN, "Res = %d\n", (int)ConvertStringToID(note));
 	}
 	exit(EXIT_SUCCESS);
-}
+}*/
 
 
 

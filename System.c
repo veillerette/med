@@ -35,3 +35,4 @@ extern int colorprintf(TerminalColor color, const char *format, ...)
 	va_end(va);
 	return r;
 }
+

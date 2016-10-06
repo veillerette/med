@@ -24,6 +24,7 @@ struct Score
 	int n;
 	
 	char *name;
+	char *author;
 	int data;
 };
 */
