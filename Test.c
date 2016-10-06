@@ -205,6 +205,102 @@ int Test_ToNoteFree(void)
 	return r;
 }
 
+int Test_ConvertStringToId(void)
+{
+	char msg[150] = "Test_ConvertStringToID > ";
+	int r = 1;
+	
+	char v1 = ConvertStringToID("c2");
+	char v2 = ConvertStringToID("C2");
+	char v3 = ConvertStringToID("E4");
+	char v4 = ConvertStringToID("gs7");
+	char v5 = ConvertStringToID("fff6");
+	
+	if(v1 != 36)
+	{
+		sprintf(msg, "%s Error in conversion (expected %d but found %d)\n", msg, 36, v1);
+		r &= 0;
+	}
+	if(v2 != 36)
+	{
+		sprintf(msg, "%s Error in conversion (expected %d but found %d)\n", msg, 36, v2);
+		r &= 0;
+	}
+	if(v3 != 64)
+	{
+		sprintf(msg, "%s Error in conversion (expected %d but found %d)\n", msg, 64, v3);
+		r &= 0;
+	}
+	if(v4 != 104)
+	{
+		sprintf(msg, "%s Error in conversion (expected %d but found %d)\n", msg, 104, v4);
+		r &= 0;
+	}
+	if(v5 != 87)
+	{
+		sprintf(msg, "%s Error in conversion (expected %d but found %d)\n", msg, 87, v5);
+		r &= 0;
+	}
+	if(!r)
+		colorprintf(RED, "%s", msg);
+	
+	return r;
+}
+
+int Test_StepInit(void)
+{
+	char msg[150] = "Test_StepInit > ";
+	int r = 1;
+	Step *step = NULL;
+	
+	step = Step_Alloc(4, NOIRE, CLE_SOL, 0, STEP_DEFAULT);
+	if(NULL == step)
+		return 0;
+	
+	Step_Init(step);
+	
+	if(NULL == step->notes)
+	{
+		sprintf(msg, "%s Step->notes not initialised (expected != NULL but found %p)\n", msg, (void *)step->notes);
+		r &= 0;
+	}
+	if(step->notes != NULL && step->notes->note->note != 0)
+	{
+		sprintf(msg, "%s Error in value of the note (expected %d but found %d)\n", msg, 0,
+										step->notes->note->note);
+		r &= 0;
+	}
+	if(step->notes != NULL && step->notes->note->duration != RONDE)
+	{
+		sprintf(msg, "%s Error in duration of the note (expected %d but found %d)\n", msg, RONDE,
+										step->notes->note->duration);
+		r &= 0;
+	}
+	if(step->notes != NULL && step->notes->note->flags != NOTE_DEFAULT)
+	{
+		sprintf(msg, "%s Error in flags of the note (expected %d but found %d)\n", msg, NOTE_DEFAULT,
+										step->notes->note->flags);
+		r &= 0;
+	}
+	if(step->notes != NULL && step->notes->note->rest != 1)
+	{
+		sprintf(msg, "%s Error in rest of the note (expected %d but found %d)\n", msg, 1,
+										step->notes->note->rest);
+		r &= 0;
+	}
+	if(step->notes != NULL && step->notes->next != NULL)
+	{
+		sprintf(msg, "%s Error : Too much notes (next expected NULL but found %p)\n", msg,
+										(void*)step->notes->next);
+		r &= 0;
+	}
+
+	if(!r)
+		colorprintf(RED, "%s", msg);
+	
+	return r;
+}
+
 
 
 extern int Test_Main(void)
@@ -237,6 +333,13 @@ extern int Test_Main(void)
 	r &= (l = Test_ToNoteFree());
 	if(l) colorprintf(GREEN, " Ok !\n");
 	
+	printf("ConvertStringToID() ");
+	r &= (l = Test_ConvertStringToId());
+	if(l) colorprintf(GREEN, " Ok !\n");
+	
+	printf("Step_Init() ");
+	r &= (l= Test_StepInit());
+	if(l) colorprintf(GREEN, " Ok!\n");
 	
 	if(r)
 	{
