@@ -1,10 +1,10 @@
-CFLAGS=-ansi -pedantic -Wall
+CFLAGS=-ansi -pedantic -Wall -O2
 CLIBS=-lm
-EXE=test
+EXE=prog
 
-$(EXE): Step.c System.c Staff.c
+$(EXE): main.c Step.c Step.h System.c System.h Staff.c Staff.h Test.c Test.h
 	gcc -o $(EXE) $^ $(CFLAGS) $(CLIBS)
 
 clean:
-	rm $(EXE)
-	rm *~
+	rm -f $(EXE)
+	rm -f *~
