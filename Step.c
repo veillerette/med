@@ -307,29 +307,6 @@ int Step_Regularise(Step *step)
 	return 1;
 }
 
-int ToNote_AddNote(ToNote *notes, int id, char note, Note_Flags flags, 
-							Note_Duration duration)
-{
-	if(NULL == notes)
-		return 0;
-	
-	if(!id)
-	{
-		if(!notes->note->rest)
-		{
-			if(notes->note->duration == duration)
-			{
-				notes->note->rest = 0;
-				return 1;
-			}
-			
-		}
-		
-		return 1;
-	}
-	return ToNote_AddNote(notes->next, id, note, flags, duration);
-}
-
 int find2min(int n)
 {
 	int i, f;

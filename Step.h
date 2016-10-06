@@ -109,8 +109,6 @@ int ToNote_Regularise(ToNote *notes);
 
 int Step_Regularise(Step *step);
 
-int ToNote_AddNote(ToNote *notes, int id, char note, Note_Flags flags, Note_Duration duration);
-
 int find2min(int n);
 
 int Step_AddNote(Step *step, int id, char note, Note_Flags flags, Note_Duration duration);
