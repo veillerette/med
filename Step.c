@@ -321,6 +321,33 @@ int find2min(int n)
 	return n;
 }
 
+int comp_duration(const void *p, const void *p2)
+{
+	return ((Note_Duration *)p2) - ((Note_Duration *)p);
+}
+
+Note_Duration *find2rest(int duration)
+{
+	int i = 0;
+	int f;
+	Note_Duration *tab = NULL;
+	
+	tab = (Note_Duration *)calloc(10, sizeof(Note_Duration));
+	memtest(tab);
+	
+	while(duration > 0)
+	{
+		*(tab + i) = (f = find2min(duration));
+		i++;
+		duration -= f;
+	}
+	
+	qsort(tab, i, sizeof(Note_Duration), comp_duration);
+	for(f = 0; f < i + 1; f++)
+		printf("tab[%d] = %d\n", f, tab[f]);
+	return tab;
+}
+
 int Step_AddNote(Step *step, int id, char note, Note_Flags flags,
 							Note_Duration duration)
 {
@@ -329,6 +356,8 @@ int Step_AddNote(Step *step, int id, char note, Note_Flags flags,
 	int note_duration = 0;
 	int tmp_duration = 0;
 	ToNote *sauv = NULL;
+	Note_Duration *rest_r = NULL;
+	int i;
 	
 	if(NULL == step)
 		return 0;
@@ -383,6 +412,21 @@ int Step_AddNote(Step *step, int id, char note, Note_Flags flags,
 	note_duration = -note_duration;
 	ToNote_ConsolePrintf(step->notes);
 	
+	rest_r = find2rest(note_duration);
+	
+	i = 0;
+	while(*(rest_r + i) > 0)
+	{
+		sauv = *cur;
+		*cur = ToNote_Alloc(0, NOTE_DEFAULT, 64 / *(rest_r + i), 1);
+		note_duration -= *(rest_r + i);
+		(*cur)->next = sauv;
+		cur = &(*cur)->next;
+		ToNote_ConsolePrintf(step->notes);
+		i++;
+	}
+	
+	/*
 	while(note_duration > 0)
 	{
 		sauv = *cur;
@@ -392,15 +436,21 @@ int Step_AddNote(Step *step, int id, char note, Note_Flags flags,
 		cur = &(*cur)->next;
 		ToNote_ConsolePrintf(step->notes);
 	}
+	*/
+	
+	if(rest_r != NULL)
+		free(rest_r);
 	
 	return 1;
 }
 
-int Step_DelLocal(Step *step, int debut, int fin)
+int Step_DelLocal(Step *step, int begin, int end)
 {
 	ToNote **cur = NULL;
 	ToNote *sauv = NULL;
 	int duration = 0;
+	Note_Duration *rest_r = NULL;
+	int i;
 	
 	if(NULL == step)
 		return 0;
@@ -408,13 +458,13 @@ int Step_DelLocal(Step *step, int debut, int fin)
 		return 0;
 	
 	cur = &step->notes;
-	while(debut > 0)
+	while(begin > 0)
 	{
 		cur = &((*cur)->next);
-		debut--;
-		fin--;
+		begin--;
+		end--;
 	}
-	while(fin > 0)
+	while(end > 0)
 	{
 		if(*cur == NULL)
 			break;
@@ -422,16 +472,25 @@ int Step_DelLocal(Step *step, int debut, int fin)
 		duration += Note_RealDuration((*cur)->note);
 		ToNote_Free(cur);
 		*cur = sauv;
-		fin--;
+		end--;
 	}
-	while(duration > 0)
+	
+	rest_r = find2rest(duration);
+	
+	i = 0;
+	while(*(rest_r + i) > 0)
 	{
 		sauv = *cur;
-		*cur = ToNote_Alloc(0, NOTE_DEFAULT, 64/find2min(duration), 1);
-		duration -= find2min(duration);
+		*cur = ToNote_Alloc(0, NOTE_DEFAULT, 64 / *(rest_r + i), 1);
+		duration -= *(rest_r + i);
 		(*cur)->next = sauv;
 		cur = &(*cur)->next;
+		i++;
 	}
+	
+	free(rest_r);
+	
+	Step_Regularise(step);
 	return 1;
 }
 

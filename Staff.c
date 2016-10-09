@@ -157,8 +157,145 @@ int Staff_Transpose(Staff *staff, char value)
 	return r;
 }
 
+Sign *Sign_Alloc(Sign_Type type, Uint value, Uint time, char *text)
+{
+	Sign *temp = (Sign *)malloc(sizeof(Sign));
+	memtest(temp);
+	
+	temp->type = type;
+	temp->value = value;
+	temp->time = time;
+	temp->text = NULL;
+	if(text != NULL)
+	{
+		temp->text = (char *)malloc(sizeof(char) * (strlen(text) + 1));
+		memtest(temp->text);
+		strcpy(temp->text, text);
+	}
+	temp->next = NULL;
+	
+	return temp;
+}
 
+void Sign_Free(Sign **sign)
+{
+	if(*sign != NULL)
+	{
+		if((*sign)->text != NULL)
+			free((*sign)->text);
+		free(*sign);
+		*sign = NULL;
+	}
+}
 
+void Sign_FreeAll(Sign **sign)
+{
+	if(*sign != NULL)
+	{
+		Sign_FreeAll(&((*sign)->next));
+		Sign_Free(sign);
+	}
+}
+
+Score *Score_Alloc(void)
+{
+	Score *temp = (Score *)malloc(sizeof(Score));
+	memtest(temp);
+	
+	temp->lst = NULL;
+	temp->n = 0;
+	temp->data = 0;
+	temp->signs = NULL;
+	
+	return temp;
+}
+
+void Score_Free(Score **score)
+{
+	if(*score != NULL)
+	{
+		if((*score)->lst != NULL)
+			Staff_Free(&((*score)->lst));
+		if((*score)->signs != NULL)
+			Sign_FreeAll(&((*score)->signs));
+		free(*score);
+		*score = NULL;
+	}
+}
+
+int Score_AddSign(Score *score, Sign_Type type, Uint value, Uint time, char *text)
+{
+	Sign **cur = NULL;
+	Sign *sauv = NULL;
+	Sign *new = NULL;
+	
+	if(NULL == score)
+		return 0;
+	
+	if(type <= 0 || time < 0)
+		return 0;
+		
+	new = Sign_Alloc(type, value, time, text);
+	cur = &(score->signs);
+	
+	while(*cur != NULL && (*cur)->time < time)
+		cur = &((*cur)->next);
+	
+	if(NULL == *cur)
+	{
+		*cur = new;
+		return 1;
+	}
+	sauv = *cur;
+	*cur = new;
+	new->next = sauv;
+	return 1;
+}
+
+int Score_DeleteSign(Score *score, Sign_Type type, Uint time)
+{
+	Sign **cur = NULL;
+	Sign *sauv = NULL;
+	if(NULL == score)
+		return 0;
+		
+	if(NULL == score->signs)
+		return 0;
+	
+	cur = &(score->signs);
+	
+	while(*cur != NULL)
+	{
+		if((*cur)->time == time && (*cur)->type == type)
+		{
+			sauv = (*cur)->next;
+			Sign_Free(cur);
+			*cur = sauv;
+			return 1;
+		}
+		cur = &((*cur)->next);
+	}
+	return 1;
+}
+
+int Score_ShowSignConsole(Score *score)
+{
+	Sign *cur = NULL;
+	if(NULL == score)
+		return 0;
+	if(NULL == score->signs)
+		return 0;
+	
+	cur = score->signs;
+	
+	while(cur != NULL)
+	{
+		printf("- Sign \"%d\" val = %d (time = %d)\n", 
+					cur->type, cur->value, cur->time);
+		cur = cur->next;
+	}
+	return 1;
+}
 
 
 

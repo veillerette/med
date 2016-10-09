@@ -43,10 +43,10 @@ typedef struct Note Note;
 struct Note
 {
 	char note; /* A0 = 21, B1 = 22... C8 = 108*/
-	Note_Flags flags;
-	Note_Duration duration;
-	
 	char rest; /* bool 0 = note, 1 = rest */
+	
+	Note_Flags flags : 16;
+	Note_Duration duration : 8;
 };
 
 typedef struct ToNote ToNote;
@@ -61,12 +61,13 @@ struct Step
 {
 	ToNote *notes;
 	
-	
 	int num;
-	Note_Duration den;
-	Cle cle;
+	
+	Cle cle : 10;
+	Note_Duration den : 8;
+	Step_Flags flags : 16;
+	
 	char sign;
-	Step_Flags flags;
 };
 
 Note *Note_Alloc(char note, Note_Flags flags, Note_Duration duration, char rest);
@@ -113,7 +114,7 @@ int find2min(int n);
 
 int Step_AddNote(Step *step, int id, char note, Note_Flags flags, Note_Duration duration);
 
-int Step_DelLocal(Step *step, int debut, int fin);
+int Step_DelLocal(Step *step, int begin, int end);
 
 int Step_Verif(Step *step);
 

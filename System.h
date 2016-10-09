@@ -21,6 +21,8 @@ typedef enum{
 	CYAN	= 36,
 	WHITE	= 37
 	} TerminalColor;
+
+typedef unsigned int Uint;
 	
 extern void _mem(void *ptr, const char *str, const char *file, int line);
 
