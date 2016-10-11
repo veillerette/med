@@ -272,11 +272,7 @@ int Window_Print(void)
 	pos.y = Window->pos_body->y;
 	
 	SDL_BlitSurface(Window->body, NULL, Window->screen, &pos);
-	
-	
-	pos.x = Window->pos_body->x + 200;
-	pos.y = Window->pos_body->y + 200;
-	SDL_BlitSurface(Notes_SoloBasicNoire(), NULL, Window->screen, &pos);
+
 	return 1;
 }
 

@@ -21,5 +21,11 @@ struct Graphics
 	SDL_Surface *line;
 };
 
-SDL_Surface *Notes_SoloBasicNoire(void);
+SDL_Surface *Notes_SoloBasicNoire(double size, double angle);
+
+void test_note(double size, double angle, int posx, int posy, SDL_Surface *screen);
+
+
+
+
 #endif

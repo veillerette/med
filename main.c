@@ -8,6 +8,7 @@ int main(int argc, char *argv[])
 {
 	Step *step = NULL;
 	Score *score = NULL;
+	double i;
 	
 	if(2 == argc && (!strcmp(argv[1], "-t") || !strcmp(argv[1], "-test")))
 		Test_Main();
@@ -48,6 +49,8 @@ int main(int argc, char *argv[])
 		Window_CreateWindow(Window->max_width-200, Window->max_height-200, "Ma Super Fenetre\n");
 		
 		Window_Print();
+		for(i = 0.05; i < 1.0; i+=0.05)
+			test_note(i, 0, (int)(i*800+i*200), 200, Window->screen);
 		SDL_Flip(Window->screen);
 		
 		Window_WaitMouse(NULL, NULL);
