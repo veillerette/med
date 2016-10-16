@@ -4,20 +4,7 @@ WindowData *Window = NULL;
 
 
 
-Color SetColorA(int r, int g, int b, int a)
-{
-	Color color;
-	color.r = r;
-	color.g = g;
-	color.b = b;
-	color.a = a;
-	return color;
-}
 
-Color SetColor(int r, int g, int b)
-{
-	return SetColorA(r, b, b, 255);
-}
 
 WindowData *WindowData_Alloc(void)
 {
@@ -158,18 +145,6 @@ static int Window_InitBody(SDL_Surface *body)
 	return 1;
 }
 
-SDL_Rect *SDL_SetRect(int x, int y, int w, int h)
-{
-	SDL_Rect *temp = (SDL_Rect *)malloc(sizeof(SDL_Rect));
-	memtest(temp);
-	
-	temp->x = x;
-	temp->y = y;
-	temp->w = w;
-	temp->h = h;
-	
-	return temp;
-}
 
 void SDL_FreeRect(SDL_Rect **rect)
 {
@@ -183,7 +158,6 @@ void SDL_FreeRect(SDL_Rect **rect)
 int Window_CreateWindow(int width, int height, const char *title)
 {
 	SDL_Surface *screen = NULL;
-	
 	if(NULL == Window)
 		return 0;
 	if(Window->screen != NULL)
@@ -223,8 +197,11 @@ int Window_CreateWindow(int width, int height, const char *title)
 	memtest(Window->pal);
 	Window_InitPal(Window->pal);
 
-	Window->body = SDL_CreateRGBSurface(SDL_HWSURFACE, Window->pos_body->w, Window->pos_body->h,
+	Window->body = SDL_CreateRGBSurface(SDL_HWSURFACE, Window->pos_body->w * 10, Window->pos_body->h,
 						32, 0, 0, 0, 0);
+	
+	if(Window->body == NULL)
+		printf("%s\n", SDL_GetError());
 	memtest(Window->body);
 	Window_InitBody(Window->body);
 	
@@ -254,7 +231,7 @@ int Window_ClearWindow(Color color)
 }
 
 int Window_Print(void)
-{
+{	
 	SDL_Rect pos;
 	TestOK();
 	
@@ -305,6 +282,184 @@ int Window_WaitMouse(int *x, int *y)
 		SDL_Delay(5);
 	}
 	return 1;
+}
+
+int Window_DrawBodyShrink(double ratio)
+{
+	SDL_Surface *temp = NULL;
+	
+	 temp = shrinkSurface(Window->body, (int)ratio, (int)ratio); 
+	/*temp = zoomSurface(Window->body, ratio, ratio, SMOOTHING_ON); */
+	memtest(temp);
+	
+	SDL_FillRect(Window->screen, Window->pos_body, SDL_MapRGB(Window->screen->format, 255, 255, 255));
+	SDL_BlitSurface(temp, NULL, Window->screen, Window->pos_body);
+	
+	return 1;
+}
+
+void Window_Staff(int x, int y)
+{
+	int i,j;
+	for(j = 0; j < 5; j++)
+	{
+		for(i = 0; i < STAFF_H; i++)
+		{
+			hlineRGBA(Window->body, x, Window->width * 10, y+i+j*(HEAD_H), 0, 0, 0, 255);
+		}
+	}
+}
+
+
+void Window_ShowAllGraphics(void)
+{
+	SDL_Surface *temp = NULL;
+	SDL_Rect pos;
+	if(NULL == Images)
+		return;
+	
+	SDL_FillRect(Window->body, NULL, SDL_MapRGB(Window->body->format, 255, 255, 255));
+	
+	pos.x = 100;
+	pos.y = 100+HEAD_H*3;
+	
+	
+	if(Images->Note_headBlack != NULL)
+	{
+		Images_DrawRotNote(Images->Note_headBlack, pos.x, pos.y, Window->body);
+		pos.x+= NOTE_SPACE;
+	}
+	if(Images->Note_headWhite != NULL)
+	{
+		Images_DrawRotNote(Images->Note_headWhite, pos.x, pos.y, Window->body);
+		pos.x+= NOTE_SPACE;
+	}
+	if(Images->Note_headWhole != NULL)
+	{
+		SDL_BlitSurface(Images->Note_headWhole, NULL, Window->body, &pos);
+		pos.x+= NOTE_SPACE;
+	}
+	if(Images->Note_Black != NULL)
+	{	
+		Images_DrawRotNote(Images->Note_headBlack, pos.x, pos.y, Window->body);
+		pos.y -= Images->note1_center->y;
+		pos.x -= 2;
+		SDL_BlitSurface(Images->Note_Black, NULL, Window->body, &pos);
+		pos.y += Images->note1_center->y;
+		pos.x += 2;
+		pos.x += NOTE_SPACE;
+	}
+	if(Images->Note_headWhite != NULL)
+	{
+		Images_DrawRotNote(Images->Note_headWhite, pos.x, pos.y, Window->body);
+		pos.y -= Images->note1_center->y;
+		pos.x -= 2;
+		SDL_BlitSurface(Images->Note_Black, NULL, Window->body, &pos);
+		pos.y += Images->note1_center->y;
+		pos.x += 2;
+		pos.x += NOTE_SPACE;
+	}
+	if(Images->Note_Black != NULL)
+	{	
+		Images_DrawRotNote(Images->Note_headBlack, pos.x, pos.y, Window->body);
+		pos.y -= Images->note1_center->y;
+		pos.x -= 2;
+		SDL_BlitSurface(Images->Note_Black, NULL, Window->body, &pos);
+		pos.x+=Images->Note_Black->w;
+		SDL_BlitSurface(Images->Note_Crotchet, NULL, Window->body, &pos);
+		pos.x-=Images->Note_Black->w;
+		pos.y += Images->note1_center->y;
+		pos.x += 2;
+		pos.x += NOTE_SPACE;
+	}
+	if(Images->Note_Black != NULL)
+	{	
+		Images_DrawRotNote(Images->Note_headBlack, pos.x, pos.y, Window->body);
+		pos.y -= Images->note1_center->y;
+		pos.x -= 2;
+		SDL_BlitSurface(Images->Note_Black, NULL, Window->body, &pos);
+		pos.x+=Images->Note_Black->w;
+		SDL_BlitSurface(Images->Note_Crotchet, NULL, Window->body, &pos);
+		pos.y+=20;
+		SDL_BlitSurface(Images->Note_Crotchet, NULL, Window->body, &pos);
+		pos.y-=20;
+		pos.x-=Images->Note_Black->w;
+		pos.y += Images->note1_center->y;
+		pos.x += 2;
+		pos.x += NOTE_SPACE;
+	}
+	if(Images->Note_Black != NULL)
+	{	
+		Images_DrawRotNote(Images->Note_headBlack, pos.x, pos.y, Window->body);
+		pos.y -= Images->note1_center->y;
+		pos.x -= 2;
+		SDL_BlitSurface(Images->Note_Black, NULL, Window->body, &pos);
+		pos.x+=Images->Note_Black->w;
+		SDL_BlitSurface(Images->Note_Crotchet, NULL, Window->body, &pos);
+		pos.y+=20;
+		SDL_BlitSurface(Images->Note_Crotchet, NULL, Window->body, &pos);
+		pos.y+=20;
+		SDL_BlitSurface(Images->Note_Crotchet, NULL, Window->body, &pos);
+		pos.y-=20;
+		pos.y-=20;
+		pos.x-=Images->Note_Black->w;
+		pos.y += Images->note1_center->y;
+		pos.x += 2;
+		pos.x += NOTE_SPACE;
+	}
+	if(Images->Note_Black != NULL)
+	{	
+		Images_DrawRotNote(Images->Note_headBlack, pos.x, pos.y, Window->body);
+		pos.y -= Images->note1_center->y;
+		pos.x -= 2;
+		SDL_BlitSurface(Images->Note_Black, NULL, Window->body, &pos);
+		pos.x+=Images->Note_Black->w;
+		SDL_BlitSurface(Images->Note_Crotchet, NULL, Window->body, &pos);
+		pos.y+=20;
+		SDL_BlitSurface(Images->Note_Crotchet, NULL, Window->body, &pos);
+		pos.y+=20;
+		SDL_BlitSurface(Images->Note_Crotchet, NULL, Window->body, &pos);
+		pos.y+=20;
+		SDL_BlitSurface(Images->Note_Crotchet, NULL, Window->body, &pos);
+		pos.y-=20;
+		pos.y-=20;
+		pos.y-=20;
+		pos.x-=Images->Note_Black->w;
+		pos.y += Images->note1_center->y;
+		pos.x += 2;
+		pos.x += NOTE_SPACE;
+	}
+	if(Images->Rest_Long != NULL)
+	{
+		pos.y -= 2*HEAD_H;
+	
+		pos.x -= Images->pos_Long->x;
+		pos.y -= Images->pos_Long->y;
+		SDL_BlitSurface(Images->Rest_Long, NULL, Window->body, &pos);
+		pos.x += Images->pos_Long->x;
+		pos.y += Images->pos_Long->y;
+		pos.x += NOTE_SPACE;
+		
+		pos.y += 2*HEAD_H;
+	}
+	if(Images->Rest_BreveLong != NULL)
+	{	
+		pos.y -= 2*HEAD_H;
+		
+		pos.x -= Images->pos_BreveLong->x;
+		pos.y -= Images->pos_BreveLong->y;
+		SDL_BlitSurface(Images->Rest_BreveLong, NULL, Window->body, &pos);
+		pos.x += Images->pos_BreveLong->x;
+		pos.y += Images->pos_BreveLong->y;
+		pos.x += NOTE_SPACE;
+		
+		pos.y += 2*HEAD_H;
+	}
+	Window_Staff(100, 100);
+	
+	temp = Window->body;
+	Window->body = SDL_DisplayFormat(Window->body);
+	SDL_FreeSurface(temp);
 }
 
 

@@ -49,18 +49,24 @@ struct WindowData
 	SDL_Rect *pos_body;
 };
 
-typedef struct Color Color;
-struct Color
+typedef enum {
+	OBJECT_NOTE	= 0x01,
+	OBJECT_LINE	= 0x02,
+	OBJECT_CLE	= 0x08,
+	OBJECT_SIGN	= 0x40,
+	OBJECT_STEP	= 0x04,
+	OBJECT_TITLE	= 0x10,
+	OBJECT_AUTHOR	= 0x20,
+	OBJECT_SHEET	= 0x80
+	} Object_Type;
+typedef struct Object Object;
+struct Object
 {
-	Uint r : 8;
-	Uint g : 8;
-	Uint b : 8;
-	Uint a : 8;
+	int type;
+	void *ptr;
+	SDL_Rect *pos;
 };
 
-Color SetColorA(int r, int g, int b, int a);
-
-Color SetColor(int r, int g, int b);
 
 WindowData *WindowData_Alloc(void);
 
@@ -78,10 +84,11 @@ int Window_WaitMouse(int *x, int *y);
 
 int Window_Print(void);
 
-SDL_Rect *SDL_SetRect(int x, int y, int w, int h);
-
 void SDL_FreeRect(SDL_Rect **rect);
 
+void Window_ShowAllGraphics(void);
+
+int Window_DrawBodyShrink(double ratio);
 
 
 extern WindowData *Window;

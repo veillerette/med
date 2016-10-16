@@ -8,7 +8,13 @@ int main(int argc, char *argv[])
 {
 	Step *step = NULL;
 	Score *score = NULL;
-	double i;
+	SDL_Event event;
+	double r=1.0;
+	int c=1;
+	int m=0;
+	/*SDL_Surface *surf = NULL;
+	SDL_Rect pos;
+	int x,y;*/
 	
 	if(2 == argc && (!strcmp(argv[1], "-t") || !strcmp(argv[1], "-test")))
 		Test_Main();
@@ -48,13 +54,72 @@ int main(int argc, char *argv[])
 		Window_Init();
 		Window_CreateWindow(Window->max_width-200, Window->max_height-200, "Ma Super Fenetre\n");
 		
-		Window_Print();
-		for(i = 0.05; i < 1.0; i+=0.05)
+		
+		/*for(i = 0.05; i < 1.0; i+=0.05)
 			test_note(i, 0, (int)(i*800+i*200), 200, Window->screen);
+		*/
+		/*surf = Note_CreateHead(200, 150);
+		y = (int)(400 * cos(30 * M_PI/180) + 400 * sin(30 * M_PI/180));
+		x = (int)(400 * sin(30 * M_PI/180) + 400 * cos(30 * M_PI/180));
+		pos.x = 400;
+		pos.y = 400;
+		Draw_Border(surf, 1);
+		SDL_BlitSurface(surf, NULL, Window->screen, &pos);
+		rectangleRGBA(Window->screen, 400+surf->w/2, 400+surf->h/2, 400+surf->w/2+10, 400+surf->h/2+10, 0, 255, 0, 170);*/
+		
+		Graphics_LoadAll();
+		Window_ShowAllGraphics();
+		Window_Print();
+		Window_DrawBodyShrink(r);
+		
+		
 		SDL_Flip(Window->screen);
 		
-		Window_WaitMouse(NULL, NULL);
+		while(c)
+		{
+			SDL_WaitEvent(&event);
+			switch(event.type)
+			{	
+				case SDL_QUIT:	
+					c = 0;
+					break;
+				case SDL_MOUSEBUTTONDOWN:
+					switch(event.button.button)
+					{
+						case SDL_BUTTON_WHEELDOWN:
+							r++;
+							m=1;
+							break;
+						case SDL_BUTTON_WHEELUP:
+							if(r <= 1)
+								r = 1.0;
+							else
+							{
+								r--;
+								m=1;
+							}
+							break;
+						default:
+							c = 0;
+							break;
+					}
+				break;
+			}
+			if(m)
+			{
+				
+				printf("r=%f\n", r);
+				Window_DrawBodyShrink(r);
+				SDL_Flip(Window->screen);
+				
+				m=0;
+			}
+		}
 		
+		/* Window_WaitMouse(NULL, NULL);
+		*/
+		
+		Graphics_Quit();
 		Window_Quit();
 	}
 	

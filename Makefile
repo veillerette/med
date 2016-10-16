@@ -1,4 +1,4 @@
-CFLAGS=-ansi -Wall -O2
+CFLAGS=-ansi -Wall -O2 -pg
 CLIBS=-lm -lSDL -lSDL_gfx -lSDL_ttf
 EXE=prog
 
