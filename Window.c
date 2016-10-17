@@ -141,7 +141,7 @@ static int Window_InitBody(SDL_Surface *body)
 	
 	SDL_FillRect(body, NULL, SDL_MapRGB(body->format, 255, 255, 255));
 	
-	SDL_FillRect(body, NULL, SDL_MapRGB(body->format, 200, 200, 255));
+/*	SDL_FillRect(body, NULL, SDL_MapRGB(body->format, 200, 200, 255)); */
 	return 1;
 }
 
@@ -298,21 +298,49 @@ int Window_DrawBodyShrink(double ratio)
 	return 1;
 }
 
-void Window_Staff(int x, int y)
+int Window_DrawBodyShrink2(double ratio, SDL_Rect redim, SDL_Rect pos)
+{
+	SDL_Surface *temp = NULL;
+	
+	temp = shrinkSurface(Window->body, (int)ratio, (int)ratio); 
+
+	memtest(temp);
+	
+	SDL_FillRect(Window->screen, Window->pos_body, SDL_MapRGB(Window->screen->format, 255, 255, 255));
+	SDL_BlitSurface(temp, &redim, Window->screen, &pos);
+	
+	return 1;
+}
+
+void Window_Staff(int x, int y, int w)
 {
 	int i,j;
 	for(j = 0; j < 5; j++)
 	{
 		for(i = 0; i < STAFF_H; i++)
 		{
-			hlineRGBA(Window->body, x, Window->width * 10, y+i+j*(HEAD_H), 0, 0, 0, 255);
+			hlineRGBA(Window->body, x, w, y+i+j*(HEAD_H), 0, 0, 0, 255);
 		}
 	}
+}
+void Window_DrawStaff(int x, int y, int x_end, SDL_Surface *dest)
+{
+	int i,j;
+	boxRGBA(dest, x, y, x+3, y+HEAD_H*4, 0, 0, 0, 255);
+	for(j = 0; j < 5; j++)
+	{
+		for(i = 0; i < STAFF_H; i++)
+		{
+			hlineRGBA(Window->body, x, x_end, y+i+j*(HEAD_H), 0, 0, 0, 255);
+		}
+	}
+	boxRGBA(dest, x_end, y, x_end+3, y+HEAD_H*4, 0, 0, 0, 255);
 }
 
 
 void Window_ShowAllGraphics(void)
 {
+	int b,c;
 	SDL_Surface *temp = NULL;
 	SDL_Rect pos;
 	if(NULL == Images)
@@ -320,20 +348,12 @@ void Window_ShowAllGraphics(void)
 	
 	SDL_FillRect(Window->body, NULL, SDL_MapRGB(Window->body->format, 255, 255, 255));
 	
-	pos.x = 100;
-	pos.y = 100+HEAD_H*3;
+	pos.x = b = 100;
+	pos.y = c = 300;
+	
+	pos.y += HEAD_H * 2 + HEAD_H/2;
 	
 	
-	if(Images->Note_headBlack != NULL)
-	{
-		Images_DrawRotNote(Images->Note_headBlack, pos.x, pos.y, Window->body);
-		pos.x+= NOTE_SPACE;
-	}
-	if(Images->Note_headWhite != NULL)
-	{
-		Images_DrawRotNote(Images->Note_headWhite, pos.x, pos.y, Window->body);
-		pos.x+= NOTE_SPACE;
-	}
 	if(Images->Note_headWhole != NULL)
 	{
 		SDL_BlitSurface(Images->Note_headWhole, NULL, Window->body, &pos);
@@ -455,17 +475,153 @@ void Window_ShowAllGraphics(void)
 		
 		pos.y += 2*HEAD_H;
 	}
-	Window_Staff(100, 100);
+	Window_Staff(b, c, Window->width);
 	
 	temp = Window->body;
 	Window->body = SDL_DisplayFormat(Window->body);
 	SDL_FreeSurface(temp);
 }
 
+int Note_Print(Note *note, SDL_Rect *base_pos, SDL_Surface *dest)
+{
+	Note_Duration cpy = note->duration;
+	int pos;
+	if((NULL == note) || (NULL == base_pos) || (base_pos->x < 0) || (base_pos->y < 0) || (NULL == dest))
+		return 0;
+	if(!note->rest || (note->rest && note->duration != RONDE && note->duration != BLANCHE))
+		base_pos->y += HEAD_H * 4;
+	switch(note->duration)
+	{
+		case RONDE:
+			if(note->rest)
+			{
+				base_pos->x += (Note_RealDuration(note) * NOTE_SPACE ) / 2;
+				base_pos->y += 2*HEAD_H;
+				SDL_BlitSurface(Images->Rest_Long, NULL, dest, base_pos);
+				base_pos->y -= 2*HEAD_H;
+				base_pos->x += (Note_RealDuration(note) * NOTE_SPACE ) / 2;
+			}
+			else
+			{
+				SDL_BlitSurface(Images->Note_headWhole, NULL, dest, base_pos);
+				base_pos->x += (Note_RealDuration(note) * NOTE_SPACE );
+			}
+			
+			break;
+			
+		case BLANCHE:
+			if(note->rest)
+			{
+				base_pos->y += 2*HEAD_H;
+				base_pos->y -= Images->pos_BreveLong->y;
+				SDL_BlitSurface(Images->Rest_BreveLong, NULL, dest, base_pos);
+				base_pos->y -= 2*HEAD_H;
+				base_pos->y += Images->pos_BreveLong->y;
+			}
+			else
+			{
+				Images_DrawRotNote(Images->Note_headWhite, base_pos->x, base_pos->y, dest);
+				base_pos->y -= Images->note1_center->y;
+				base_pos->x -= 2;
+				SDL_BlitSurface(Images->Note_Black, NULL, dest, base_pos);
+				base_pos->y += Images->note1_center->y;
+				base_pos->x += 2;
+			}
+			base_pos->x += (Note_RealDuration(note) * NOTE_SPACE );
+			break;
+			
+		case QUADRUPLECROCHE:
+		case TRIPLECROCHE:
+		case DOUBLECROCHE:
+		case CROCHE:
+			{
+				base_pos->y -= Images->note1_center->y;
+				base_pos->x -= 2;
+				base_pos->x+=Images->Note_Black->w;
+				pos = 0;
+				while(cpy > NOIRE)
+				{
+					SDL_BlitSurface(Images->Note_Crotchet, NULL, dest, base_pos);
+					base_pos->y+=20;
+					pos+=20;
+					cpy /= 2;
+				}
+				base_pos->y -= pos;
+				base_pos->x-=Images->Note_Black->w;
+				base_pos->y += Images->note1_center->y;
+				base_pos->x += 2;
+			}
+		case NOIRE:
+			{
+				Images_DrawRotNote(Images->Note_headBlack, base_pos->x, base_pos->y, dest);
+				base_pos->y -= Images->note1_center->y;
+				base_pos->x -= 2;
+				SDL_BlitSurface(Images->Note_Black, NULL, dest, base_pos);
+				base_pos->y += Images->note1_center->y;
+				base_pos->x += 2;
+			}
+			base_pos->x += (Note_RealDuration(note) * NOTE_SPACE );
+			break;
+		default:
+			break;
+	}
+	if(!note->rest || (note->rest && note->duration != RONDE && note->duration != BLANCHE))
+		base_pos->y -= HEAD_H * 4;
+	return 1;
+}
+
+int Step_Print(Step *step, SDL_Rect *base_pos, SDL_Surface *dest)
+{
+	ToNote *cur = NULL;
+	int sauv_x, sauv_y;
+	if((NULL == step) || (NULL == base_pos) || (base_pos->x < 0) || (base_pos->y < 0) || (NULL == dest))
+		return 0;
+	sauv_x = base_pos->x;
+	sauv_y = base_pos->y;
+	
+	base_pos->y -= HEAD_H ;
+	base_pos->x += 4 * NOTE_SPACE;
+	cur = step->notes;
+	while(cur != NULL)
+	{
+		Note_Print(cur->note, base_pos, dest);
+		cur = cur->next;
+	}
+	
+	Window_DrawStaff(sauv_x, sauv_y, base_pos->x, dest);
+	
+	base_pos->y += HEAD_H;
+	return 1;
+}
+
+int Staff_Print(Staff *staff, SDL_Rect *base_pos, SDL_Surface *dest)
+{
+	int i;
+	if((NULL == staff) || (NULL == base_pos) || (NULL == dest))
+		return 0;
+	
+	SDL_FillRect(dest, NULL, SDL_MapRGB(dest->format, 240, 240, 255));
+	
+	for(i = 0; i < staff->n; i++)
+		Step_Print(*(staff->steps + i), base_pos, dest);
+	
+	return 1;
+}
+
+int ClicInRect(int x, int y, SDL_Rect *rect)
+{
+	if(NULL == rect)
+		return 0;
+	if((x >= rect->x) && (x<=rect->x + rect->w) &&
+		(y >= rect->y) && (y <= rect->y + rect->h))
+		return 1;
+	return 0;
+}
 
 /* TO DO LIST
 
-- Polices / Images : System de Survie/Moteur en liste chainées avec avancé des plus utilisés
+- Polices / Images : System du moteur S en liste chainées avec avancé des plus utilisés
+	=> Système Générique (A tester) OK
 - Events ?
-- Commencer le module Images.
+- Commencer le module Images. OK
 **/

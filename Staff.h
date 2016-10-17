@@ -50,6 +50,11 @@ Staff *Staff_Alloc(const char *name);
 
 int Staff_Init(Staff *staff, int num, Note_Duration den, int cle, char sign);
 
+int Staff_AddNote(Staff *staff, int step_id, int note_id, char note, 
+					Note_Flags flags, Note_Duration duration);
+
+void Staff_Console(Staff *staff);
+
 void Staff_Free(Staff **staff);
 
 void Staff_VerifAlloc(Staff *staff);
@@ -59,6 +64,8 @@ int Staff_AddEmptyStep(Staff *staff);
 int Staff_InsereEmptyStep(Staff *staff, int pos);
 
 int Staff_DeleteStep(Staff *staff, int pos);
+
+int Staff_DiviseRest(Staff *staff, int step_id, int note_id);
 
 int Staff_Transpose(Staff *staff, char value);
 

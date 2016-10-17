@@ -14,6 +14,7 @@
 #include "Staff.h"
 #include "Images.h"
 
+#define BASE_MOTION 2;
 
 #define TestOK(); if(!Window_OK())return 0;
 typedef enum {
@@ -59,6 +60,7 @@ typedef enum {
 	OBJECT_AUTHOR	= 0x20,
 	OBJECT_SHEET	= 0x80
 	} Object_Type;
+	
 typedef struct Object Object;
 struct Object
 {
@@ -90,6 +92,13 @@ void Window_ShowAllGraphics(void);
 
 int Window_DrawBodyShrink(double ratio);
 
+int Window_DrawBodyShrink2(double ratio, SDL_Rect redim, SDL_Rect pos);
+
+int Step_Print(Step *step, SDL_Rect *base_pos, SDL_Surface *dest);
+
+int Staff_Print(Staff *staff, SDL_Rect *base_pos, SDL_Surface *dest);
+
+int ClicInRect(int x, int y, SDL_Rect *rect);
 
 extern WindowData *Window;
 

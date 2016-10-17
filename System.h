@@ -8,7 +8,7 @@
 #include <string.h>
 #include <math.h>
 
-
+#define log2(n) (log((n)) / log(2))
 #define memtest(ptr) (_mem((void*)ptr, #ptr, __FILE__, __LINE__))
 
 typedef enum{

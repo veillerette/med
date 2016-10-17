@@ -280,6 +280,19 @@ void Step_ConsolePrintf(Step *step)
 		printf("Step 'NULL'\n");
 }
 
+void Step_ConsoleFastPrintf(Step *step)
+{
+	if(step != NULL)
+	{
+		if(NULL == step->notes)
+			printf("- No Notes -\n");
+		else 
+			ToNote_ConsolePrintf(step->notes);
+	}
+	else
+		printf("'NULL'\n");
+}
+
 int ToNote_Regularise(ToNote *notes)
 {	
 	ToNote *sauv = NULL;
@@ -343,8 +356,6 @@ Note_Duration *find2rest(int duration)
 	}
 	
 	qsort(tab, i, sizeof(Note_Duration), comp_duration);
-	for(f = 0; f < i + 1; f++)
-		printf("tab[%d] = %d\n", f, tab[f]);
 	return tab;
 }
 
@@ -410,7 +421,6 @@ int Step_AddNote(Step *step, int id, char note, Note_Flags flags,
 		return 1;
 		
 	note_duration = -note_duration;
-	ToNote_ConsolePrintf(step->notes);
 	
 	rest_r = find2rest(note_duration);
 	
@@ -422,7 +432,6 @@ int Step_AddNote(Step *step, int id, char note, Note_Flags flags,
 		note_duration -= *(rest_r + i);
 		(*cur)->next = sauv;
 		cur = &(*cur)->next;
-		ToNote_ConsolePrintf(step->notes);
 		i++;
 	}
 	

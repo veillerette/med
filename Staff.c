@@ -28,11 +28,35 @@ int Staff_Init(Staff *staff, int num, Note_Duration den, int cle, char sign)
 	
 	for(i = 0; i < staff->n; i++)
 	{
-		if(*(staff->steps + i) != NULL)
+		if(NULL == *(staff->steps + i))
 			*(staff->steps + i) = Step_Alloc(num, den, cle, sign, STEP_DEFAULT);
 		Step_Init(*(staff->steps + i));
 	}
 	return 1;
+}
+
+int Staff_AddNote(Staff *staff, int step_id, int note_id, char note, 
+					Note_Flags flags, Note_Duration duration)
+{
+	if(NULL == staff)
+		return 0;
+	if(NULL == staff->steps)
+		return 0;
+	if(staff->n <= step_id)
+		return 0;
+		
+	return Step_AddNote(*(staff->steps + step_id), note_id, note, flags, duration);
+} 
+
+void Staff_Console(Staff *staff)
+{
+	int i;
+	if(NULL == staff)
+		return;
+	
+	for(i = 0; i < staff->n; i++)
+		Step_ConsoleFastPrintf(*(staff->steps + i));
+	
 }
 
 void Staff_Free(Staff **staff)
@@ -142,6 +166,15 @@ int Staff_DeleteStep(Staff *staff, int pos)
 		*(staff->steps + i)  = *(staff->steps + i + 1);
 	staff->n--;
 	return 1;
+}
+
+int Staff_DiviseRest(Staff *staff, int step_id, int note_id)
+{
+	if(NULL == staff)
+		return 0;
+	if((step_id < 0) || (note_id < 0))
+		return 0;
+	return Step_DiviseRest(*(staff->steps + step_id), note_id);
 }
 
 int Staff_Transpose(Staff *staff, char value)
@@ -296,6 +329,8 @@ int Score_ShowSignConsole(Score *score)
 	}
 	return 1;
 }
+
+
 
 
 

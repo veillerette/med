@@ -36,7 +36,7 @@ extern int colorprintf(TerminalColor color, const char *format, ...)
 	return r;
 }
 
-NodeList *NodeList_Alloc(const char *name, void *data, 	void (*Node_Free)(void *);)
+NodeList *NodeList_Alloc(const char *name, void *data, 	void (*Node_Free)(void *))
 {
 	NodeList *temp = (NodeList *)malloc(sizeof(NodeList));
 	memtest(temp);
@@ -62,7 +62,7 @@ void NodeList_Free(NodeList **node)
 			free((*node)->name);
 			
 		if((*node)->Node_Free != NULL && (*node)->data != NULL)
-			temp->Node_Free(&((*node)->data));
+			(*node)->Node_Free(&((*node)->data));
 		
 		free(*node);
 		*node = NULL;
@@ -99,6 +99,96 @@ void GenList_Free(GenList **lst)
 		*lst = NULL;
 	}
 }
+
+int NodeList_Add(NodeList **node, NodeList *new)
+{
+	NodeList *cur = *node;
+	memtest(new);
+	
+	if(NULL == *node)
+	{
+		*node = new;
+		return 1;
+	}
+	
+	if(NULL == cur->next)
+	{
+		if(new->famous > cur->famous)
+		{
+			new->next = cur;
+			*node = new;
+		}
+		else
+		{
+			cur->next = new;
+		}
+		return 1;
+	}
+	
+	if(cur->famous > new->famous)
+		return NodeList_Add(&((*node)->next), new);
+	
+	new->next = *node;
+	*node = new;
+	return 1;
+}
+
+int GenList_Add(GenList *lst, const char *name, void *data, void (*Node_Free)(void *))
+{
+	NodeList *node = NULL;
+	
+	if(NULL == lst || NULL == name || NULL == data || NULL == Node_Free)
+		return 0;
+	
+	node = NodeList_Alloc(name, data, Node_Free);
+	memtest(node);
+	
+	node->id = lst->n;
+	node->famous = lst->lst_famous;
+	
+	NodeList_Add(&(lst->lst), node);
+	lst->n++;
+	lst->lst_famous++;
+	
+	return 1;
+}
+
+void *NodeList_Get(NodeList **node, const char *name)
+{
+	NodeList *res = NULL;
+	NodeList *temp = NULL;
+	
+	if(NULL == *node || NULL == name)
+		return NULL;
+	
+	if(!strcmp((*node)->name, name))
+	{
+		res = (*node)->data;
+		(*node)->famous *= 2;
+	}
+	else
+		res = NodeList_Get(&((*node)->next), name);
+	
+	if((*node)->next != NULL && (*node)->famous < (*node)->next->famous)
+	{
+		temp = *node;
+		*node = (*node)->next;
+		temp->next = (*node)->next;
+		(*node)->next = temp;
+	}
+	return res;
+}
+
+void *GenList_Get(GenList *lst, const char *name)
+{
+	if(NULL == lst || NULL == name)
+		return NULL;
+	
+	return NodeList_Get(&(lst->lst), name);
+	
+}
+
+
 
 
 

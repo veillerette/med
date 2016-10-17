@@ -103,6 +103,8 @@ int Step_Change(Step *step, int num, Note_Duration den, Cle cle, Step_Flags flag
 						
 void Note_ConsolePrintf(Note *note);
 
+void Step_ConsoleFastPrintf(Step *step);
+
 void ToNote_ConsolePrintf(ToNote *notes);
 
 void Step_ConsolePrintf(Step *step);
