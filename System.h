@@ -22,6 +22,29 @@ typedef enum{
 	WHITE	= 37
 	} TerminalColor;
 
+typedef struct NodeList NodeList;
+struct NodeList
+{
+	void *data;
+	char *name;
+	
+	int famous;
+	int id;
+	
+	void (*Node_Free)(void *);
+	
+	NodeList *next;
+};
+
+typedef struct GenList GenList;
+struct GenList
+{
+	NodeList *lst;
+	int n;
+	int lst_famous;
+};
+
+
 typedef unsigned int Uint;
 	
 extern void _mem(void *ptr, const char *str, const char *file, int line);
