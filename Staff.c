@@ -5,7 +5,7 @@ Staff *Staff_Alloc(const char *name)
 	Staff *temp = (Staff *)malloc(sizeof(Staff));
 	memtest(temp);
 	
-	temp->steps = (Step **)malloc(sizeof(Step *) * STAFF_BASE);
+	temp->steps = (Step **)calloc(STAFF_BASE, sizeof(Step *));
 	memtest(temp->steps);
 	
 	temp->n = 0;
