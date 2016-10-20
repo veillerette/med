@@ -104,8 +104,12 @@ int main(int argc, char *argv[])
 		Staff_AddNote(staff, 2, 3, ConvertStringToID("b5"), NOTE_DEFAULT, NOIRE);
 		Staff_AddNote(staff, 3, 0, ConvertStringToID("g4"), NOTE_DEFAULT, CROCHE);
 		Staff_AddNote(staff, 3, 1, ConvertStringToID("a4"), NOTE_DEFAULT, CROCHE);
-		Staff_AddNote(staff, 3, 2, ConvertStringToID("b4"), NOTE_DEFAULT, CROCHE);
-		Staff_AddNote(staff, 3, 3, ConvertStringToID("c5"), NOTE_DEFAULT, CROCHE);
+		Staff_AddNote(staff, 3, 2, ConvertStringToID("c4"), NOTE_DEFAULT, CROCHE);
+		Staff_AddNote(staff, 3, 3, ConvertStringToID("e4"), NOTE_DEFAULT, CROCHE);
+		Staff_AddNote(staff, 3, 4, ConvertStringToID("g4"), NOTE_DEFAULT, CROCHE);
+		Staff_AddNote(staff, 3, 5, ConvertStringToID("a4"), NOTE_DEFAULT, CROCHE);
+		Staff_AddNote(staff, 3, 6, ConvertStringToID("c4"), NOTE_DEFAULT, CROCHE);
+		Staff_AddNote(staff, 3, 7, ConvertStringToID("e4"), NOTE_DEFAULT, CROCHE);
 		Staff_Console(staff);
 		
 		Graphics_LoadAll();

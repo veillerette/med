@@ -5,6 +5,7 @@
 #include <stdlib.h>
 
 #include "System.h"
+#include "Images.h"
 
 typedef enum {
 	OBJECT_NOTE	= 0x01,
