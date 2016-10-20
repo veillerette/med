@@ -50,16 +50,7 @@ struct WindowData
 	SDL_Rect *pos_body;
 };
 
-typedef enum {
-	OBJECT_NOTE	= 0x01,
-	OBJECT_LINE	= 0x02,
-	OBJECT_CLE	= 0x08,
-	OBJECT_SIGN	= 0x40,
-	OBJECT_STEP	= 0x04,
-	OBJECT_TITLE	= 0x10,
-	OBJECT_AUTHOR	= 0x20,
-	OBJECT_SHEET	= 0x80
-	} Object_Type;
+
 	
 typedef struct Object Object;
 struct Object

@@ -90,14 +90,22 @@ int main(int argc, char *argv[])
 		staff = Staff_Alloc("Portée trop géniale");
 		Staff_Init(staff, 2, BLANCHE, CLE_SOL, 0);
 		
-		Staff_AddNote(staff, 0, 0, ConvertStringToID("do4"), NOTE_DEFAULT, NOIRE);
-		Staff_AddNote(staff, 0, 1, ConvertStringToID("do4"), NOTE_DEFAULT, NOIRE);
-		Staff_AddNote(staff, 0, 2, ConvertStringToID("do4"), NOTE_DEFAULT, NOIRE);
-		Staff_AddNote(staff, 0, 3, ConvertStringToID("do4"), NOTE_DEFAULT, NOIRE);
-		Staff_AddNote(staff, 1, 0, ConvertStringToID("do4"), NOTE_DEFAULT, RONDE);
-		Staff_AddNote(staff, 2, 0, ConvertStringToID("do4"), NOTE_DEFAULT, BLANCHE);
-		Staff_AddNote(staff, 2, 1, ConvertStringToID("do4"), NOTE_DEFAULT, BLANCHE);
-		Staff_DiviseRest(staff, 3, 0);
+		Staff_AddNote(staff, 0, 0, ConvertStringToID("c4"), NOTE_DEFAULT, NOIRE);
+		Staff_AddNote(staff, 0, 1, ConvertStringToID("a3"), NOTE_DEFAULT, NOIRE);
+		Staff_AddNote(staff, 0, 2, ConvertStringToID("e4"), NOTE_DEFAULT, NOIRE);
+		Staff_AddNote(staff, 0, 3, ConvertStringToID("f3"), NOTE_DEFAULT, NOIRE);
+		Staff_AddNote(staff, 1, 0, ConvertStringToID("g4"), NOTE_DEFAULT, NOIRE);
+		Staff_AddNote(staff, 1, 1, ConvertStringToID("a4"), NOTE_DEFAULT, NOIRE);
+		Staff_AddNote(staff, 1, 2, ConvertStringToID("b4"), NOTE_DEFAULT, NOIRE);
+		Staff_AddNote(staff, 1, 3, ConvertStringToID("c5"), NOTE_DEFAULT, NOIRE);
+		Staff_AddNote(staff, 2, 0, ConvertStringToID("d5"), NOTE_DEFAULT, NOIRE);
+		Staff_AddNote(staff, 2, 1, ConvertStringToID("a5"), NOTE_DEFAULT, NOIRE);
+		Staff_AddNote(staff, 2, 2, ConvertStringToID("c6"), NOTE_DEFAULT, NOIRE);
+		Staff_AddNote(staff, 2, 3, ConvertStringToID("b5"), NOTE_DEFAULT, NOIRE);
+		Staff_AddNote(staff, 3, 0, ConvertStringToID("g4"), NOTE_DEFAULT, CROCHE);
+		Staff_AddNote(staff, 3, 1, ConvertStringToID("a4"), NOTE_DEFAULT, CROCHE);
+		Staff_AddNote(staff, 3, 2, ConvertStringToID("b4"), NOTE_DEFAULT, CROCHE);
+		Staff_AddNote(staff, 3, 3, ConvertStringToID("c5"), NOTE_DEFAULT, CROCHE);
 		Staff_Console(staff);
 		
 		Graphics_LoadAll();
@@ -188,7 +196,7 @@ int main(int argc, char *argv[])
 			}
 			if(m)
 			{
-				
+				SDL_FillRect(Window->screen, Window->pos_body, SDL_MapRGB(Window->screen->format, 255, 255, 255));
 				Window_DrawBodyShrink2(r, redim, pos);
 				SDL_Flip(Window->screen);
 				

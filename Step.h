@@ -79,6 +79,8 @@ int Note_RealDuration(Note *note);
 
 char ConvertStringToID(const char *note);
 
+Note *Note_CreateNoteFromString(const char *note, Note_Duration duration);
+
 ToNote *ToNote_Alloc(char note, Note_Flags flags, int duration, char rest);
 
 void ToNote_Free(ToNote **tonote);

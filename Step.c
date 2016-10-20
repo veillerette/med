@@ -87,6 +87,44 @@ char ConvertStringToID(const char *note)
 	return res;
 }
 
+Note *Note_CreateNoteFromString(const char *note, Note_Duration duration)
+{
+	Note *temp = NULL;
+	int n = strlen(note);
+	if(NULL == note)
+		return NULL;
+	
+	temp = Note_Alloc(ConvertStringToID(note), NOTE_DEFAULT, duration, 0);
+	memtest(temp);
+	
+	switch(n)
+	{
+		case 3:
+			switch(note[1])
+			{
+				case 'f':
+					temp->flags |= NOTE_FLAT;
+					break;
+				case 's':
+					temp->flags |= NOTE_SHARP;
+					break;
+			}
+			break;
+		case 4:
+			switch(note[2])
+			{
+				case 'f':
+					temp->flags |= NOTE_DOUBLEFLAT;
+					break;
+				case 's':
+					temp->flags |= NOTE_DOUBLESHARP;
+					break;
+			}
+			break;
+	}
+	return temp;
+}
+
 
 ToNote *ToNote_Alloc(char note, Note_Flags flags, int duration, char rest)
 {

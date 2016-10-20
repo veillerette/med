@@ -140,8 +140,6 @@ static int Window_InitBody(SDL_Surface *body)
 		return 0;
 	
 	SDL_FillRect(body, NULL, SDL_MapRGB(body->format, 255, 255, 255));
-	
-/*	SDL_FillRect(body, NULL, SDL_MapRGB(body->format, 200, 200, 255)); */
 	return 1;
 }
 
@@ -204,6 +202,7 @@ int Window_CreateWindow(int width, int height, const char *title)
 		printf("%s\n", SDL_GetError());
 	memtest(Window->body);
 	Window_InitBody(Window->body);
+	SDL_SetColorKey(Window->body, SDL_SRCALPHA, SDL_MapRGB(Window->body->format, 255, 255, 255));
 	
 	
 	Window->state = STATE_WINDOWED;
@@ -486,10 +485,52 @@ int Note_Print(Note *note, SDL_Rect *base_pos, SDL_Surface *dest)
 {
 	Note_Duration cpy = note->duration;
 	int pos;
+	int note_y = 0;
+	int tab[] = {0, 2, 4, 5, 7, 9, 11};
+	int i;
 	if((NULL == note) || (NULL == base_pos) || (base_pos->x < 0) || (base_pos->y < 0) || (NULL == dest))
 		return 0;
 	if(!note->rest || (note->rest && note->duration != RONDE && note->duration != BLANCHE))
 		base_pos->y += HEAD_H * 4;
+	
+	if(!note->rest)
+	{
+		for(i = 0; i < 7; i++)
+		{
+			if((note->note % 12) == tab[i])
+			{
+				note_y = -i * (HEAD_H / 2) + HEAD_H * 1.5 - (HEAD_H * 3.5) * (note->note / 12 - 5);
+				printf("note %d = %d\n", note->note, note_y);
+				break;
+			}
+		}
+		base_pos->y += note_y;
+	}
+	
+	if(!note->rest && note_y >= 45)
+	{
+		for(i = 45; i <= note_y; i+= HEAD_H)
+		{
+			boxRGBA(dest, 
+				base_pos->x - HEAD_W/2 + Images->rot_noteW + NOTE_SPACE / 2, 
+				base_pos->y + 4 + i - note_y + Images->rot_noteH, 
+				base_pos->x + HEAD_W + Images->rot_noteW  + NOTE_SPACE / 2, 
+				base_pos->y + 6 + i - note_y  + Images->rot_noteH, 
+				0, 0, 0, 255);
+		}
+	}
+	if(!note->rest && note_y <= -135)
+	{
+		for(i = -135; i >= note_y; i-= HEAD_H)
+		{
+			boxRGBA(dest, 
+				base_pos->x - HEAD_W/2 + Images->rot_noteW + NOTE_SPACE / 2, 
+				base_pos->y + 4 + i - note_y + Images->rot_noteH, 
+				base_pos->x + HEAD_W + Images->rot_noteW  + NOTE_SPACE / 2, 
+				base_pos->y + 6 + i - note_y  + Images->rot_noteH, 
+				0, 0, 0, 255);
+		}
+	}
 	switch(note->duration)
 	{
 		case RONDE:
@@ -520,10 +561,23 @@ int Note_Print(Note *note, SDL_Rect *base_pos, SDL_Surface *dest)
 			}
 			else
 			{
+				SDL_Surface *test = NULL;
 				Images_DrawRotNote(Images->Note_headWhite, base_pos->x, base_pos->y, dest);
 				base_pos->y -= Images->note1_center->y;
 				base_pos->x -= 2;
-				SDL_BlitSurface(Images->Note_Black, NULL, dest, base_pos);
+				if(!note->rest && note_y <= -45)
+				{
+					test = rotozoomSurface(Images->Note_Black, 180.0, 1.0, 0);
+					base_pos->y += QUEUE + 7;
+					base_pos->x += 3;
+				
+					SDL_BlitSurface(test, NULL, dest, base_pos);
+					base_pos->x -= 3;
+					base_pos->y -= QUEUE + 7;
+					SDL_FreeSurface(test);
+				}
+				else
+					SDL_BlitSurface(Images->Note_Black, NULL, dest, base_pos);
 				base_pos->y += Images->note1_center->y;
 				base_pos->x += 2;
 			}
@@ -535,15 +589,29 @@ int Note_Print(Note *note, SDL_Rect *base_pos, SDL_Surface *dest)
 		case DOUBLECROCHE:
 		case CROCHE:
 			{
+				SDL_Surface *test_2 = NULL;
+				
 				base_pos->y -= Images->note1_center->y;
 				base_pos->x -= 2;
 				base_pos->x+=Images->Note_Black->w;
 				pos = 0;
+				if(!note->rest && note_y<= -45)
+					test_2 = rotozoomSurface(Images->Note_Crotchet, 180.0, -1.0, 1);
 				while(cpy > NOIRE)
 				{
-					SDL_BlitSurface(Images->Note_Crotchet, NULL, dest, base_pos);
-					base_pos->y+=20;
-					pos+=20;
+					if(!note->rest && note_y <= -45)
+					{
+						base_pos->x -= 2*Images->Note_headBlack->w - 5;
+						base_pos->y += QUEUE + HEAD_H;
+						SDL_BlitSurface(test_2, NULL, dest, base_pos);
+						base_pos->y -= QUEUE + HEAD_H;
+						base_pos->x += 2*Images->Note_headBlack->w - 5;
+					}
+					else
+						SDL_BlitSurface(Images->Note_Crotchet, NULL, dest, base_pos);
+
+					base_pos->y += 20;
+					pos += 20;
 					cpy /= 2;
 				}
 				base_pos->y -= pos;
@@ -553,10 +621,23 @@ int Note_Print(Note *note, SDL_Rect *base_pos, SDL_Surface *dest)
 			}
 		case NOIRE:
 			{
+				SDL_Surface *test = NULL;
 				Images_DrawRotNote(Images->Note_headBlack, base_pos->x, base_pos->y, dest);
 				base_pos->y -= Images->note1_center->y;
 				base_pos->x -= 2;
-				SDL_BlitSurface(Images->Note_Black, NULL, dest, base_pos);
+				if(!note->rest && note_y <= -45)
+				{
+					test = rotozoomSurface(Images->Note_Black, 180.0, 1.0, 0);
+					base_pos->y += QUEUE + 7;
+					base_pos->x += 3;
+				
+					SDL_BlitSurface(test, NULL, dest, base_pos);
+					base_pos->x -= 3;
+					base_pos->y -= QUEUE + 7;
+					SDL_FreeSurface(test);
+				}
+				else
+					SDL_BlitSurface(Images->Note_Black, NULL, dest, base_pos);
 				base_pos->y += Images->note1_center->y;
 				base_pos->x += 2;
 			}
@@ -567,6 +648,8 @@ int Note_Print(Note *note, SDL_Rect *base_pos, SDL_Surface *dest)
 	}
 	if(!note->rest || (note->rest && note->duration != RONDE && note->duration != BLANCHE))
 		base_pos->y -= HEAD_H * 4;
+	
+	base_pos->y -= note_y;
 	return 1;
 }
 
@@ -600,7 +683,7 @@ int Staff_Print(Staff *staff, SDL_Rect *base_pos, SDL_Surface *dest)
 	if((NULL == staff) || (NULL == base_pos) || (NULL == dest))
 		return 0;
 	
-	SDL_FillRect(dest, NULL, SDL_MapRGB(dest->format, 240, 240, 255));
+	SDL_FillRect(dest, NULL, SDL_MapRGB(dest->format, 255, 255, 255));
 	
 	for(i = 0; i < staff->n; i++)
 		Step_Print(*(staff->steps + i), base_pos, dest);
@@ -622,6 +705,6 @@ int ClicInRect(int x, int y, SDL_Rect *rect)
 
 - Polices / Images : System du moteur S en liste chainées avec avancé des plus utilisés
 	=> Système Générique (A tester) OK
-- Events ?
+- Events ? Tab Génériques (A venir..)
 - Commencer le module Images. OK
 **/
