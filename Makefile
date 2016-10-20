@@ -1,4 +1,4 @@
-CC=colorgcc
+CC=gcc
 CFLAGS=-ansi -Wall -O2
 CLIBS=-lm -lSDL -lSDL_gfx -lSDL_ttf
 EXE=prog
@@ -9,7 +9,7 @@ $(EXE): main.o Step.o System.o Staff.o Test.o Window.o Images.o Events.o
 	cd $(OBJ) && $(CC) -o ../$(EXE) $? $(CFLAGS) $(CLIBS)
 
 %.o: %.c
-	if [ ! -d "$(OBJ)" ]; then mkdir $(OBJ); fi;	
+	@if [ ! -d "$(OBJ)" ]; then mkdir $(OBJ); fi;	
 	$(CC) -o $(OBJ)$@ -c $< $(CFLAGS)
 	
 clean:

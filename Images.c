@@ -297,14 +297,22 @@ void Graphics_Free(Graphics **graphics)
 			SDL_FreeSurface((*graphics)->Note_headWhite);
 		if((*graphics)->Note_headWhole != NULL)
 			SDL_FreeSurface((*graphics)->Note_headWhole);
+			
 		if((*graphics)->Note_Black != NULL)
 			SDL_FreeSurface((*graphics)->Note_Black);
+		if((*graphics)->Note_White != NULL)
+			SDL_FreeSurface((*graphics)->Note_White);
+		if((*graphics)->note1_center != NULL)
+			free((*graphics)->note1_center);
+			
 		if((*graphics)->Note_Crotchet != NULL)
 			SDL_FreeSurface((*graphics)->Note_Crotchet);
+			
 		if((*graphics)->Rest_Long != NULL)
 			SDL_FreeSurface((*graphics)->Rest_Long);
 		if((*graphics)->pos_Long != NULL)
 			free((*graphics)->pos_Long);
+			
 		if((*graphics)->Rest_BreveLong != NULL)
 			SDL_FreeSurface((*graphics)->Rest_BreveLong);
 		if((*graphics)->pos_BreveLong != NULL)

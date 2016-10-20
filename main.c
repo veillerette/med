@@ -61,7 +61,7 @@ int main(int argc, char *argv[])
 		Score_ShowSignConsole(score);
 		Score_Free(&score);
 	}
-	else if(2 == argc && !strcmp(argv[1], "-sdl"))
+	else if((2 == argc && !strcmp(argv[1], "-sdl")) || 1 == argc)
 	{	Staff *staff = NULL;
 		int ctrl = 0;
 		int mouse = 0;
@@ -70,7 +70,7 @@ int main(int argc, char *argv[])
 		int ev = 0;
 		SDL_Rect redim;
 		SDL_Rect pos;
-		
+		int i;
 		
 		Window_Init();
 		Window_CreateWindow(Window->max_width-200, Window->max_height-200, "Ma Super Fenetre\n");
@@ -108,6 +108,10 @@ int main(int argc, char *argv[])
 		Staff_AddNote(staff, 3, 5, ConvertStringToID("a4"), NOTE_DEFAULT, CROCHE);
 		Staff_AddNote(staff, 3, 6, ConvertStringToID("c4"), NOTE_DEFAULT, CROCHE);
 		Staff_AddNote(staff, 3, 7, ConvertStringToID("e4"), NOTE_DEFAULT, CROCHE);
+		for(i = 0; i < 8; i++)
+			Staff_AddNote(staff, 4, i, ConvertStringToID("g4"), NOTE_DEFAULT, DOUBLECROCHE);
+		for(i = 0; i < 8; i++)
+			Staff_AddNote(staff, 4, 8+i, ConvertStringToID("g4"), NOTE_DEFAULT, TRIPLECROCHE);
 		Staff_Console(staff);
 		
 		Graphics_LoadAll();
@@ -223,6 +227,28 @@ int main(int argc, char *argv[])
 		
 		Graphics_Quit();
 		Window_Quit();
+	}
+	else if(2 == argc && !strcmp(argv[1], "-img"))
+	{
+		Window_Init();
+		Window_CreateWindow(Window->max_width-200, Window->max_height-200, "Ma Super Fenetre\n");
+		
+		Graphics_LoadAll();
+		Graphics_Quit();
+		Window_Quit();
+	}
+	else if(2 == argc && !strcmp(argv[1], "-sdlmem"))
+	{
+		SDL_Surface *window = NULL;
+		SDL_Init(SDL_INIT_VIDEO);
+		TTF_Init();
+		
+		window = SDL_SetVideoMode(1000, 1000, 32, SDL_HWSURFACE | SDL_DOUBLEBUF);
+		
+		SDL_FreeSurface(window);
+		
+		TTF_Quit();
+		SDL_Quit();
 	}
 	
 	exit(EXIT_SUCCESS);

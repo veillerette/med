@@ -18,6 +18,14 @@ WindowData *WindowData_Alloc(void)
 	temp->max_height = 0;
 	temp->state = STATE_ALLOC;
 	temp->ratio = 1.0;
+	
+	temp->menu = NULL;
+	temp->pos_menu = NULL;
+	temp->pal = NULL;
+	temp->pos_pal = NULL;
+	temp->body = NULL;
+	temp->body_use = NULL;
+	temp->pos_body = NULL;
 	return temp;
 }
 
@@ -107,6 +115,7 @@ void Window_Quit(void)
 		
 		if(Window->pos_body != NULL)
 			SDL_FreeRect(&(Window->pos_body));
+		
 			
 		free(Window);
 		Window = NULL;
@@ -201,9 +210,8 @@ int Window_CreateWindow(int width, int height, const char *title)
 
 	Window->body = SDL_CreateRGBSurface(SDL_HWSURFACE, Window->pos_body->w * 10, Window->pos_body->h,
 						32, 0, 0, 0, 0);
-	
 	if(Window->body == NULL)
-		printf("%s\n", SDL_GetError());
+		printf("%s : ", SDL_GetError());
 	memtest(Window->body);
 	Window_InitBody(Window->body);
 	Window->body_use = SDL_DisplayFormat(Window->body);
@@ -484,6 +492,10 @@ int Note_Print(Note *note, SDL_Rect *base_pos, SDL_Surface *dest)
 	int note_y = 0;
 	int tab[] = {0, 2, 4, 5, 7, 9, 11};
 	int i;
+	int best_space = NOTE_SPACE;
+	if(note->duration >= DOUBLECROCHE)
+		best_space += (note->duration);
+		
 	if((NULL == note) || (NULL == base_pos) || (base_pos->x < 0) || (base_pos->y < 0) || (NULL == dest))
 		return 0;
 	if(!note->rest || (note->rest && note->duration != RONDE && note->duration != BLANCHE))
@@ -508,9 +520,9 @@ int Note_Print(Note *note, SDL_Rect *base_pos, SDL_Surface *dest)
 		for(i = 45; i <= note_y; i+= HEAD_H)
 		{
 			boxRGBA(dest, 
-				base_pos->x - HEAD_W/2 + Images->rot_noteW + NOTE_SPACE / 2, 
+				base_pos->x - HEAD_W/2 + Images->rot_noteW + best_space / 2, 
 				base_pos->y + 4 + i - note_y + Images->rot_noteH, 
-				base_pos->x + HEAD_W + Images->rot_noteW  + NOTE_SPACE / 2, 
+				base_pos->x + HEAD_W + Images->rot_noteW  + best_space / 2, 
 				base_pos->y + 6 + i - note_y  + Images->rot_noteH, 
 				0, 0, 0, 255);
 		}
@@ -520,9 +532,9 @@ int Note_Print(Note *note, SDL_Rect *base_pos, SDL_Surface *dest)
 		for(i = -135; i >= note_y; i-= HEAD_H)
 		{
 			boxRGBA(dest, 
-				base_pos->x - HEAD_W/2 + Images->rot_noteW + NOTE_SPACE / 2, 
+				base_pos->x - HEAD_W/2 + Images->rot_noteW + best_space / 2, 
 				base_pos->y + 4 + i - note_y + Images->rot_noteH, 
-				base_pos->x + HEAD_W + Images->rot_noteW  + NOTE_SPACE / 2, 
+				base_pos->x + HEAD_W + Images->rot_noteW  + best_space / 2, 
 				base_pos->y + 6 + i - note_y  + Images->rot_noteH, 
 				0, 0, 0, 255);
 		}
@@ -532,16 +544,16 @@ int Note_Print(Note *note, SDL_Rect *base_pos, SDL_Surface *dest)
 		case RONDE:
 			if(note->rest)
 			{
-				base_pos->x += (Note_RealDuration(note) * NOTE_SPACE ) / 2;
+				base_pos->x += (Note_RealDuration(note) * best_space ) / 2;
 				base_pos->y += 2*HEAD_H;
 				SDL_BlitSurface(Images->Rest_Long, NULL, dest, base_pos);
 				base_pos->y -= 2*HEAD_H;
-				base_pos->x += (Note_RealDuration(note) * NOTE_SPACE ) / 2;
+				base_pos->x += (Note_RealDuration(note) * best_space ) / 2;
 			}
 			else
 			{
 				SDL_BlitSurface(Images->Note_headWhole, NULL, dest, base_pos);
-				base_pos->x += (Note_RealDuration(note) * NOTE_SPACE );
+				base_pos->x += (Note_RealDuration(note) * best_space );
 			}
 			
 			break;
@@ -551,7 +563,9 @@ int Note_Print(Note *note, SDL_Rect *base_pos, SDL_Surface *dest)
 			{
 				base_pos->y += 2*HEAD_H;
 				base_pos->y -= Images->pos_BreveLong->y;
+				base_pos->x += 2*NOTE_SPACE;
 				SDL_BlitSurface(Images->Rest_BreveLong, NULL, dest, base_pos);
+				base_pos->x -= 2*NOTE_SPACE;
 				base_pos->y -= 2*HEAD_H;
 				base_pos->y += Images->pos_BreveLong->y;
 			}
@@ -577,7 +591,7 @@ int Note_Print(Note *note, SDL_Rect *base_pos, SDL_Surface *dest)
 				base_pos->y += Images->note1_center->y;
 				base_pos->x += 2;
 			}
-			base_pos->x += (Note_RealDuration(note) * NOTE_SPACE );
+			base_pos->x += (Note_RealDuration(note) * best_space );
 			break;
 			
 		case QUADRUPLECROCHE:
@@ -637,7 +651,7 @@ int Note_Print(Note *note, SDL_Rect *base_pos, SDL_Surface *dest)
 				base_pos->y += Images->note1_center->y;
 				base_pos->x += 2;
 			}
-			base_pos->x += (Note_RealDuration(note) * NOTE_SPACE );
+			base_pos->x += (Note_RealDuration(note) * best_space );
 			break;
 		default:
 			break;
