@@ -91,13 +91,11 @@ int main(int argc, char *argv[])
 		Staff_Init(staff, 2, BLANCHE, CLE_SOL, 0);
 		
 		Staff_AddNote(staff, 0, 0, ConvertStringToID("c4"), NOTE_DEFAULT, NOIRE);
-		Staff_AddNote(staff, 0, 1, ConvertStringToID("a3"), NOTE_DEFAULT, NOIRE);
+		Staff_AddNote(staff, 0, 1, ConvertStringToID("g4"), NOTE_DEFAULT, NOIRE);
 		Staff_AddNote(staff, 0, 2, ConvertStringToID("e4"), NOTE_DEFAULT, NOIRE);
-		Staff_AddNote(staff, 0, 3, ConvertStringToID("f3"), NOTE_DEFAULT, NOIRE);
-		Staff_AddNote(staff, 1, 0, ConvertStringToID("g4"), NOTE_DEFAULT, NOIRE);
-		Staff_AddNote(staff, 1, 1, ConvertStringToID("a4"), NOTE_DEFAULT, NOIRE);
-		Staff_AddNote(staff, 1, 2, ConvertStringToID("b4"), NOTE_DEFAULT, NOIRE);
-		Staff_AddNote(staff, 1, 3, ConvertStringToID("c5"), NOTE_DEFAULT, NOIRE);
+		Staff_AddNote(staff, 0, 3, ConvertStringToID("g4"), NOTE_DEFAULT, NOIRE);
+		Staff_AddNote(staff, 1, 0, ConvertStringToID("f4"), NOTE_DEFAULT, BLANCHE);
+		Staff_AddNote(staff, 1, 1, ConvertStringToID("b4"), NOTE_DEFAULT, BLANCHE);
 		Staff_AddNote(staff, 2, 0, ConvertStringToID("d5"), NOTE_DEFAULT, NOIRE);
 		Staff_AddNote(staff, 2, 1, ConvertStringToID("a5"), NOTE_DEFAULT, NOIRE);
 		Staff_AddNote(staff, 2, 2, ConvertStringToID("c6"), NOTE_DEFAULT, NOIRE);
@@ -121,10 +119,13 @@ int main(int argc, char *argv[])
 		redim.h = Window->body->h;
 		pos.x = Window->pos_body->x;
 		pos.y = Window->pos_body->y;
+		pos.w = Window->pos_body->w;
+		pos.h = Window->pos_body->h;
 		
 		Staff_Print(staff, SDL_SetRect(100, 200, 0, 0), Window->body);
+		Draw_Border(Window->body, 2);
 		Window_Print();
-		Window_DrawBodyShrink(r);
+		Window_DrawBodyShrink(r, redim, pos);
 		
 		
 		SDL_Flip(Window->screen);
@@ -201,14 +202,16 @@ int main(int argc, char *argv[])
 			if(m)
 			{
 				SDL_FillRect(Window->screen, Window->pos_body, SDL_MapRGB(Window->screen->format, 255, 255, 255));
-				Window_DrawBodyShrink2(r, redim, pos);
+				Window_DrawBodyShrink(r, redim, pos);
 				SDL_Flip(Window->screen);
 				
 				m=0;
 			}
 			if(tomaj && !ev)
 			{
-				Window_DrawBodyShrink2(r, redim, pos);
+				printf("x=%d, y=%d, w=%d, h=%d\n", Window->pos_body->x, Window->pos_body->y, Window->pos_body->w, Window->pos_body->h);
+				SDL_FillRect(Window->screen, Window->pos_body, SDL_MapRGB(Window->screen->format, 255, 255, 255));
+				Window_DrawBodyShrink(r, redim, pos);
 				SDL_Flip(Window->screen);
 				
 				tomaj = 0;

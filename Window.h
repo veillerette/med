@@ -14,7 +14,7 @@
 #include "Staff.h"
 #include "Images.h"
 
-#define BASE_MOTION 2;
+#define BASE_MOTION (int)(5*(1.0/r) + 1)
 
 #define TestOK(); if(!Window_OK())return 0;
 typedef enum {
@@ -46,7 +46,9 @@ struct WindowData
 	SDL_Surface *pal; /* left */
 	SDL_Rect *pos_pal;
 	
-	SDL_Surface *body; /* the sheet */
+	SDL_Surface *body; /* The big surface */
+	SDL_Surface *body_use; /* Surface for use */
+	double ratio;
 	SDL_Rect *pos_body;
 };
 
@@ -81,9 +83,7 @@ void SDL_FreeRect(SDL_Rect **rect);
 
 void Window_ShowAllGraphics(void);
 
-int Window_DrawBodyShrink(double ratio);
-
-int Window_DrawBodyShrink2(double ratio, SDL_Rect redim, SDL_Rect pos);
+int Window_DrawBodyShrink(double ratio, SDL_Rect redim, SDL_Rect pos);
 
 int Step_Print(Step *step, SDL_Rect *base_pos, SDL_Surface *dest);
 

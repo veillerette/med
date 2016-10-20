@@ -17,6 +17,7 @@ WindowData *WindowData_Alloc(void)
 	temp->max_width = 0;
 	temp->max_height = 0;
 	temp->state = STATE_ALLOC;
+	temp->ratio = 1.0;
 	return temp;
 }
 
@@ -94,6 +95,9 @@ void Window_Quit(void)
 		
 		if(Window->body != NULL)
 			SDL_FreeSurface(Window->body);
+		
+		if(Window->body_use != NULL)
+			SDL_FreeSurface(Window->body_use);
 		
 		if(Window->pos_menu != NULL)
 			SDL_FreeRect(&(Window->pos_menu));
@@ -202,6 +206,7 @@ int Window_CreateWindow(int width, int height, const char *title)
 		printf("%s\n", SDL_GetError());
 	memtest(Window->body);
 	Window_InitBody(Window->body);
+	Window->body_use = SDL_DisplayFormat(Window->body);
 	SDL_SetColorKey(Window->body, SDL_SRCALPHA, SDL_MapRGB(Window->body->format, 255, 255, 255));
 	
 	
@@ -247,7 +252,7 @@ int Window_Print(void)
 	pos.x = Window->pos_body->x;
 	pos.y = Window->pos_body->y;
 	
-	SDL_BlitSurface(Window->body, NULL, Window->screen, &pos);
+	SDL_BlitSurface(Window->body_use, NULL, Window->screen, &pos);
 
 	return 1;
 }
@@ -283,33 +288,24 @@ int Window_WaitMouse(int *x, int *y)
 	return 1;
 }
 
-int Window_DrawBodyShrink(double ratio)
+int Window_DrawBodyShrink(double ratio, SDL_Rect redim, SDL_Rect pos)
 {
-	SDL_Surface *temp = NULL;
-	
-	 temp = shrinkSurface(Window->body, (int)ratio, (int)ratio); 
-	/*temp = zoomSurface(Window->body, ratio, ratio, SMOOTHING_ON); */
-	memtest(temp);
-	
-	SDL_FillRect(Window->screen, Window->pos_body, SDL_MapRGB(Window->screen->format, 255, 255, 255));
-	SDL_BlitSurface(temp, NULL, Window->screen, Window->pos_body);
+	if(ratio == Window->ratio)
+	{
+		SDL_BlitSurface(Window->body_use, &redim, Window->screen, &pos);
+		return 1;
+	}
+	if(Window->body_use != NULL)
+		SDL_FreeSurface(Window->body_use);
+	Window->body_use = shrinkSurface(Window->body, (int)ratio, (int)ratio); 
+	memtest(Window->body_use);
+
+	SDL_BlitSurface(Window->body_use, &redim, Window->screen, &pos);
+	Window->ratio = ratio;
 	
 	return 1;
 }
 
-int Window_DrawBodyShrink2(double ratio, SDL_Rect redim, SDL_Rect pos)
-{
-	SDL_Surface *temp = NULL;
-	
-	temp = shrinkSurface(Window->body, (int)ratio, (int)ratio); 
-
-	memtest(temp);
-	
-	SDL_FillRect(Window->screen, Window->pos_body, SDL_MapRGB(Window->screen->format, 255, 255, 255));
-	SDL_BlitSurface(temp, &redim, Window->screen, &pos);
-	
-	return 1;
-}
 
 void Window_Staff(int x, int y, int w)
 {
