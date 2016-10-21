@@ -59,7 +59,7 @@ int Test_StepAlloc(void)
 	Step *step = NULL;
 	int r = 1;
 	int v1 = rand()%20, v2 = rand()%20, v3 = rand()%4,
-		v4 = rand()%15 - 10, v5 = rand()%100;
+		v4 = rand()%15, v5 = rand()%100;
 	
 	step = Step_Alloc(v1, v2, v3, v4, v5);
 
