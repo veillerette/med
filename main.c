@@ -65,7 +65,7 @@ int main(int argc, char *argv[])
 	{	Staff *staff = NULL;
 		int ctrl = 0;
 		int mouse = 0;
-		int clic_x, clic_y;
+		int clic_x = 0, clic_y = 0;
 		int tomaj = 0;
 		int ev = 0;
 		SDL_Rect redim;
