@@ -3,6 +3,7 @@
 #include "Test.h"
 #include "System.h"
 #include "Window.h"
+#include "Parser.h"
 
 int main(int argc, char *argv[])
 {
@@ -62,19 +63,18 @@ int main(int argc, char *argv[])
 		Score_Free(&score);
 	}
 	else if((2 == argc && !strcmp(argv[1], "-sdl")) || 1 == argc)
-	{	Staff *staff = NULL;
+	{	
+		Staff *staff = NULL;
 		int ctrl = 0;
 		int mouse = 0;
 		int clic_x, clic_y;
 		int tomaj = 0;
-		int ev = 0;
+		int ev;
 		SDL_Rect redim;
 		SDL_Rect pos;
-		int i;
 		
 		Window_Init();
 		Window_CreateWindow(Window->max_width-200, Window->max_height-200, "Ma Super Fenetre\n");
-		
 		
 		/*for(i = 0.05; i < 1.0; i+=0.05)
 			test_note(i, 0, (int)(i*800+i*200), 200, Window->screen);
@@ -90,7 +90,7 @@ int main(int argc, char *argv[])
 		staff = Staff_Alloc("Portée trop géniale");
 		Staff_Init(staff, 2, BLANCHE, CLE_SOL, 0);
 		
-		Staff_AddNote(staff, 0, 0, ConvertStringToID("c4"), NOTE_DEFAULT, NOIRE);
+		/*Staff_AddNote(staff, 0, 0, ConvertStringToID("c4"), NOTE_DEFAULT, NOIRE);
 		Staff_AddNote(staff, 0, 1, ConvertStringToID("g4"), NOTE_DEFAULT, NOIRE);
 		Staff_AddNote(staff, 0, 2, ConvertStringToID("e4"), NOTE_DEFAULT, NOIRE);
 		Staff_AddNote(staff, 0, 3, ConvertStringToID("g4"), NOTE_DEFAULT, NOIRE);
@@ -112,10 +112,26 @@ int main(int argc, char *argv[])
 			Staff_AddNote(staff, 4, i, ConvertStringToID("g4"), NOTE_DEFAULT, DOUBLECROCHE);
 		for(i = 0; i < 8; i++)
 			Staff_AddNote(staff, 4, 8+i, ConvertStringToID("g4"), NOTE_DEFAULT, TRIPLECROCHE);
+		
+		*/
+		Staff_AddNote(staff, 0, 0, ConvertStringToID("g5"), NOTE_DEFAULT, BLANCHE);
+		Staff_AddNote(staff, 0, 1, ConvertStringToID("b5"), NOTE_DEFAULT, RONDE);
+		/*Staff_AddNote(staff, 0, 1, ConvertStringToID("c4"), NOTE_DEFAULT, CROCHE);
+		Staff_ChangeRestStatus(staff, 0, 1, 1);
+		Staff_AddNote(staff, 0, 2, ConvertStringToID("c4"), NOTE_DEFAULT, NOIRE);
+		Staff_ChangeRestStatus(staff, 0, 2, 1);
+		Staff_AddNote(staff, 0, 2, ConvertStringToID("c4"), NOTE_DEFAULT, DOUBLECROCHE);
+		Staff_ChangeRestStatus(staff, 0, 2, 1);
+		Staff_AddNote(staff, 0, 3, ConvertStringToID("c4"), NOTE_DEFAULT, TRIPLECROCHE);
+		Staff_ChangeRestStatus(staff, 0, 3, 1);
+		Staff_AddNote(staff, 0, 4, ConvertStringToID("c4"), NOTE_DEFAULT, QUADRUPLECROCHE);
+		Staff_ChangeRestStatus(staff, 0, 4, 1);
+		Staff_AddNote(staff, 1, 0, ConvertStringToID("c4"), NOTE_DEFAULT, NOIRE);
+		Staff_AddNote(staff, 1, 1, ConvertStringToID("c4"), NOTE_DEFAULT, CROCHE);
+		Staff_AddNote(staff, 1, 2, ConvertStringToID("c4"), NOTE_DEFAULT, NOIRE);*/
 		Staff_Console(staff);
 		
 		Graphics_LoadAll();
-		/*Window_ShowAllGraphics();*/
 
 		redim.x = 0;
 		redim.y = 0;
@@ -132,8 +148,8 @@ int main(int argc, char *argv[])
 		Window_DrawBodyShrink(r, redim, pos);
 		
 		
-		SDL_Flip(Window->screen);
-		
+		ev = SDL_Flip(Window->screen);
+		printf("%d\n", ev);
 		while(c)
 		{
 			ev = SDL_PollEvent(&event);
@@ -179,23 +195,23 @@ int main(int argc, char *argv[])
 					{
 						if(clic_x > event.motion.x)
 						{
-							pos.x-=BASE_MOTION;
+							pos.x-= (clic_x - event.motion.x);
 							if(pos.x <= Window->pos_body->x - 1)
-								redim.x+=BASE_MOTION;
-							printf("pos_x = %d, redim.x = %d\n", pos.x, redim.x);
-							clic_x = event.motion.x;
+								redim.x+=(clic_x - event.motion.x);
+							
 							if(pos.x < Window->pos_body->x)
-								pos.x+=BASE_MOTION;
+								pos.x+=(clic_x - event.motion.x);
 							tomaj = 1;
+							clic_x = event.motion.x;
 						}
 						else if(clic_x < event.motion.x)
 						{
 							
-							redim.x-=BASE_MOTION;
+							redim.x-=(event.motion.x - clic_x);
 							if(redim.x<0)
 								redim.x = 0;
 							if(redim.x == 0)
-								pos.x+=BASE_MOTION;
+								pos.x+=(event.motion.x - clic_x);
 							
 							clic_x = event.motion.x;
 							tomaj = 1;
@@ -211,9 +227,9 @@ int main(int argc, char *argv[])
 				
 				m=0;
 			}
-			if(tomaj && !ev)
+			if(tomaj)
 			{
-				printf("x=%d, y=%d, w=%d, h=%d\n", Window->pos_body->x, Window->pos_body->y, Window->pos_body->w, Window->pos_body->h);
+				/*printf("x=%d, y=%d, w=%d, h=%d\n", Window->pos_body->x, Window->pos_body->y, Window->pos_body->w, Window->pos_body->h);*/
 				SDL_FillRect(Window->screen, Window->pos_body, SDL_MapRGB(Window->screen->format, 255, 255, 255));
 				Window_DrawBodyShrink(r, redim, pos);
 				SDL_Flip(Window->screen);
@@ -249,6 +265,13 @@ int main(int argc, char *argv[])
 		
 		TTF_Quit();
 		SDL_Quit();
+	}
+	else if(2 == argc && !strcmp(argv[1], "-parser"))
+	{
+		Window_Init();
+		Window_CreateWindow(Window->max_width-200, Window->max_height-200, "Ma Super Fenetre\n");
+		Graphics_LoadAll();
+		Console_Parser();
 	}
 	
 	exit(EXIT_SUCCESS);

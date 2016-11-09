@@ -219,7 +219,7 @@ SDL_Surface *Note_CreateCrotchet(int size_w, int size_h, int size_queue)
 	int max = size_queue + size_h / 3;
 	int x[] = {0, (int)(size_w), size_w/2};
 	int y[] = {size_queue / 10, max/2, max};
-
+	
 	surf = SDL_CreateWhiteKeySurface((int)(size_w * 1.5), max);
 	memtest(surf);
 	for(i = 0; i < 20; i++)
@@ -229,6 +229,32 @@ SDL_Surface *Note_CreateCrotchet(int size_w, int size_h, int size_queue)
 		PowerOfBezier(surf, x, y, 3, SetColor(0, 0, 0));
 		x[2] += i/4;
 		y[0] -= i;	
+	}
+
+	return surf;
+}
+SDL_Surface *Note_CreateCrotchetInv(int size_w, int size_h, int size_queue)
+{
+	int i;
+	int sauv;
+	SDL_Surface *surf = NULL;
+	int max = size_queue + size_h / 3;
+	int x[] = {0, (int)(size_w*1.25), (int)(size_w/1.5)};
+	int y[] = {max - size_queue/10, max / 2, size_queue / 10};
+
+	surf = SDL_CreateWhiteKeySurface((int)(size_w * 1.5), max);
+	memtest(surf);
+	for(i = 0; i < 20; i++)
+	{
+		sauv = x[2];
+		y[0] -= i;
+		PowerOfBezier(surf, x, y, 3, SetColor(0, 0, 0));
+		x[2] -= (int)i/4;
+		if(x[2] < 0)
+			x[2] = 0;
+		PowerOfBezier(surf, x, y, 3, SetColor(0, 0, 0));
+		x[2] = sauv;
+		y[0] += i;	
 	}
 
 	return surf;
@@ -249,6 +275,42 @@ SDL_Surface *Rest_CreateLong(int size_w, int size_h)
 	SDL_FillRect(surf, &pos, SDL_MapRGB(surf->format, 0, 0, 0));
 	
 	Images->pos_Long = SDL_SetRect(pos.x, pos.y, pos.w, pos.h);
+	
+	return surf;
+}
+
+SDL_Surface *Rest_CreateQuaver(int size_w, int size_h)
+{
+	SDL_Surface *surf = NULL;
+	int i;
+	int x[] = {size_w, size_w*3/4, size_w/2};
+	int y[] = {size_h /4, size_h, size_h /2};
+
+	
+	surf = SDL_CreateWhiteKeySurface(size_w + 1, size_h * 2);
+	memtest(surf);
+	
+	for(i = 0; i < 5; i++)
+	{
+		y[0]+=i;
+		y[2]+=i;
+		PowerOfBezier(surf, x, y, 3, SetColor(0, 0, 0));	
+		y[2]-=i;
+		y[0]-=i;
+	}
+	for(i = 1; i < 8; i++)
+	{
+		y[2]-=i;
+		PowerOfBezier(surf, x, y, 3, SetColor(0, 0, 0));	
+		y[2]+=i;
+	}
+	for(i = 0; i < QUEUE_BORDER; i++)
+	{
+		lineRGBA(surf, size_w / 2 + 2*QUEUE_BORDER - i, size_h * 2, size_w - i - 1 , size_h / 3 + i , 0, 0, 0, 255);
+		lineRGBA(surf, size_w / 2 + 2*QUEUE_BORDER - i, size_h * 2, size_w - i, size_h / 3 + i, 0, 0, 0, 255);	
+	}
+	
+	filledCircleRGBA(surf, size_w/2 + 2, size_h /2, 8, 0, 0, 0, 255);
 	
 	return surf;
 }
@@ -274,10 +336,14 @@ Graphics *Graphics_Alloc(void)
 	temp->Note_White = NULL;
 	temp->Note_Black = NULL;
 	temp->Note_Crotchet = NULL;
+	temp->Note_CrotchetInv = NULL;
 	temp->Rest_Long = NULL;
 	temp->pos_Long = NULL;
 	temp->Rest_BreveLong = NULL;
 	temp->pos_Long = NULL;
+	
+	temp->Rest_Quaver = NULL;
+	temp->pos_Quaver = NULL;
 	
 	temp->rot_noteW = 0;
 	temp->rot_noteH = 0;
@@ -307,6 +373,8 @@ void Graphics_Free(Graphics **graphics)
 			
 		if((*graphics)->Note_Crotchet != NULL)
 			SDL_FreeSurface((*graphics)->Note_Crotchet);
+		if((*graphics)->Note_CrotchetInv != NULL)
+			SDL_FreeSurface((*graphics)->Note_CrotchetInv);
 			
 		if((*graphics)->Rest_Long != NULL)
 			SDL_FreeSurface((*graphics)->Rest_Long);
@@ -318,6 +386,10 @@ void Graphics_Free(Graphics **graphics)
 		if((*graphics)->pos_BreveLong != NULL)
 			free((*graphics)->pos_BreveLong);
 			
+		if((*graphics)->Rest_Quaver != NULL)
+			SDL_FreeSurface((*graphics)->Rest_Quaver);
+		if((*graphics)->pos_Quaver != NULL)
+			free((*graphics)->pos_Quaver);
 		free(*graphics);
 		*graphics = NULL;
 	}
@@ -350,6 +422,10 @@ int Graphics_LoadAll(void)
 	if(NULL == Images->Note_Crotchet)
 		r = 0;
 	
+	Images->Note_CrotchetInv = Note_CreateCrotchetInv(HEAD_W, HEAD_H, QUEUE);
+	if(NULL == Images->Note_CrotchetInv)
+		r = 0;
+	
 	Images->Rest_Long = Rest_CreateLong(HEAD_W, HEAD_H);
 	if(NULL == Images->Rest_Long)
 		r = 0;
@@ -358,6 +434,9 @@ int Graphics_LoadAll(void)
 	if(NULL == Images->Rest_BreveLong)
 		r = 0;
 	
+	Images->Rest_Quaver = Rest_CreateQuaver(HEAD_W, HEAD_H);
+	if(NULL == Images->Rest_Quaver)
+		r = 0;
 	if(r)
 		colorprintf(GREEN, "Ok !\n");
 	else

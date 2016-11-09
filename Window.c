@@ -296,6 +296,18 @@ int Window_WaitMouse(int *x, int *y)
 	return 1;
 }
 
+int Window_MajBody(void)
+{
+	if(Window->body == NULL)
+		return 0;
+	if(Window->body_use != NULL)
+		SDL_FreeSurface(Window->body_use);
+	Window->body_use = shrinkSurface(Window->body, (int)Window->ratio, (int)Window->ratio);
+	memtest(Window->body_use);
+	
+	return 1;
+}
+
 int Window_DrawBodyShrink(double ratio, SDL_Rect redim, SDL_Rect pos)
 {
 	if(ratio == Window->ratio)
@@ -493,11 +505,13 @@ int Note_Print(Note *note, SDL_Rect *base_pos, SDL_Surface *dest)
 	int tab[] = {0, 2, 4, 5, 7, 9, 11};
 	int i;
 	int best_space = NOTE_SPACE;
+	
 	if(note->duration >= DOUBLECROCHE)
 		best_space += (note->duration);
-		
+	
 	if((NULL == note) || (NULL == base_pos) || (base_pos->x < 0) || (base_pos->y < 0) || (NULL == dest))
 		return 0;
+		
 	if(!note->rest || (note->rest && note->duration != RONDE && note->duration != BLANCHE))
 		base_pos->y += HEAD_H * 4;
 	
@@ -512,6 +526,7 @@ int Note_Print(Note *note, SDL_Rect *base_pos, SDL_Surface *dest)
 				break;
 			}
 		}
+		
 		base_pos->y += note_y;
 	}
 	
@@ -527,6 +542,7 @@ int Note_Print(Note *note, SDL_Rect *base_pos, SDL_Surface *dest)
 				0, 0, 0, 255);
 		}
 	}
+	
 	if(!note->rest && note_y <= -135)
 	{
 		for(i = -135; i >= note_y; i-= HEAD_H)
@@ -539,6 +555,37 @@ int Note_Print(Note *note, SDL_Rect *base_pos, SDL_Surface *dest)
 				0, 0, 0, 255);
 		}
 	}
+	if(!note->rest && (note->flags & NOTE_POINTED)) /* Note pointed */
+	{
+		filledCircleRGBA(dest, base_pos->x + HEAD_W + 3*QUEUE_BORDER, base_pos->y + HEAD_H/5, 5, 0, 0, 0, 255);
+	}
+	
+	if(Window->_linked)
+	{
+		int x[] = {Window->pos_link->x+HEAD_W, (Window->pos_link->x+2*HEAD_W/2 + base_pos->x)/2, base_pos->x};
+		int y[] = {base_pos->y-10, base_pos->y-75,base_pos->y-10};
+		int i;
+		for(i = 0; i < 2; i++)
+		{
+			y[0] = y[2]+=i;
+			PowerOfBezier(dest, x, y, 3, SetColor(0, 0, 0));
+			y[0] = y[2]-=i;
+		}
+		Window->_linked = 0;
+		free(Window->pos_link);
+		Window->pos_link = NULL;
+	}
+	
+	if(note->flags & NOTE_LINKED)
+	{
+		Window->_linked = 1;
+		if(Window->pos_link != NULL)
+		{
+			free(Window->pos_link);
+		}
+		Window->pos_link = SDL_SetRect(base_pos->x, base_pos->y, 0, 0);
+	}
+	
 	switch(note->duration)
 	{
 		case RONDE:
@@ -598,30 +645,65 @@ int Note_Print(Note *note, SDL_Rect *base_pos, SDL_Surface *dest)
 		case TRIPLECROCHE:
 		case DOUBLECROCHE:
 		case CROCHE:
+			if(note->rest)
 			{
-				SDL_Surface *test_2 = NULL;
+				base_pos->y -= 2*HEAD_H;
 				
+				switch(note->duration)
+				{
+					case QUADRUPLECROCHE:
+						base_pos->y += 2*HEAD_H;
+						base_pos->x -= 2*(HEAD_W / 4 - 2);
+						SDL_BlitSurface(Images->Rest_Quaver, NULL, dest, base_pos);
+						base_pos->y -= 2*HEAD_H;
+						base_pos->x += 2*(HEAD_W / 4 - 2);
+					case TRIPLECROCHE:
+						base_pos->y -= HEAD_H;
+						base_pos->x += HEAD_W / 4 - 2;
+						SDL_BlitSurface(Images->Rest_Quaver, NULL, dest, base_pos);
+						base_pos->y += HEAD_H;
+						base_pos->x -= HEAD_W / 4 - 2;
+					case DOUBLECROCHE:
+						base_pos->y += HEAD_H;
+						base_pos->x -= HEAD_W / 4 - 2;
+						SDL_BlitSurface(Images->Rest_Quaver, NULL, dest, base_pos);
+						base_pos->y -= HEAD_H;
+						base_pos->x += HEAD_W / 4 - 2;
+					case CROCHE:
+						SDL_BlitSurface(Images->Rest_Quaver, NULL, dest, base_pos);
+						break;
+					default:
+						break;
+				}
+				
+				base_pos->y += 2*HEAD_H;
+				base_pos->x += (Note_RealDuration(note) * best_space );
+				break;
+			}
+			else {
 				base_pos->y -= Images->note1_center->y;
 				base_pos->x -= 2;
 				base_pos->x+=Images->Note_Black->w;
 				pos = 0;
-				if(!note->rest && note_y<= -45)
-					test_2 = rotozoomSurface(Images->Note_Crotchet, 180.0, -1.0, 1);
 				while(cpy > NOIRE)
 				{
 					if(!note->rest && note_y <= -45)
 					{
-						base_pos->x -= 2*Images->Note_headBlack->w - 5;
+						base_pos->x -= Images->Note_Black->w - QUEUE_BORDER;
 						base_pos->y += QUEUE + HEAD_H;
-						SDL_BlitSurface(test_2, NULL, dest, base_pos);
+						SDL_BlitSurface(Images->Note_CrotchetInv, NULL, dest, base_pos);
 						base_pos->y -= QUEUE + HEAD_H;
-						base_pos->x += 2*Images->Note_headBlack->w - 5;
+						base_pos->y -= 15;
+						pos -= 15;
+						base_pos->x += Images->Note_Black->w - QUEUE_BORDER;
 					}
 					else
+					{
 						SDL_BlitSurface(Images->Note_Crotchet, NULL, dest, base_pos);
-
-					base_pos->y += 20;
-					pos += 20;
+						base_pos->y += 20;
+						pos += 20;
+					}
+					
 					cpy /= 2;
 				}
 				base_pos->y -= pos;
@@ -690,6 +772,10 @@ int Step_Print(Step *step, SDL_Rect *base_pos, SDL_Surface *dest)
 int Staff_Print(Staff *staff, SDL_Rect *base_pos, SDL_Surface *dest)
 {
 	int i;
+	Window->_linked = 0;
+	if(Window->pos_link != NULL)
+		free(Window->pos_link);
+	Window->pos_link = NULL;
 	if((NULL == staff) || (NULL == base_pos) || (NULL == dest))
 		return 0;
 	

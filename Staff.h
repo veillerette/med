@@ -69,6 +69,8 @@ int Staff_DiviseRest(Staff *staff, int step_id, int note_id);
 
 int Staff_Transpose(Staff *staff, char value);
 
+int Staff_ChangeRestStatus(Staff *staff, int step_id, int note_id, char newStatus);
+
 Sign *Sign_Alloc(Sign_Type type, Uint value, Uint time, char *text);
 
 void Sign_Free(Sign **sign);

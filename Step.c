@@ -407,17 +407,18 @@ int Step_AddNote(Step *step, int id, char note, Note_Flags flags,
 	ToNote *sauv = NULL;
 	Note_Duration *rest_r = NULL;
 	int i;
+	ToNote *special = NULL;
 	
 	if(NULL == step)
-		return 0;
+		return -1;
 	if(NULL == step->notes)
-		return 0;
+		return -1;
 	cur = &(step->notes);
 
 	while(id > 0)
 	{
 		if(NULL == (*cur)->next)
-			return 0;
+			return -1;
 		cur = &((*cur)->next);
 		id--;
 	}
@@ -426,6 +427,7 @@ int Step_AddNote(Step *step, int id, char note, Note_Flags flags,
 	new_note->next = (*cur)->next;
 	note_duration = Note_RealDuration(new_note->note);
 	
+	
 	if((*cur)->note->rest)
 	{
 		tmp_duration = Note_RealDuration((*cur)->note);
@@ -433,35 +435,47 @@ int Step_AddNote(Step *step, int id, char note, Note_Flags flags,
 		{
 			ToNote_Free(cur);
 			*cur = new_note;
-			return 1;
+			return 0;
 		}
 	}
+	printf("A\n");
+	Step_ConsolePrintf(step);
 	if((*cur)->note->duration == RONDE)
 		tmp_duration = step->num * (64 / step->den);
 	else
 		tmp_duration = Note_RealDuration((*cur)->note);
-
+	printf("B %d %d\n", note_duration, tmp_duration);
+	Step_ConsolePrintf(step);
 	ToNote_Free(cur);
 	*cur = new_note;
 	note_duration -= tmp_duration;
+	special=new_note;
 	cur = &((*cur)->next);
-	
+	printf("C %d %d\n", special->note->duration, note_duration);
+	Step_ConsolePrintf(step);
 	while(note_duration > 0)
 	{
+		if(NULL == *cur)
+		{
+			special->note->duration = 64/(64/special->note->duration - note_duration);
+			special->note->flags |= NOTE_LINKED;
+			Step_ConsolePrintf(step);
+			return 64/note_duration;
+		}
 		tmp_duration = Note_RealDuration((*cur)->note);
 		sauv = (*cur)->next;
 		note_duration -= tmp_duration;
 		ToNote_Free(cur);
 		*cur = sauv;
 	}
-	
+	printf("D\n");
 	if(0 == note_duration)
 		return 1;
 		
 	note_duration = -note_duration;
 	
 	rest_r = find2rest(note_duration);
-	
+	printf("E\n");
 	i = 0;
 	while(*(rest_r + i) > 0)
 	{
@@ -488,7 +502,7 @@ int Step_AddNote(Step *step, int id, char note, Note_Flags flags,
 	if(rest_r != NULL)
 		free(rest_r);
 	
-	return 1;
+	return 0;
 }
 
 int Step_DelLocal(Step *step, int begin, int end)

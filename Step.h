@@ -15,7 +15,8 @@ typedef enum {
 	NOTE_DOUBLEFLAT		= 0x08,
 	NOTE_POINTED		= 0x10,
 	NOTE_DOUBLEPOINTED	= 0x20,
-	NOTE_NATURAL		= 0x40
+	NOTE_NATURAL		= 0x40,
+	NOTE_LINKED		= 0x80
 	} Note_Flags;
 	
 typedef enum {

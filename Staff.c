@@ -38,6 +38,7 @@ int Staff_Init(Staff *staff, int num, Note_Duration den, int cle, char sign)
 int Staff_AddNote(Staff *staff, int step_id, int note_id, char note, 
 					Note_Flags flags, Note_Duration duration)
 {
+	int r;
 	if(NULL == staff)
 		return 0;
 	if(NULL == staff->steps)
@@ -45,7 +46,10 @@ int Staff_AddNote(Staff *staff, int step_id, int note_id, char note,
 	if(staff->n <= step_id)
 		return 0;
 		
-	return Step_AddNote(*(staff->steps + step_id), note_id, note, flags, duration);
+	r = Step_AddNote(*(staff->steps + step_id), note_id, note, flags, duration);
+	if(r <= 0)
+		return r;
+	return Staff_AddNote(staff, step_id+1, 0, note, flags, r);
 } 
 
 void Staff_Console(Staff *staff)
@@ -177,6 +181,14 @@ int Staff_DiviseRest(Staff *staff, int step_id, int note_id)
 	return Step_DiviseRest(*(staff->steps + step_id), note_id);
 }
 
+int Staff_ChangeRestStatus(Staff *staff, int step_id, int note_id, char newStatus)
+{
+	if(NULL == staff)
+		return 0;
+	if((step_id < 0) || (note_id < 0))
+		return 0;
+	return Step_ChangeRestStatus(*(staff->steps + step_id), note_id, newStatus);
+}
 int Staff_Transpose(Staff *staff, char value)
 {
 	int i;

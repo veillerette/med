@@ -35,6 +35,7 @@ struct Graphics
 	SDL_Rect *note1_center;
 	
 	SDL_Surface *Note_Crotchet;
+	SDL_Surface *Note_CrotchetInv;
 	
 	/* Rest */
 	SDL_Surface *Rest_Long;
@@ -42,6 +43,12 @@ struct Graphics
 	
 	SDL_Surface *Rest_BreveLong;
 	SDL_Rect *pos_BreveLong;
+	
+	SDL_Surface *Rest_Crotchet;
+	SDL_Rect *pos_restCrotchet;
+	
+	SDL_Surface *Rest_Quaver;
+	SDL_Rect *pos_Quaver;
 };
 
 
