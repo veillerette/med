@@ -73,9 +73,12 @@ int main(int argc, char *argv[])
 		int ev;
 		SDL_Rect redim;
 		SDL_Rect pos;
+		const SDL_VideoInfo* info = NULL;
 		
 		Window_Init();
-		Window_CreateWindow(Window->max_width-200, Window->max_height-200, "Ma Super Fenetre\n");
+		info = SDL_GetVideoInfo();
+		printf("%d %d\n",info->current_w, info->current_h);
+		Window_CreateWindow(info->current_w, info->current_h, "Ma Super Fenetre\n");
 		main_events = EventData_Alloc();
 		 
 		/*for(i = 0.05; i < 1.0; i+=0.05)
