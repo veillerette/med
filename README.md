@@ -41,11 +41,10 @@ Mi-Octobre (15-17) 2016
 
 	- Gestion des portées simples
 
-		- Gestion des multi-portées (ex: Piano ou Orchestre?)
+	- Gestion des multi-portées (struct Score)
 	
 
--> Fonctions de tests au fur et à mesure de l'avancé
-
+-> Fonctions de tests au fur et à mesure de l'avancé (module "Test")
 
 
 
@@ -54,7 +53,7 @@ Mi-Octobre (15-17) 2016
 
 
 
-Fin Octobre 2016
+Octobre 2016
 
 
 
@@ -90,6 +89,7 @@ Début Novembre 2016
 	
 		- 3 Structures principales (menu, palette, corps)
 		
+		- SDL_Thread...
 
 	- Quelques surcouches qui facilitent la vie
 	
@@ -117,8 +117,9 @@ Début Novembre 2016
 		- Points
 		
 
--> Exportation fichier perso.
+-> Exportation / Importation fichier perso.
 
+-> Explorateur fichiers
 
 
 <<<<<-------------------------------------------->>>>>
@@ -126,9 +127,7 @@ Début Novembre 2016
 
 
 
-Fin Novembre 2016
-
-
+Novembre 2016
 
 
 -> SDL (video)
@@ -164,6 +163,7 @@ Fin Novembre 2016
 		
 		- Mixage de deux sons générés
 
+	- Personnalisation des fréquences
 
 
 
