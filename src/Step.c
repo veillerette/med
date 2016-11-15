@@ -28,7 +28,7 @@ int Note_RealDuration(Note *note)
 	if(note->flags & NOTE_POINTED)
 		return (int)(dur + dur/2);
 	else if(note->flags & NOTE_DOUBLEPOINTED)
-		return (int)(2 * dur);
+		return (int)(dur + dur/2 + dur/4);
 	return dur;
 }
 
@@ -418,7 +418,7 @@ int Step_AddNote(Step *step, int id, char note, Note_Flags flags,
 	while(id > 0)
 	{
 		if(NULL == (*cur)->next)
-			return -1;
+			return 0;
 		cur = &((*cur)->next);
 		id--;
 	}

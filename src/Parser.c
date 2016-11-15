@@ -76,7 +76,14 @@ int Console_Parser(void)
 	Window_DrawBodyShrink(r, redim, pos);
 	SDL_Flip(Window->screen);
 	
-	printf("Tap : step_id note_id note_name note_duration\n");
+	printf("\n");
+	printf("- Delete a step : \t\tdelete step step_id\n");
+	printf("- Insere an empty step : \tinsere step step_pos\n");
+	printf("- Change armure : \t\tarmure step_id new_armure\n");
+	printf("- New note : \t\t\tstep_id note_id note_name note_duration [pointed, sharp, flat, doubleflat, linked]\n");
+	printf("- To quit : \t\t\texit\n");
+	printf("- Help : \t\t\thelp\n");
+	printf("\n");
 	while(c)
 	{
 		flags = NOTE_DEFAULT;
@@ -94,14 +101,25 @@ int Console_Parser(void)
 			c = 0;
 			break;
 		}
-		else if(n_com < 4 || n_com > 5)
+		else if(!strcmp(com[0], "help"))
+		{
+			printf("\n");
+			printf("- Delete a step : \t\tdelete step step_id\n");
+			printf("- Insere an empty step : \tinsere step step_pos\n");
+			printf("- Change armure : \t\tarmure new_armure\n");
+			printf("- New note : \t\t\tstep_id note_id note_name note_duration [pointed, sharp, flat, doubleflat, linked]\n");
+			printf("- To quit : \t\t\texit\n");
+			printf("\n");
 			continue;
-		if(n_com >= 5)
+		}
+		if(n_com >= 4)
 		{
 			for(i = 4; i < n_com; i++)
 			{
 				if(!strcmp(com[i], "pointed"))
 					flags |= NOTE_POINTED;
+				else if(!strcmp(com[i], "doublepointed"))
+					flags |= NOTE_DOUBLEPOINTED;
 				else if(!strcmp(com[i], "sharp"))
 					flags |= NOTE_SHARP;
 				else if(!strcmp(com[i], "flat"))
@@ -114,12 +132,33 @@ int Console_Parser(void)
 					flags |= NOTE_LINKED;
 			}
 			
-			
-		}
-		Staff_AddNote(staff, atoi(com[0]), atoi(com[1]), ConvertStringToID(com[2]),
+			Staff_AddNote(staff, atoi(com[0]), atoi(com[1]), ConvertStringToID(com[2]),
 				flags, atoi(com[3]));
-		Staff_Console(staff);
-		
+		}
+		else if(n_com == 3)
+		{
+			if(!strcmp(com[0], "armure") && (atoi(com[2]) >= -7 && atoi(com[2]) <= 7))
+				Staff_ChangeArmure(staff, atoi(com[1]), atoi(com[2]));
+			else if(!strcmp(com[0], "delete"))
+			{
+				if(!strcmp(com[1], "step"))
+				{
+					for(i = 2; i < n_com; i++)
+					{
+						if(atoi(com[i]) >= 0 && atoi(com[i]) < staff->n)
+								Staff_DeleteStep(staff, atoi(com[i]));
+					}
+				}
+			}
+			else if(!strcmp(com[0], "insere"))
+			{
+				if(!strcmp(com[1], "step"))
+				{
+					if(atoi(com[2]) >= 0 && atoi(com[2]) <= staff->n)
+						Staff_InsereEmptyStep(staff, atoi(com[2]));
+				}
+			}
+		}
 		Staff_Print(staff, SDL_SetRect(200, 100, 0, 0), Window->body);
 		Window_MajBody();
 		Window_DrawBodyShrink(r, redim, pos);

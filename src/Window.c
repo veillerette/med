@@ -583,6 +583,33 @@ int Note_Print(Staff *staff, Step *step, int id_note, Note *note, SDL_Rect *base
 		base_pos->y += note_y;
 	}
 	
+	
+	if(note->flags & NOTE_SHARP)
+	{
+		base_pos->y -= HEAD_H - 5;
+		SDL_BlitSurface(Images->Sharp, NULL, dest, base_pos);
+		base_pos->y += HEAD_H - 5;
+		
+		base_pos->x += HEAD_W;
+	}
+	
+	else if(note->flags & NOTE_FLAT)
+	{
+		base_pos->y -= 1.5*HEAD_H - 10;
+		SDL_BlitSurface(Images->Flat, NULL, dest, base_pos);
+		base_pos->y += 1.5*HEAD_H - 10;
+		
+		base_pos->x += HEAD_W*3.0/4;
+	}
+	else if(note->flags & NOTE_DOUBLEFLAT)
+	{
+		base_pos->y -= 1.5*HEAD_H - 10;
+		SDL_BlitSurface(Images->DoubleFlat, NULL, dest, base_pos);
+		base_pos->y += 1.5*HEAD_H - 10;
+		
+		base_pos->x += (HEAD_W*3.0/4)*2;
+	}
+	
 	if(!note->rest && note_y >= 45)
 	{
 		for(i = 45; i <= note_y; i+= HEAD_H)
@@ -608,9 +635,15 @@ int Note_Print(Staff *staff, Step *step, int id_note, Note *note, SDL_Rect *base
 				0, 0, 0, 255);
 		}
 	}
+	
 	if(!note->rest && (note->flags & NOTE_POINTED)) /* Note pointed */
 	{
 		filledCircleRGBA(dest, base_pos->x + HEAD_W + 3*QUEUE_BORDER, base_pos->y + HEAD_H/5, 5, 0, 0, 0, 255);
+	}
+	else if(!note->rest && (note->flags & NOTE_DOUBLEPOINTED)) /* Note doublepointed */
+	{
+		filledCircleRGBA(dest, base_pos->x + HEAD_W + 3*QUEUE_BORDER, base_pos->y + HEAD_H/5, 5, 0, 0, 0, 255);
+		filledCircleRGBA(dest, base_pos->x + HEAD_W + 7*QUEUE_BORDER, base_pos->y + HEAD_H/5, 5, 0, 0, 0, 255);
 	}
 	
 	if(Window->_linked)
@@ -639,31 +672,6 @@ int Note_Print(Staff *staff, Step *step, int id_note, Note *note, SDL_Rect *base
 		Window->pos_link = SDL_SetRect(base_pos->x, base_pos->y, 0, 0);
 	}
 	
-	if(note->flags & NOTE_SHARP)
-	{
-		base_pos->y -= HEAD_H - 5;
-		SDL_BlitSurface(Images->Sharp, NULL, dest, base_pos);
-		base_pos->y += HEAD_H - 5;
-		
-		base_pos->x += HEAD_W;
-	}
-	
-	else if(note->flags & NOTE_FLAT)
-	{
-		base_pos->y -= 1.5*HEAD_H - 10;
-		SDL_BlitSurface(Images->Flat, NULL, dest, base_pos);
-		base_pos->y += 1.5*HEAD_H - 10;
-		
-		base_pos->x += HEAD_W*3.0/4;
-	}
-	else if(note->flags & NOTE_DOUBLEFLAT)
-	{
-		base_pos->y -= 1.5*HEAD_H - 10;
-		SDL_BlitSurface(Images->DoubleFlat, NULL, dest, base_pos);
-		base_pos->y += 1.5*HEAD_H - 10;
-		
-		base_pos->x += (HEAD_W*3.0/4)*2;
-	}
 	
 	switch(note->duration)
 	{
@@ -850,7 +858,7 @@ int Armure_Print(Step *step, SDL_Rect *base_pos, SDL_Surface *dest)
 	if((NULL == step) || (NULL == base_pos) || (base_pos->x < 0) || (base_pos->y < 0) || (NULL == dest))
 		return 0;
 	
-	printf("A %d\n", step->sign);
+
 	if(step->sign != 0)
 		base_pos->x += 4 * NOTE_SPACE;
 	
@@ -879,7 +887,7 @@ int Armure_Print(Step *step, SDL_Rect *base_pos, SDL_Surface *dest)
 			base_pos->x += Images->Sharp->w;
 		}
 	}
-	printf("B\n");
+
 	if(step->sign != 0)
 	{
 		base_pos->x += Images->Flat->w;

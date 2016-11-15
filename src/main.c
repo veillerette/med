@@ -99,22 +99,17 @@ int main(int argc, char *argv[])
 		Staff_AddNote(staff, 0, 1, ConvertStringToID("g4"), NOTE_DEFAULT, NOIRE);
 		
 		Staff_AddNote(staff, 0, 2, ConvertStringToID("e4"), NOTE_FLAT, NOIRE);
-		Staff_AddNote(staff, 0, 3, ConvertStringToID("g4"), NOTE_DEFAULT, NOIRE);
-		Staff_AddNote(staff, 1, 0, ConvertStringToID("f4"), NOTE_DEFAULT, BLANCHE);
-		Staff_AddNote(staff, 1, 1, ConvertStringToID("b4"), NOTE_DEFAULT, BLANCHE);
-		Staff_AddNote(staff, 2, 0, ConvertStringToID("d5"), NOTE_DOUBLEFLAT, NOIRE);
-		Staff_AddNote(staff, 2, 1, ConvertStringToID("a5"), NOTE_DEFAULT, NOIRE);
+		Staff_AddNote(staff, 0, 3, ConvertStringToID("d6"), NOTE_DEFAULT, NOIRE);
+		Staff_AddNote(staff, 1, 0, ConvertStringToID("f4"), NOTE_DOUBLEPOINTED, BLANCHE);
+		Staff_AddNote(staff, 1, 1, ConvertStringToID("f5"), NOTE_DEFAULT, BLANCHE);
+		Staff_AddNote(staff, 2, 0, ConvertStringToID("f5"), NOTE_POINTED, NOIRE);
 		Staff_AddNote(staff, 2, 2, ConvertStringToID("c6"), NOTE_DEFAULT, NOIRE);
 		Staff_AddNote(staff, 2, 3, ConvertStringToID("b5"), NOTE_DEFAULT, NOIRE);
 		Staff_AddNote(staff, 3, 0, ConvertStringToID("g4"), NOTE_DEFAULT, CROCHE);
-		Staff_AddNote(staff, 3, 1, ConvertStringToID("a4"), NOTE_DEFAULT, CROCHE);
-		Staff_AddNote(staff, 3, 2, ConvertStringToID("c4"), NOTE_DEFAULT, CROCHE);
-		Staff_AddNote(staff, 3, 3, ConvertStringToID("e4"), NOTE_DEFAULT, CROCHE);
-		Staff_AddNote(staff, 3, 4, ConvertStringToID("g4"), NOTE_DEFAULT, CROCHE);
-		Staff_AddNote(staff, 3, 5, ConvertStringToID("a4"), NOTE_DEFAULT, CROCHE);
-		Staff_AddNote(staff, 3, 6, ConvertStringToID("c4"), NOTE_DEFAULT, CROCHE);
-		Staff_AddNote(staff, 3, 7, ConvertStringToID("e4"), NOTE_DEFAULT, CROCHE);
-		Staff_AddNote(staff, 0, 1, ConvertStringToID("g4"), NOTE_DEFAULT, DOUBLECROCHE);
+		Staff_AddNote(staff, 3, 2, ConvertStringToID("c5"), NOTE_DEFAULT, CROCHE);
+		Staff_AddNote(staff, 3, 4, ConvertStringToID("g5"), NOTE_DEFAULT, CROCHE);
+		Staff_AddNote(staff, 3, 6, ConvertStringToID("f5"), NOTE_DEFAULT, CROCHE);
+		Staff_AddNote(staff, 0, 1, ConvertStringToID("g4"), NOTE_DEFAULT, TRIPLECROCHE);
 		/*
 		Staff_ChangeArmure(staff, 4, 2);
 		Staff_AddNote(staff, 0, 0, ConvertStringToID("g4"), NOTE_DEFAULT, NOIRE);
@@ -154,8 +149,8 @@ int main(int argc, char *argv[])
 		
 		
 		EventData_Console(main_events);
-		Window_TestBox(Window->screen, &pos, r);
-		
+		/*Window_TestBox(Window->screen, &pos, r);
+			*/
 		ev = SDL_Flip(Window->screen);
 		
 		
@@ -185,6 +180,20 @@ int main(int argc, char *argv[])
 					break;
 				case SDL_MOUSEBUTTONUP:
 					clic_x = event.button.x;
+					clic_y = event.button.y;
+					if(((pos.x <= (Window->pos_body->x + 60)) && pos.x > Window->pos_body->x) || (redim.x <= 300 && redim.x > 0))
+					{
+
+						pos.x = Window->pos_body->x;
+						redim.x = 0;
+						tomaj = 1;
+					}
+					if((pos.y <= Window->pos_body->y + 60 && pos.y > Window->pos_body->y) || (redim.y <= 300 && redim.y>0))
+					{
+						pos.y = Window->pos_body->y;
+						redim.y = 0;
+						tomaj = 1;
+					}
 					mouse = 0;
 					break;
 				case SDL_MOUSEBUTTONDOWN:
@@ -239,9 +248,9 @@ int main(int argc, char *argv[])
 						if(clic_x > event.motion.x)
 						{
 							pos.x-= (clic_x - event.motion.x);
+							
 							if(pos.x <= Window->pos_body->x - 1)
 								redim.x+=(clic_x - event.motion.x);
-							
 							if(pos.x < Window->pos_body->x)
 								pos.x+=(clic_x - event.motion.x);
 							tomaj = 1;
@@ -264,7 +273,6 @@ int main(int argc, char *argv[])
 							pos.y-= (clic_y - event.motion.y);
 							if(pos.y <= Window->pos_body->y - 1)
 								redim.y+=(clic_y - event.motion.y);
-							
 							if(pos.y < Window->pos_body->y)
 								pos.y+=(clic_y - event.motion.y);
 							tomaj = 1;
@@ -289,7 +297,7 @@ int main(int argc, char *argv[])
 			{
 				SDL_FillRect(Window->screen, Window->pos_body, SDL_MapRGB(Window->screen->format, 235, 235, 235));
 				Window_DrawBodyShrink(r, redim, pos);
-				Window_TestBox(Window->screen, SDL_SetRect(pos.x-redim.x, pos.y-redim.y, 0, 0), (int)r);
+				/*Window_TestBox(Window->screen, SDL_SetRect(pos.x-redim.x, pos.y-redim.y, 0, 0), (int)r); */
 				
 				SDL_Flip(Window->screen);
 				
@@ -301,7 +309,7 @@ int main(int argc, char *argv[])
 				SDL_FillRect(Window->screen, Window->pos_body, SDL_MapRGB(Window->screen->format, 235, 235, 235));
 				Window_DrawBodyShrink(r, redim, pos);
 				
-				Window_TestBox(Window->screen, SDL_SetRect(pos.x-redim.x, pos.y-redim.y, 0, 0), (int)r);
+				/*Window_TestBox(Window->screen, SDL_SetRect(pos.x-redim.x, pos.y-redim.y, 0, 0), (int)r); */
 				
 				SDL_Flip(Window->screen);
 				
@@ -344,7 +352,7 @@ int main(int argc, char *argv[])
 	else if(2 == argc && !strcmp(argv[1], "-parser"))
 	{
 		Window_Init();
-		Window_CreateWindow(Window->max_width-200, Window->max_height-200, "Ma Super Fenetre\n");
+		Window_CreateWindow(Window->max_width-200, 600, "Ma Super Fenetre\n");
 		Graphics_LoadAll();
 		Console_Parser();
 		Window_Quit();
