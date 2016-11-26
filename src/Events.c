@@ -147,7 +147,7 @@ int EventData_Add(EventData *ed, Area *area)
 	if((NULL == ed) || (NULL == area))
 		return 0;
 	
-	if((NULL == *cur) || (goal >= ((*cur)->rect.w * (*cur)->rect.h)))
+	if((NULL == *cur) || (goal <= ((*cur)->rect.w * (*cur)->rect.h)))
 	{
 		area->next = *cur;
 		*cur = area;
