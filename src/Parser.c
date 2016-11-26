@@ -48,8 +48,6 @@ char **my_split(char *base, int *argc)
 int Console_Parser(void)
 {
 	Staff *staff = NULL;
-	SDL_Rect redim;
-	SDL_Rect pos;
 	int c = 1;
 	int i;
 	double r=2.0;
@@ -63,17 +61,10 @@ int Console_Parser(void)
 	staff = Staff_Alloc("Staff trop cool");
 	Staff_Init(staff, 4, NOIRE, CLE_SOL, 0);
 	
-	redim.x = 0;
-	redim.y = 0;
-	redim.w = Window->body->w;
-	redim.h = Window->body->h;
-	pos.x = Window->pos_body->x;
-	pos.y = Window->pos_body->y;
-	pos.w = Window->pos_body->w;
-	pos.h = Window->pos_body->h;
-		
-	Staff_Print(staff, SDL_SetRect(200, 100, 0, 0), Window->body);
-	Window_DrawBodyShrink(r, redim, pos);
+	Staff_Print(staff, SDL_SetRect(100, 200, 0, 0), Window->body[0]);
+	Window_ApplyZoom(r);
+	Window_DrawBody();
+	Window_Print();
 	SDL_Flip(Window->screen);
 	
 	printf("\n");
@@ -159,9 +150,11 @@ int Console_Parser(void)
 				}
 			}
 		}
-		Staff_Print(staff, SDL_SetRect(200, 100, 0, 0), Window->body);
-		Window_MajBody();
-		Window_DrawBodyShrink(r, redim, pos);
+		Window_InitBody();
+		Staff_Print(staff, SDL_SetRect(100, 200, 0, 0), Window->body[0]);
+		Window_ApplyZoom(r);
+		Window_DrawBody();
+		Window_Print();
 		SDL_Flip(Window->screen);
 		
 	}

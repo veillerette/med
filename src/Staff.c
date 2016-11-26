@@ -159,7 +159,7 @@ int Staff_DeleteStep(Staff *staff, int pos)
 	if(NULL == staff)
 		return 0;
 	
-	if(0 == staff->n || pos < 0)
+	if(0 == staff->n || pos < 0 || 1 == staff->n)
 		return 0;
 	
 	if(pos > staff->n - 1)
@@ -263,7 +263,9 @@ Score *Score_Alloc(void)
 	Score *temp = (Score *)malloc(sizeof(Score));
 	memtest(temp);
 	
-	temp->lst = NULL;
+	temp->lst = (Staff **)malloc(sizeof(Staff *) * 1);
+	if(NULL == temp->lst)
+		exit(EXIT_FAILURE);
 	temp->n = 0;
 	temp->data = 0;
 	temp->signs = NULL;
@@ -275,8 +277,11 @@ void Score_Free(Score **score)
 {
 	if(*score != NULL)
 	{
+		int i;
+		for(i = 0; i < (*score)->n; i++)
+			Staff_Free(&((*score)->lst[i]));
 		if((*score)->lst != NULL)
-			Staff_Free(&((*score)->lst));
+			free((*score)->lst);
 		if((*score)->signs != NULL)
 			Sign_FreeAll(&((*score)->signs));
 		free(*score);
@@ -355,6 +360,17 @@ int Score_ShowSignConsole(Score *score)
 					cur->type, cur->value, cur->time);
 		cur = cur->next;
 	}
+	return 1;
+}
+
+int Score_Init(Score *score)
+{
+	if(NULL == score)
+		return 0;
+	if(score->n != 0)
+		return 0;
+	score->lst[score->n] = Staff_Alloc(" ");
+	score->n++;
 	return 1;
 }
 

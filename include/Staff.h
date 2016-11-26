@@ -39,7 +39,7 @@ struct Sign
 typedef struct Score Score;
 struct Score
 {
-	Staff *lst;
+	Staff **lst;
 	int n;
 	
 	int data;
@@ -90,6 +90,9 @@ int Score_ShowSignConsole(Score *score);
 int Score_DeleteSign(Score *score, Sign_Type type, Uint time);
 
 int Score_ShowSignConsole(Score *score);
+
+int Score_Init(Score *score);
+
 
 
 #endif

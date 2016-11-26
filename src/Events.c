@@ -132,6 +132,14 @@ int EventData_SetBase(EventData *ed, SDL_Rect *base)
 	return 1;
 }
 
+int EventData_SetZoom(EventData *ed, double zoom)
+{
+	if(NULL == ed)
+		return 0;
+	ed->r = zoom;
+	return 1;
+}
+
 int EventData_Add(EventData *ed, Area *area)
 {
 	Area **cur = &(ed->lst);
@@ -157,6 +165,29 @@ int EventData_Add(EventData *ed, Area *area)
 	return 1;
 }
 
+int EventData_Flush(EventData *ed)
+{
+	Area **cur = NULL;
+	Area **sauv = NULL;
+	if(NULL == ed)
+		return 0;
+	cur = &ed->lst;
+	while(cur != NULL)
+	{
+		sauv = cur;
+		if((*cur)->next != NULL)
+			cur = &((*cur)->next);
+		else
+			cur = NULL;
+		Area_Free(sauv);
+	}
+	ed->lst = NULL;
+	ed->n = 0;
+	ed->hover = NULL;
+	ed->select = NULL;
+	return 1;
+}
+
 void EventData_Console(EventData *ed)
 {
 	Area *area = NULL;
@@ -172,6 +203,120 @@ void EventData_Console(EventData *ed)
 		Area_Console(area);
 		area = area->next;
 	}
+}
+
+int PixelInRect(int x, int y, SDL_Rect rect)
+{
+	return (x >= rect.x && y >= rect.y && x<=(rect.x + rect.w) && y <= (rect.y + rect.h));
+}
+
+Area *Events_GetAreaByPixelAndType(int x, int y, Object_Type type)
+{
+	Area *cur = NULL;
+	int i = 0;
+	if(NULL == main_events)
+		return NULL;
+	cur = main_events->lst;
+	while(cur != NULL)
+	{
+		if((cur->type & type) && PixelInRect(x, y, cur->rect))
+			return cur;
+		cur = cur->next;
+		i++;
+	}
+	return NULL;
+}
+
+int Events_PollMouse(SDL_Event event)
+{
+	int x,y;
+	Area *area = NULL;
+	if(NULL == main_events)
+		return 0;
+	switch(event.type)
+	{
+		case SDL_QUIT:
+			return QUIT;
+			break;
+		case SDL_MOUSEMOTION:
+			x = event.motion.x;
+			y = event.motion.y;
+			break;
+		case SDL_MOUSEBUTTONDOWN:
+			x = event.button.x;
+			y = event.button.y;
+			break;
+		default:
+			return 0;
+	}
+	area = Events_GetAreaByPixelAndType((int)((x - main_events->base->x) * 1.0 * main_events->r), 
+					 (int)((y - main_events->base->y) * 1.0 * main_events->r), OBJECT_ALL);
+	switch(event.type)
+	{
+		case SDL_MOUSEMOTION:
+			if(main_events->hover == area)
+				return NONE;
+			main_events->hover = area;
+			return HOVER;
+			break;
+		case SDL_MOUSEBUTTONDOWN:
+			if(main_events->select == area)
+				return NONE;
+			main_events->select = area;
+			if(area != NULL)
+				printf("select new area\n");
+			return SELECT;
+			break;
+		default:
+			return 0;
+	}
+	return 1;
+}
+
+int Events_PollKeyboard(SDL_Event event)
+{
+	if(NULL == main_events)
+		return NONE;
+	switch(event.type)
+	{
+		case SDL_QUIT:
+			return QUIT;
+		case SDL_KEYDOWN:
+			switch(event.key.keysym.sym)
+			{
+				case SDLK_BACKSPACE:
+				case SDLK_DELETE:
+					if(main_events->select == NULL)
+						return NONE;
+					switch(main_events->select->type)
+					{
+						case OBJECT_NOTE:
+							Step_ChangeRestStatus(main_events->select->step, main_events->select->id_note, 1);	
+							return FORCE_MAJ;
+						case OBJECT_STEP:
+							Staff_DeleteStep(main_events->select->staff, main_events->select->id_step);
+							return FORCE_MAJ;
+						default:
+							break;
+					}
+				case SDLK_d:
+					if(main_events->select == NULL)
+						return NONE;
+					switch(main_events->select->type)
+					{
+						case OBJECT_NOTE:
+							if(Step_DiviseRest(main_events->select->step, main_events->select->id_note))
+								return FORCE_MAJ;
+							else
+								return NONE;
+						default:
+							break;
+					}
+				default:
+					break;
+			}
+	}
+	return NONE;
 }
 
 

@@ -1,4 +1,5 @@
-#include "../include/Window.h"
+#include "../include/Window2.h"
+
 
 WindowData *Window = NULL;
 
@@ -22,6 +23,7 @@ WindowData *WindowData_Alloc(void)
 	temp->body = NULL;
 	temp->body_use = NULL;
 	temp->pos_body = NULL;
+	temp->nb_body = 0;
 	return temp;
 }
 
@@ -86,6 +88,7 @@ void Window_Quit(void)
 {
 	if(Window != NULL)
 	{
+		int i;
 		Window->state = STATE_QUIT;
 		
 		if(Window->screen != NULL)
@@ -98,28 +101,37 @@ void Window_Quit(void)
 			SDL_FreeSurface(Window->pal);
 		
 		if(Window->body != NULL)
-			SDL_FreeSurface(Window->body);
+			for(i = 0; i < Window->nb_body; i++)
+				SDL_FreeSurface(Window->body[i]);
+				
+		if(Window->body != NULL)
+			free(Window->body);
 		
 		if(Window->body_use != NULL)
-			SDL_FreeSurface(Window->body_use);
+			for(i = 0; i < Window->nb_body; i++)
+				SDL_FreeSurface(Window->body_use[i]);
+				
+		if(Window->body_use != NULL)
+			free(Window->body_use);
+		
 		
 		if(Window->pos_menu != NULL)
 			SDL_FreeRect(&(Window->pos_menu));
 		
 		if(Window->pos_pal != NULL)
 			SDL_FreeRect(&(Window->pos_pal));
-		
+			
 		if(Window->pos_body != NULL)
 			SDL_FreeRect(&(Window->pos_body));
 		
 			
-		free(Window);
-		Window = NULL;
+		WindowData_Free(&Window);
 		
 		TTF_Quit();
 		SDL_Quit();
 	}
 }
+
 
 static int Window_InitMenu(SDL_Surface *menu)
 {
@@ -143,15 +155,15 @@ static int Window_InitPal(SDL_Surface *pal)
 	return 1;
 }
 
-static int Window_InitBody(SDL_Surface *body)
+int Window_InitBody()
 {
-	if(NULL == body)
+	int i;
+	if(NULL == Window)
 		return 0;
-	
-	SDL_FillRect(body, NULL, SDL_MapRGB(body->format, 255, 255, 255));
+	for(i = 0; i < Window->nb_body; i++)
+		SDL_FillRect(Window->body[i], NULL, SDL_MapRGB(Window->body[i]->format, 255, 255, 255));
 	return 1;
 }
-
 
 void SDL_FreeRect(SDL_Rect **rect)
 {
@@ -186,47 +198,54 @@ int Window_CreateWindow(int width, int height, const char *title)
 	if(title != NULL)
 		SDL_WM_SetCaption(title, "");
 	
-	Window->pos_menu = SDL_SetRect(0, 0, Window->width, Window->height / 10);
+	{
+		Window->pos_menu = SDL_SetRect(0, 0, Window->width, Window->height / 10);
 	
-	Window->pos_pal = SDL_SetRect(0, Window->height / 10, Window->width / 10, 
-						Window->height * 9/10);
-						
-	Window->pos_body = SDL_SetRect(Window->width / 10, Window->height/10, 
-					Window->width * 9/10, Window->height * 9/10);
+		Window->pos_pal = SDL_SetRect(0, Window->height / 10, Window->width / 10, 
+							Window->height * 9/10);
+	
+			Window->menu = SDL_CreateRGBSurface(SDL_HWSURFACE, Window->pos_menu->w, Window->pos_menu->h,
+							32, 0, 0, 0, 0);
+		memtest(Window->menu);
+		Window_InitMenu(Window->menu);
+
+		Window->pal = SDL_CreateRGBSurface(SDL_HWSURFACE, Window->pos_pal->w, Window->pos_pal->h,
+							32, 0, 0, 0, 0);
+		memtest(Window->pal);
+		Window_InitPal(Window->pal);
+	}
+	
+	{			
+		Window->pos_body = SDL_SetRect(Window->width / 10, Window->height/10, 
+						Window->height * 3, Window->width * 2);
+
+		Window->body = (SDL_Surface **)malloc(sizeof(SDL_Surface *) * 1);
+		memtest(Window->body);
+	
+		Window->body_use = (SDL_Surface **)malloc(sizeof(SDL_Surface *) * 1);
+		memtest(Window->body_use);
+	
+		Window->body[0] = SDL_CreateRGBSurface(SDL_HWSURFACE, 
+				Window->pos_body->w, Window->pos_body->h,
+							32, 0, 0, 0, 0);
+		memtest(Window->body);
+		Window->nb_body = 1;
+		Window_InitBody();
+		
+		Window->body_use[0] = SDL_DisplayFormat(Window->body[0]);
+		Window->ratio = 1.0;
+		
+		SDL_SetColorKey(Window->body[0], SDL_SRCALPHA, 
+				SDL_MapRGB(Window->body[0]->format, 255, 255, 255));
 					
-	Window->menu = SDL_CreateRGBSurface(SDL_HWSURFACE, Window->pos_menu->w, Window->pos_menu->h,
-						32, 0, 0, 0, 0);
-	memtest(Window->menu);
-	Window_InitMenu(Window->menu);
-
-	Window->pal = SDL_CreateRGBSurface(SDL_HWSURFACE, Window->pos_pal->w, Window->pos_pal->h,
-						32, 0, 0, 0, 0);
-	memtest(Window->pal);
-	Window_InitPal(Window->pal);
-
-	Window->body = SDL_CreateRGBSurface(SDL_HWSURFACE, Window->pos_body->w * 4, Window->pos_body->h,
-						32, 0, 0, 0, 0);
-	if(Window->body == NULL)
-		printf("%s : ", SDL_GetError());
-	memtest(Window->body);
-	Window_InitBody(Window->body);
-	Window->body_use = SDL_DisplayFormat(Window->body);
-	SDL_SetColorKey(Window->body, SDL_SRCALPHA, SDL_MapRGB(Window->body->format, 255, 255, 255));
-	
+		
+	}
 	
 	Window->state = STATE_WINDOWED;
 	
 	SDL_FillRect(Window->screen, NULL, SDL_MapRGB(Window->screen->format, 255, 255, 255));
 	SDL_Flip(Window->screen);
 	return 1;
-}
-
-int Window_OK(void)
-{
-	if(Window != NULL && STATE_WINDOWED == Window->state)
-		return 1;
-	printf("Error : Window may not be init with Window_Init() && Window_CreateWindow()\n");
-	return 0;
 }
 
 int Window_ClearWindow(Color color)
@@ -252,248 +271,109 @@ int Window_Print(void)
 	pos.y = Window->pos_pal->y;
 	
 	SDL_BlitSurface(Window->pal, NULL, Window->screen, &pos);
-	
-	pos.x = Window->pos_body->x;
-	pos.y = Window->pos_body->y;
-	
-	SDL_BlitSurface(Window->body_use, NULL, Window->screen, &pos);
-
 	return 1;
 }
 
-int Window_WaitMouse(int *x, int *y)
+int Window_ApplyZoomOnRect(SDL_Rect *rect, double zoom, double old)
 {
-	SDL_Event event;
-	int c = 1;
-	
-	TestOK()
-	
-	while(c)
-	{
-		SDL_WaitEvent(&event);
-		switch(event.type)
-		{
-			case SDL_QUIT:
-				c = 0;
-				Window_Quit();
-				exit(EXIT_SUCCESS);
-				break;
-			case SDL_MOUSEBUTTONUP:
-			case SDL_MOUSEBUTTONDOWN:
-				if(x != NULL)
-					*x = event.button.x;
-				if(y != NULL)
-					*y = event.button.y;
-				c = 0;
-				break;
-		}
-		SDL_Delay(5);
-	}
-	return 1;
-}
-
-int Window_MajBody(void)
-{
-	if(Window->body == NULL)
+	double fac_zoom = (1.0 / (zoom-old));
+	if(NULL == rect)
 		return 0;
-	if(Window->body_use != NULL)
-		SDL_FreeSurface(Window->body_use);
-	Window->body_use = shrinkSurface(Window->body, (int)Window->ratio, (int)Window->ratio);
-	memtest(Window->body_use);
-	
+	rect->x *= fac_zoom;
+	rect->y *= fac_zoom;
+	rect->w *= fac_zoom;
+	rect->h *= fac_zoom;
 	return 1;
 }
 
-int Window_DrawBodyShrink(double ratio, SDL_Rect redim, SDL_Rect pos)
+int Window_ApplyZoom(double zoom)
 {
-	if(ratio == Window->ratio)
+	int i, fact;
+	TestOK();
+	
+	for(i = 0; i < Window->nb_body; i++)
 	{
-		SDL_BlitSurface(Window->body_use, &redim, Window->screen, &pos);
+		if(Window->body_use[i] != NULL)
+			SDL_FreeSurface(Window->body_use[i]);
+		
+		if(zoom == 1)
+			Window->body_use[i] = SDL_DisplayFormat(Window->body[i]);
+		else 
+			Window->body_use[i] = shrinkSurface(Window->body[i], (int)zoom, (int)zoom);
+		memtest(Window->body_use[i]);
+		
+	}
+	if(Window->ratio == zoom)
+		fact = 1;
+	else if(Window->ratio > zoom) /* + */
+		fact = Window->ratio-zoom;
+	else /* - */
+		fact = zoom-Window->ratio;
+	Window->pos_body->x = BASE_BODY_X + (Window->pos_body->x-BASE_BODY_X) * (1.0 / fact);
+	Window->pos_body->y = BASE_BODY_Y + (Window->pos_body->y-BASE_BODY_Y) * (1.0 / fact);
+	Window->pos_body->w = Window->body_use[0]->w;
+	Window->pos_body->h = Window->body_use[0]->w;
+	Window->ratio = zoom;
+	return 1;
+}
+
+int Window_DrawBody()
+{
+	int i;
+	SDL_Rect pos = {Window->pos_body->x, Window->pos_body->y, 0, 0};
+	SDL_Rect sauv = {pos.x, pos.y, 0, 0};
+	SDL_Rect red = {BASE_BODY_X, BASE_BODY_Y, Window->width, Window->height};
+	SDL_FillRect(Window->screen, &red, SDL_MapRGB(Window->screen->format, 220, 220, 220));
+	for(i = 0; i < Window->nb_body; i++)
+	{
+		pos.x = sauv.x;
+		pos.y = sauv.y;
+		SDL_BlitSurface(Window->body_use[i], NULL, Window->screen, &pos);
+		sauv.x += Window->body_use[i]->w + (int)(ESP_BODY * (1.0 / Window->ratio));
+		
+	}
+	return 1;
+}
+
+void Window_Staff(SDL_Surface *dest, int x, int y, int w)
+{
+	int i,j;
+	for(j = 0; j < 5; j++)
+	{
+		for(i = 0; i < STAFF_H; i++)
+		{
+			hlineRGBA(dest, x, w, y+i+j*(HEAD_H), 0, 0, 0, 255);
+		}
+	}
+}
+
+int Window_OK(void)
+{
+	if(Window != NULL && STATE_WINDOWED == Window->state)
 		return 1;
-	}
-	if(Window->body_use != NULL)
-		SDL_FreeSurface(Window->body_use);
-	
-	Window->body_use = shrinkSurface(Window->body, (int)ratio, (int)ratio); 
+	printf("Error : Window may not be init with Window_Init() && Window_CreateWindow()\n");
+	return 0;
+}
 
+int Window_AddEmptyBody()
+{
+	TestOK();
+	Window->body = (SDL_Surface **)realloc(Window->body, sizeof(SDL_Surface *) * (Window->nb_body + 1));
+	memtest(Window->body);
+	Window->body_use = (SDL_Surface **)realloc(Window->body_use, sizeof(SDL_Surface *) * (Window->nb_body + 1));
 	memtest(Window->body_use);
-
-	SDL_BlitSurface(Window->body_use, &redim, Window->screen, &pos);
-	Window->ratio = ratio;
 	
+	Window->body[Window->nb_body] = (SDL_Surface *)SDL_CreateRGBSurface(SDL_HWSURFACE, 
+				Window->pos_body->w, Window->pos_body->h,
+							32, 0, 0, 0, 0);
+	memtest(Window->body[Window->nb_body]);
+	SDL_FillRect(Window->body[Window->nb_body], NULL, SDL_MapRGB(Window->body[Window->nb_body]->format,
+							255, 255, 255));
+	Window->body_use[Window->nb_body] = SDL_DisplayFormat(Window->body[Window->nb_body]);
+	Window->nb_body++;
 	return 1;
 }
 
-
-void Window_Staff(int x, int y, int w)
-{
-	int i,j;
-	for(j = 0; j < 5; j++)
-	{
-		for(i = 0; i < STAFF_H; i++)
-		{
-			hlineRGBA(Window->body, x, w, y+i+j*(HEAD_H), 0, 0, 0, 255);
-		}
-	}
-}
-void Window_DrawStaff(int x, int y, int x_end, SDL_Surface *dest)
-{
-	int i,j;
-	boxRGBA(dest, x, y, x+3, y+HEAD_H*4, 0, 0, 0, 255);
-	for(j = 0; j < 5; j++)
-	{
-		for(i = 0; i < STAFF_H; i++)
-		{
-			hlineRGBA(Window->body, x, x_end, y+i+j*(HEAD_H), 0, 0, 0, 255);
-		}
-	}
-	boxRGBA(dest, x_end, y, x_end+3, y+HEAD_H*4, 0, 0, 0, 255);
-}
-
-
-void Window_ShowAllGraphics(void)
-{
-	int b,c;
-	SDL_Surface *temp = NULL;
-	SDL_Rect pos;
-	if(NULL == Images)
-		return;
-	
-	SDL_FillRect(Window->body, NULL, SDL_MapRGB(Window->body->format, 255, 255, 255));
-	
-	pos.x = b = 100;
-	pos.y = c = 300;
-	
-	pos.y += HEAD_H * 2 + HEAD_H/2;
-	
-	
-	if(Images->Note_headWhole != NULL)
-	{
-		SDL_BlitSurface(Images->Note_headWhole, NULL, Window->body, &pos);
-		pos.x+= NOTE_SPACE;
-	}
-	if(Images->Note_Black != NULL)
-	{	
-		Images_DrawRotNote(Images->Note_headBlack, pos.x, pos.y, Window->body);
-		pos.y -= Images->note1_center->y;
-		pos.x -= 2;
-		SDL_BlitSurface(Images->Note_Black, NULL, Window->body, &pos);
-		pos.y += Images->note1_center->y;
-		pos.x += 2;
-		pos.x += NOTE_SPACE;
-	}
-	if(Images->Note_headWhite != NULL)
-	{
-		Images_DrawRotNote(Images->Note_headWhite, pos.x, pos.y, Window->body);
-		pos.y -= Images->note1_center->y;
-		pos.x -= 2;
-		SDL_BlitSurface(Images->Note_Black, NULL, Window->body, &pos);
-		pos.y += Images->note1_center->y;
-		pos.x += 2;
-		pos.x += NOTE_SPACE;
-	}
-	if(Images->Note_Black != NULL)
-	{	
-		Images_DrawRotNote(Images->Note_headBlack, pos.x, pos.y, Window->body);
-		pos.y -= Images->note1_center->y;
-		pos.x -= 2;
-		SDL_BlitSurface(Images->Note_Black, NULL, Window->body, &pos);
-		pos.x+=Images->Note_Black->w;
-		SDL_BlitSurface(Images->Note_Crotchet, NULL, Window->body, &pos);
-		pos.x-=Images->Note_Black->w;
-		pos.y += Images->note1_center->y;
-		pos.x += 2;
-		pos.x += NOTE_SPACE;
-	}
-	if(Images->Note_Black != NULL)
-	{	
-		Images_DrawRotNote(Images->Note_headBlack, pos.x, pos.y, Window->body);
-		pos.y -= Images->note1_center->y;
-		pos.x -= 2;
-		SDL_BlitSurface(Images->Note_Black, NULL, Window->body, &pos);
-		pos.x+=Images->Note_Black->w;
-		SDL_BlitSurface(Images->Note_Crotchet, NULL, Window->body, &pos);
-		pos.y+=20;
-		SDL_BlitSurface(Images->Note_Crotchet, NULL, Window->body, &pos);
-		pos.y-=20;
-		pos.x-=Images->Note_Black->w;
-		pos.y += Images->note1_center->y;
-		pos.x += 2;
-		pos.x += NOTE_SPACE;
-	}
-	if(Images->Note_Black != NULL)
-	{	
-		Images_DrawRotNote(Images->Note_headBlack, pos.x, pos.y, Window->body);
-		pos.y -= Images->note1_center->y;
-		pos.x -= 2;
-		SDL_BlitSurface(Images->Note_Black, NULL, Window->body, &pos);
-		pos.x+=Images->Note_Black->w;
-		SDL_BlitSurface(Images->Note_Crotchet, NULL, Window->body, &pos);
-		pos.y+=20;
-		SDL_BlitSurface(Images->Note_Crotchet, NULL, Window->body, &pos);
-		pos.y+=20;
-		SDL_BlitSurface(Images->Note_Crotchet, NULL, Window->body, &pos);
-		pos.y-=20;
-		pos.y-=20;
-		pos.x-=Images->Note_Black->w;
-		pos.y += Images->note1_center->y;
-		pos.x += 2;
-		pos.x += NOTE_SPACE;
-	}
-	if(Images->Note_Black != NULL)
-	{	
-		Images_DrawRotNote(Images->Note_headBlack, pos.x, pos.y, Window->body);
-		pos.y -= Images->note1_center->y;
-		pos.x -= 2;
-		SDL_BlitSurface(Images->Note_Black, NULL, Window->body, &pos);
-		pos.x+=Images->Note_Black->w;
-		SDL_BlitSurface(Images->Note_Crotchet, NULL, Window->body, &pos);
-		pos.y+=20;
-		SDL_BlitSurface(Images->Note_Crotchet, NULL, Window->body, &pos);
-		pos.y+=20;
-		SDL_BlitSurface(Images->Note_Crotchet, NULL, Window->body, &pos);
-		pos.y+=20;
-		SDL_BlitSurface(Images->Note_Crotchet, NULL, Window->body, &pos);
-		pos.y-=20;
-		pos.y-=20;
-		pos.y-=20;
-		pos.x-=Images->Note_Black->w;
-		pos.y += Images->note1_center->y;
-		pos.x += 2;
-		pos.x += NOTE_SPACE;
-	}
-	if(Images->Rest_Long != NULL)
-	{
-		pos.y -= 2*HEAD_H;
-	
-		pos.x -= Images->pos_Long->x;
-		pos.y -= Images->pos_Long->y;
-		SDL_BlitSurface(Images->Rest_Long, NULL, Window->body, &pos);
-		pos.x += Images->pos_Long->x;
-		pos.y += Images->pos_Long->y;
-		pos.x += NOTE_SPACE;
-		
-		pos.y += 2*HEAD_H;
-	}
-	if(Images->Rest_BreveLong != NULL)
-	{	
-		pos.y -= 2*HEAD_H;
-		
-		pos.x -= Images->pos_BreveLong->x;
-		pos.y -= Images->pos_BreveLong->y;
-		SDL_BlitSurface(Images->Rest_BreveLong, NULL, Window->body, &pos);
-		pos.x += Images->pos_BreveLong->x;
-		pos.y += Images->pos_BreveLong->y;
-		pos.x += NOTE_SPACE;
-		
-		pos.y += 2*HEAD_H;
-	}
-	Window_Staff(b, c, Window->width);
-	
-	temp = Window->body;
-	Window->body = SDL_DisplayFormat(Window->body);
-	SDL_FreeSurface(temp);
-}
 
 int Window_MyEventBlit(Object_Type type, SDL_Surface *surf, SDL_Rect *rect1, 
 					SDL_Surface *dest, SDL_Rect *rect2, ...)
@@ -525,22 +405,57 @@ int Window_MyEventBlit(Object_Type type, SDL_Surface *surf, SDL_Rect *rect1,
 	return SDL_BlitSurface(surf, rect1, dest, rect2);
 }
 
-int Window_TestBox(SDL_Surface *dest, SDL_Rect *pos, int r)
+int Window_TestBox(SDL_Surface *dest, SDL_Rect *pos, int zoom)
 {
 	Area *area;
+	int r,g,b,a;
 	if(NULL == dest)
 		return 0;
 	area= main_events->lst;
 	while(area != NULL)
 	{
-		if(((pos->x + area->rect.x/r) >= main_events->base->x)  &&
-			((pos->y  + area->rect.y/r) >= main_events->base->y))
+		if(((pos->x + area->rect.x/zoom) >= main_events->base->x)  &&
+			((pos->y  + area->rect.y/zoom) >= main_events->base->y))
 		{
-			boxRGBA(dest, 		(pos->x + (area->rect.x /r)), 
-						(pos->y  + (area->rect.y /r)), 
-						(pos->x + area->rect.x/r + area->rect.w/r),
-						(pos->y + area->rect.y/r + area->rect.h/r), 
-						180, 180, 180, 120);
+			a = 150;
+			if(main_events->hover == area && main_events->select == area)
+			{
+				r = 150;
+				g = 20;
+				b = 20;
+			}
+			else if(main_events->hover == area)
+			{
+				r = 140;
+				g = 140;
+				b = 140;
+			}
+			else if(main_events->select == area)
+			{
+				r = 200;
+				g = 50;
+				b = 50;
+			}
+			else
+			{
+				r = 180;
+				g = 180;
+				b = 180;
+			}
+			if(area->type & OBJECT_STEP)
+			{
+				r += 40;
+				a = 80;
+			}
+			if((pos->x + (area->rect.x /zoom)) > BASE_BODY_X &&
+				(pos->y  + (area->rect.y /zoom)) > BASE_BODY_Y)
+			{
+				boxRGBA(dest, 		(pos->x + (area->rect.x /zoom)), 
+							(pos->y  + (area->rect.y /zoom)), 
+							(pos->x + area->rect.x/zoom + area->rect.w/zoom),
+							(pos->y + area->rect.y/zoom + area->rect.h/zoom), 
+							r, g, b, a);
+			}
 		}
 		area = area->next;
 	}
@@ -810,7 +725,7 @@ int Note_Print(Staff *staff, Step *step, int id_note, Note *note, SDL_Rect *base
 				SDL_Surface *test = NULL;
 				base_pos->x -= Images->rot_noteW;
 				base_pos->y -= Images->rot_noteH;
-				Window_MyEventBlit(OBJECT_NOTE, Images->Note_headBlack, NULL, dest, base_pos, base_pos, step, id_note);
+				Window_MyEventBlit(OBJECT_NOTE, Images->Note_headBlack, NULL, dest, base_pos, step, id_note);
 				base_pos->x += Images->rot_noteW;
 				base_pos->y += Images->rot_noteH;
 				
@@ -895,12 +810,16 @@ int Armure_Print(Step *step, SDL_Rect *base_pos, SDL_Surface *dest)
 int Step_Print(Staff *staff, Step *step, SDL_Rect *base_pos, SDL_Surface *dest)
 {
 	ToNote *cur = NULL;
+	SDL_Rect depass = {0, 0, 600, 500};
 	int i=0;
 	if((NULL == step) || (NULL == base_pos) || (base_pos->x < 0) || (base_pos->y < 0) || (NULL == dest))
 		return 0;
 
+	depass.x = base_pos->x+3;
+	depass.y = base_pos->y;
 	base_pos->y -= HEAD_H ;
 	base_pos->x += 4 * NOTE_SPACE;
+	
 	cur = step->notes;
 	while(cur != NULL)
 	{
@@ -909,18 +828,41 @@ int Step_Print(Staff *staff, Step *step, SDL_Rect *base_pos, SDL_Surface *dest)
 		i++;
 	}
 	
-	
+	if(base_pos->x >= dest->w)
+	{
+		depass.y -= HEAD_H*4;
+		SDL_FillRect(dest, &depass, SDL_MapRGB(dest->format, 255, 255, 255));
+		base_pos->x = 100;
+		base_pos->y += 380;
+		base_pos->y += HEAD_H;
+		return -2;
+	}
 	
 	base_pos->y += HEAD_H;
 	return 1;
 }
 
+void Window_DrawStaff(int x, int y, int x_end, SDL_Surface *dest)
+{
+	int i,j;
+	boxRGBA(dest, x, y, x+2, y+HEAD_H*4, 0, 0, 0, 255);
+	for(j = 0; j < 5; j++)
+	{
+		for(i = 0; i < STAFF_H; i++)
+		{
+			hlineRGBA(dest, x, x_end, y+i+j*(HEAD_H), 0, 0, 0, 255);
+		}
+	}
+	boxRGBA(dest, x_end, y, x_end+2, y+HEAD_H*4, 0, 0, 0, 255);
+}
+
 int Staff_Print(Staff *staff, SDL_Rect *base_pos, SDL_Surface *dest)
 {
-	int i;
+	int i = 0;
 	signed char sauv = 0;
 	int sauv_x, sauv_y;
 	Window->_linked = 0;
+	SDL_Rect goal = {0, 0, 0, 0};
 	if(Window->pos_link != NULL)
 		free(Window->pos_link);
 	Window->pos_link = NULL;
@@ -929,36 +871,115 @@ int Staff_Print(Staff *staff, SDL_Rect *base_pos, SDL_Surface *dest)
 	
 	SDL_FillRect(dest, NULL, SDL_MapRGB(dest->format, 255, 255, 255));
 	
-	for(i = 0; i < staff->n; i++)
+	while(i < staff->n)
 	{
 		sauv_x = base_pos->x;
 		sauv_y = base_pos->y;
+		goal.x = sauv_x;
+		goal.y = sauv_y;
 		if(0 == i || (*(staff->steps + i))->sign != sauv)
 		{
 			Armure_Print(*(staff->steps + i), base_pos, dest);
 			sauv = (*(staff->steps + i))->sign;
 		}
-		Step_Print(staff, *(staff->steps + i), base_pos, dest);
+		if(Step_Print(staff, *(staff->steps + i), base_pos, dest) == -2)
+			continue;
 		Window_DrawStaff(sauv_x, sauv_y, base_pos->x, dest);
+		goal.w = base_pos->x - goal.x;
+		goal.h = HEAD_H * 4;
+		EventData_Add(main_events, Area_Set(goal, OBJECT_STEP, staff, i));
+		i++;
 	}
 	
 	return 1;
 }
 
-int ClicInRect(int x, int y, SDL_Rect *rect)
+int Window_LittleEvent(SDL_Event event, double *r, int *c, int ev, int *mouse,
+					int *clic_x, int *clic_y, int *tomaj,
+					Uint32 *time)
 {
-	if(NULL == rect)
-		return 0;
-	if((x >= rect->x) && (x<=rect->x + rect->w) &&
-		(y >= rect->y) && (y <= rect->y + rect->h))
-		return 1;
-	return 0;
+	int m = 0;
+
+	switch(event.type)
+	{
+		case SDL_QUIT:
+			*c = 0;
+			break;
+		case SDL_MOUSEBUTTONUP:
+			*clic_x = event.button.x;
+			*clic_y = event.button.y;
+			*mouse = 0;
+			break;
+		case SDL_MOUSEBUTTONDOWN:
+			*clic_x = event.button.x;
+			*clic_y = event.button.y;
+			switch(event.button.button)
+			{
+				case SDL_BUTTON_WHEELDOWN:
+					(*r)++;
+					m=1;
+					break;
+				case SDL_BUTTON_WHEELUP:
+					(*r)--;
+					if((*r)<1.0)
+						(*r) = 1.0;
+					m=1;
+					break;
+			}
+			*mouse = 1;
+			break;
+		case SDL_MOUSEMOTION:
+			if(*mouse)
+			{
+				if(*clic_x > event.motion.x)
+				{
+					Window->pos_body->x -= (*clic_x - event.motion.x);
+					*tomaj = 1;
+					*clic_x = event.motion.x;
+				}
+				else if(*clic_x < event.motion.x)
+				{
+					Window->pos_body->x +=(event.motion.x - *clic_x);
+					*clic_x = event.motion.x;
+					*tomaj = 1;
+				}
+				if(*clic_y > event.motion.y)
+				{
+					Window->pos_body->y -= (*clic_y - event.motion.y);
+					*tomaj = 1;
+					*clic_y = event.motion.y;
+				}
+				else if(*clic_y < event.motion.y)
+				{
+					Window->pos_body->y+=(event.motion.y - *clic_y);
+					*clic_y = event.motion.y;
+					*tomaj = 1;
+				}
+			}
+			break;
+	}
+	if(m)
+	{
+		Window_ApplyZoom((*r));
+		Window_DrawBody();
+		Window_Print();
+		EventData_SetZoom(main_events, *r);
+		SDL_Flip(Window->screen);
+		*time = SDL_GetTicks();
+		m=0;
+
+	}
+	if(*tomaj && !ev)
+	{
+		Window_DrawBody();
+		Window_Print();
+		SDL_Flip(Window->screen);
+		*time = SDL_GetTicks();
+		*tomaj = 0;
+	}
+	
+	return 1;
 }
 
-/* TO DO LIST
 
-- Polices / Images : System du moteur S en liste chainées avec avancé des plus utilisés
-	=> Système Générique (A tester) OK
-- Events ? Tab Génériques (A venir..)
-- Commencer le module Images. OK
-**/
+

@@ -214,9 +214,9 @@ int ToNote_DiviseRest(ToNote *tonote, int id, int newDuration, int stepNum)
 		int nDiv = 0;
 		
 		if(tonote->note->duration == QUADRUPLECROCHE)
-			return -1;
+			return 0;
 		if(!tonote->note->rest)
-			return -2;
+			return 0;
 			
 		if(tonote->note->duration == RONDE)
 			nDiv = stepNum;

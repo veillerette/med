@@ -149,8 +149,8 @@ int main(int argc, char *argv[])
 		
 		
 		EventData_Console(main_events);
-		/*Window_TestBox(Window->screen, &pos, r);
-			*/
+		Window_TestBox(Window->screen, &pos, r);
+			
 		ev = SDL_Flip(Window->screen);
 		
 		
@@ -297,7 +297,7 @@ int main(int argc, char *argv[])
 			{
 				SDL_FillRect(Window->screen, Window->pos_body, SDL_MapRGB(Window->screen->format, 235, 235, 235));
 				Window_DrawBodyShrink(r, redim, pos);
-				/*Window_TestBox(Window->screen, SDL_SetRect(pos.x-redim.x, pos.y-redim.y, 0, 0), (int)r); */
+				Window_TestBox(Window->screen, SDL_SetRect(pos.x-redim.x, pos.y-redim.y, 0, 0), (int)r); 
 				
 				SDL_Flip(Window->screen);
 				
@@ -309,7 +309,7 @@ int main(int argc, char *argv[])
 				SDL_FillRect(Window->screen, Window->pos_body, SDL_MapRGB(Window->screen->format, 235, 235, 235));
 				Window_DrawBodyShrink(r, redim, pos);
 				
-				/*Window_TestBox(Window->screen, SDL_SetRect(pos.x-redim.x, pos.y-redim.y, 0, 0), (int)r); */
+				Window_TestBox(Window->screen, SDL_SetRect(pos.x-redim.x, pos.y-redim.y, 0, 0), (int)r); 
 				
 				SDL_Flip(Window->screen);
 				

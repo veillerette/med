@@ -5,7 +5,7 @@ EXE=prog
 OBJ=obj/
 SRC=src/
 
-$(EXE): $(OBJ)main.o $(OBJ)Step.o $(OBJ)System.o $(OBJ)Staff.o $(OBJ)Test.o $(OBJ)Window.o $(OBJ)Images.o $(OBJ)Events.o $(OBJ)Parser.o
+$(EXE): $(OBJ)main2.o $(OBJ)Step.o $(OBJ)System.o $(OBJ)Parser.o $(OBJ)Staff.o $(OBJ)Test.o $(OBJ)Window2.o $(OBJ)Images.o $(OBJ)Events.o $(OBJ)ABC.o
 	$(CC) -o $(EXE) $^ $(CFLAGS) $(CLIBS)
 
 $(OBJ)%.o: $(SRC)%.c
