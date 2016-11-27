@@ -6,6 +6,7 @@
 #include "../include/Parser.h"
 #include "../include/Events.h"
 #include "../include/ABC.h"
+#include "../include/Menu.h"
 
 int main(int argc, char *argv[])
 {
@@ -16,13 +17,17 @@ int main(int argc, char *argv[])
 	const SDL_VideoInfo* info = NULL;
 	int clic_x = -1, clic_y = -1, mouse = 0;
 	int tomaj = 0;
-	Uint32 time = SDL_GetTicks();
+	Menu *menu = NULL;
+	Uint32 time = 0;
 	Uint32 sauv = 0;
+	
+	Window_Init();
+	menu = Menu_Alloc();
 	
 	if((2 == argc && !strcmp(argv[1], "-sdl")) || 1 == argc)
 	{	
 		Staff *staff = NULL;
-		Window_Init();
+		
 		info = SDL_GetVideoInfo();
 		Window_CreateWindow(info->current_w, info->current_h, "Ma Super Fenetre\n");
 		main_events = EventData_Alloc();
@@ -71,7 +76,7 @@ int main(int argc, char *argv[])
 					break;
 				case HOVER:
 				case SELECT:
-					Window_ApplyZoom(r);
+					/*Window_ApplyZoom(r);*/
 					Window_DrawBody();
 					Window_Print();
 					Window_TestBox(Window->screen, Window->pos_body, r);
@@ -101,22 +106,17 @@ int main(int argc, char *argv[])
 			
 		SDL_Flip(Window->screen);
 		Graphics_Quit();
-		Window_Quit();
 	}
 	else if(2 == argc && !strcmp(argv[1], "-parser"))
 	
 	{
-		Window_Init();
 		Window_CreateWindow(Window->max_width-200, 600, "Ma Super Fenetre\n");
 		Graphics_LoadAll();
 		Console_Parser();
-		Window_Quit();
 	}
 	else if(3 == argc && !strcmp(argv[1], "-abc"))
 	{
 		Score *score = NULL;
-		
-		Window_Init();
 		
 		score = ABC_ParseFile(argv[2]);
 		
@@ -180,12 +180,13 @@ int main(int argc, char *argv[])
 					break;
 			}
 		}
-			
-		SDL_Flip(Window->screen);
 		Graphics_Quit();
-		Window_Quit();
-		
 		Score_Free(&score);
 	}
+	
+	Menu_Free(&menu);
+	Window_Quit();
+	
+	printf("end progam\n");
 	exit(EXIT_SUCCESS);
 }

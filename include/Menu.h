@@ -7,7 +7,7 @@
 
 #include "../include/Window.h"
 
-#define MENU_FONT "media/Garamond-light"
+#define MENU_FONT "media/Garamond-light.ttf"
 #define MENU_SIZETEXT 15
 
 typedef enum
