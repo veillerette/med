@@ -20,9 +20,10 @@ int main(int argc, char *argv[])
 	Menu *menu = NULL;
 	Uint32 time = 0;
 	Uint32 sauv = 0;
+	int x=0,y=0;
 	
 	Window_Init();
-	menu = Menu_Alloc();
+	menu = Menu_Create();
 	
 	if((2 == argc && !strcmp(argv[1], "-sdl")) || 1 == argc)
 	{	
@@ -56,7 +57,12 @@ int main(int argc, char *argv[])
 		Window_ApplyZoom(r);
 		
 		Window_DrawBody();
+		
 		Window_Print();
+		Menu_Aff(menu, &x, &y);
+		Menu_Console(menu->lst, 0);
+		
+		
 		SDL_Flip(Window->screen);
 		time = SDL_GetTicks();
 		sauv = time;
@@ -67,18 +73,37 @@ int main(int argc, char *argv[])
 			time = sauv;
 			Window_LittleEvent(event, &r, &c, ev, &mouse, &clic_x, 
 							&clic_y, &tomaj, &time);
-			if(sauv-time < 10)
-				SDL_Delay(1);
+			
+			switch(Menu_PollMouse(menu, event))
+			{
+				case QUIT:
+					c = 0;
+					continue;
+				case FORCE_MAJ:
+					printf("FORCE MAAAAAAAAAAAAAAAAAAAAAAAAJ\n");
+					x=0;
+					y=0;
+					printf("force maj MENU\n");
+					Window_DrawBody();
+					Window_Print();
+					Menu_Aff(menu, &x, &y);
+					SDL_Flip(Window->screen);
+					
+					break;
+				default:
+					break;
+			}
+			
 			switch(Events_PollMouse(event))
 			{
 				case QUIT:
 					c = 0;
-					break;
+					continue;
 				case HOVER:
 				case SELECT:
 					/*Window_ApplyZoom(r);*/
 					Window_DrawBody();
-					Window_Print();
+					/*Window_Print();*/
 					Window_TestBox(Window->screen, Window->pos_body, r);
 					SDL_Flip(Window->screen);
 					break;
@@ -89,7 +114,7 @@ int main(int argc, char *argv[])
 			{
 				case QUIT:
 					c = 0;
-					break;
+					continue;
 				case FORCE_MAJ:
 					EventData_Flush(main_events);
 					Staff_Print(staff, SDL_SetRect(100, 200, 0, 0), Window->body[0]);
@@ -102,9 +127,13 @@ int main(int argc, char *argv[])
 				default:
 					break;
 			}
-		}
 			
-		SDL_Flip(Window->screen);
+			if(sauv-SDL_GetTicks() < 10)
+				SDL_Delay(1);
+		}
+		
+		
+		
 		Graphics_Quit();
 	}
 	else if(2 == argc && !strcmp(argv[1], "-parser"))
