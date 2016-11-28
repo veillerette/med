@@ -639,13 +639,3 @@ int PowerOfBezier(SDL_Surface *dest, const int *x, const int *y, int n, Color co
 
 
 
-
-
-
-
-
-
-
-
-
-

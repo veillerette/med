@@ -917,7 +917,10 @@ int Window_LittleEvent(SDL_Event event, double *r, int *c, int ev, int *mouse,
 			{
 				case SDL_BUTTON_WHEELDOWN:
 					(*r)++;
-					m=1;
+					if(*r > 7)
+						*r = 7;
+					else
+						m=1;
 					break;
 				case SDL_BUTTON_WHEELUP:
 					(*r)--;

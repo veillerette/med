@@ -73,14 +73,15 @@ int main(int argc, char *argv[])
 			time = sauv;
 			Window_LittleEvent(event, &r, &c, ev, &mouse, &clic_x, 
 							&clic_y, &tomaj, &time);
-			
+			if(!ev)
+				SDL_Delay(1);
 			switch(Menu_PollMouse(menu, event))
 			{
 				case QUIT:
 					c = 0;
 					continue;
 				case FORCE_MAJ:
-					printf("FORCE MAAAAAAAAAAAAAAAAAAAAAAAAJ\n");
+					printf("FORCE MAAAAAAAAAAAAAAAAAAAAAAAAJ %d\n", ev);
 					x=0;
 					y=0;
 					printf("force maj MENU\n");
