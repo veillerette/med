@@ -5,7 +5,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "../include/Window2.h"
+#include "Window2.h"
+#include "Events.h"
 
 #define MENU_FONT "media/Garamond.ttf"
 #define MENU_SIZETEXT 18

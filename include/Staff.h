@@ -50,6 +50,8 @@ Staff *Staff_Alloc(const char *name);
 
 int Staff_Init(Staff *staff, int num, Note_Duration den, int cle, char sign);
 
+int Staff_SetNumDen(Staff *staff, int step_id, int num, Note_Duration den);
+
 int Staff_AddNote(Staff *staff, int step_id, int note_id, char note, 
 					Note_Flags flags, Note_Duration duration);
 

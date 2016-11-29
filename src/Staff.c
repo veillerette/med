@@ -35,6 +35,15 @@ int Staff_Init(Staff *staff, int num, Note_Duration den, int cle, char sign)
 	return 1;
 }
 
+int Staff_SetNumDen(Staff *staff, int step_id, int num, Note_Duration den)
+{
+	if((NULL == staff) || (step_id < 0) || (step_id > staff->n))
+		return 0;
+	staff->steps[step_id]->num = num;
+	staff->steps[step_id]->den = den;
+	return 1;
+}
+
 int Staff_AddNote(Staff *staff, int step_id, int note_id, char note, 
 					Note_Flags flags, Note_Duration duration)
 {
@@ -130,7 +139,7 @@ int Staff_InsereEmptyStep(Staff *staff, int pos)
 	if(0 == staff->n || pos < 0)
 		return 0;
 	
-	if(pos > staff->n - 1)
+	if(pos > staff->n)
 		return 0;
 		
 	Staff_VerifAlloc(staff);

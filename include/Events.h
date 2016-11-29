@@ -11,6 +11,7 @@
 
 #define QUIT -42
 
+#define FORCE_SCOREMAJ 19
 #define FORCE_MAJ 17
 #define SELECT 2
 #define HOVER 1

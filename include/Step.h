@@ -132,7 +132,7 @@ int ToNote_Transpose(ToNote *tonote, char value);
 
 int Step_Transpose(Step *step, char value);
 
-
+Note_Duration Step_GetMinDuration(Step *step);
 
 #endif
 

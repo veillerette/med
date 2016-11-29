@@ -174,6 +174,54 @@ int _Aide_APropos(void)
 	return FORCE_MAJ;
 }
 
+int _Selection_Delete(void)
+{
+	if(NULL == main_events->select)
+		return FORCE_MAJ;
+	switch(main_events->select->type)
+	{
+		case OBJECT_NOTE:
+			Step_ChangeRestStatus(main_events->select->step, main_events->select->id_note, 1);	
+			return FORCE_SCOREMAJ;
+		case OBJECT_STEP:
+			Staff_DeleteStep(main_events->select->staff, main_events->select->id_step);
+			return FORCE_SCOREMAJ;
+		default:
+			break;
+	}
+	return FORCE_MAJ;
+}
+
+int _Selection_Deselec(void)
+{
+	if(main_events->select != NULL)
+	{
+		main_events->select = NULL;
+		return FORCE_SCOREMAJ;
+	}
+	return FORCE_MAJ;
+}
+
+int _Ajouter_Mesure_Before(void)
+{
+	if(NULL == main_events->select)
+		return FORCE_MAJ;
+	if(main_events->select->type != OBJECT_STEP)
+		return FORCE_MAJ;
+	Staff_InsereEmptyStep(main_events->select->staff, main_events->select->id_step);
+	return FORCE_SCOREMAJ;
+}
+
+int _Ajouter_Mesure_After(void)
+{
+	if(NULL == main_events->select)
+		return FORCE_MAJ;
+	if(main_events->select->type != OBJECT_STEP)
+		return FORCE_MAJ;
+	Staff_InsereEmptyStep(main_events->select->staff, main_events->select->id_step+1);
+	return FORCE_SCOREMAJ;
+}
+
 Menu *Menu_Create(void)
 {
 	Menu *menu = NULL;
@@ -183,12 +231,12 @@ Menu *Menu_Create(void)
 	NodeArray_Add(menu->lst->next[0]->next, "Ouvrir", 0, LEAF, menu_no_action);
 	NodeArray_Add(menu->lst->next[0]->next, "Quitter", 0, LEAF, _Fichier_Quit);
 	NodeArray_Add(menu->lst, "Sélection", 0, NODE, NULL);
-	NodeArray_Add(menu->lst->next[1]->next, "Supprimer", 1, LEAF, menu_no_action);
-	NodeArray_Add(menu->lst->next[1]->next, "Désélectionner", 1, LEAF, menu_no_action);
+	NodeArray_Add(menu->lst->next[1]->next, "Supprimer", 1, LEAF, _Selection_Delete);
+	NodeArray_Add(menu->lst->next[1]->next, "Désélectionner", 1, LEAF, _Selection_Deselec);
 	NodeArray_Add(menu->lst, "Ajouter", 0, NODE, NULL);
 	NodeArray_Add(menu->lst->next[2]->next, "Mesure", 0, NODE, menu_no_action);
-	NodeArray_Add(menu->lst->next[2]->next->next[0]->next, "Avant la sélection", 1, LEAF, menu_no_action);
-	NodeArray_Add(menu->lst->next[2]->next->next[0]->next, "Après la sélection", 1, LEAF, menu_no_action);
+	NodeArray_Add(menu->lst->next[2]->next->next[0]->next, "Avant la sélection", 1, LEAF, _Ajouter_Mesure_Before);
+	NodeArray_Add(menu->lst->next[2]->next->next[0]->next, "Après la sélection", 1, LEAF, _Ajouter_Mesure_After);
 	NodeArray_Add(menu->lst->next[2]->next, "Note", 0, NODE, menu_no_action);
 	NodeArray_Add(menu->lst->next[2]->next->next[1]->next, "Ronde", 1, LEAF, menu_no_action);
 	NodeArray_Add(menu->lst->next[2]->next->next[1]->next, "Blanche", 1, LEAF, menu_no_action);
@@ -329,11 +377,14 @@ void Menu_Aff(Menu *menu, int *x, int *y)
 	int tmp_x, tmp_y;
 	int status = 0;
 	int height;
+	int sauv_x, sauv_y;
 	if((NULL == menu) || (NULL == x) || (NULL == y))
 		return;
+	sauv_x = *x;
+	sauv_y = *y;
 	TTF_SizeUTF8(menu->font, "Bonjour", NULL, &height);
 	boxRGBA(Window->screen, 0, 0, Window->width, height+2, 34, 45, 56, 255);
-	boxRGBA(Window->screen, 0, height+2, Window->width, height+2, 180, 180, 180, 255);
+	boxRGBA(Window->screen, 0, height+2, Window->width, height+2, 120, 130, 140, 255);
 						
 	for(i = 0; i < menu->lst->n; i++)
 	{
@@ -351,6 +402,8 @@ void Menu_Aff(Menu *menu, int *x, int *y)
 		*y = tmp_y;
 		*x = tmp_x += menu->lst->next[i]->pos.w;
 	}
+	*x = sauv_x;
+	*y = sauv_y;
 	printf("- - - - - - - - - - - -\n");
 }
 

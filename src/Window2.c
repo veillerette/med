@@ -151,7 +151,7 @@ static int Window_InitPal(SDL_Surface *pal)
 	
 	SDL_FillRect(pal, NULL, SDL_MapRGB(pal->format, 255, 255, 255));
 	
-	SDL_FillRect(pal, NULL, SDL_MapRGB(pal->format, 200, 255, 200));
+	SDL_FillRect(pal, NULL, SDL_MapRGB(pal->format, 34, 45, 56));
 	return 1;
 }
 
@@ -462,6 +462,25 @@ int Window_TestBox(SDL_Surface *dest, SDL_Rect *pos, int zoom)
 	return 1;
 }
 
+int Window_GetSpaceNote(Step *step, Note *note)
+{
+	Note_Duration min = Step_GetMinDuration(step);
+	return (log(min/note->duration + 1)*1.0/log(2) + 1) * NOTE_SPACE;
+}
+
+int Window_GetSize(Step *step)
+{
+	int width = 3 + NOTE_SPACE;
+	ToNote *cur = NULL;
+	cur = step->notes;
+	while(cur != NULL)
+	{
+		width += Window_GetSpaceNote(step, cur->note);
+		cur = cur->next;
+	}
+	return width;
+}
+
 int Note_Print(Staff *staff, Step *step, int id_note, Note *note, SDL_Rect *base_pos, SDL_Surface *dest)
 {
 	Note_Duration cpy = note->duration;
@@ -469,13 +488,12 @@ int Note_Print(Staff *staff, Step *step, int id_note, Note *note, SDL_Rect *base
 	int note_y = 0;
 	int tab[] = {0, 2, 4, 5, 7, 9, 11};
 	int i;
-	int best_space = NOTE_SPACE;
-	
-	if(note->duration >= DOUBLECROCHE)
-		best_space += (note->duration);
+	int real_space = Window_GetSpaceNote(step, note);
 	
 	if((NULL == note) || (NULL == base_pos) || (base_pos->x < 0) || (base_pos->y < 0) || (NULL == dest))
 		return 0;
+	
+	printf("REAL_SPACE = %d\n", real_space);
 		
 	if(!note->rest || (note->rest && note->duration != RONDE && note->duration != BLANCHE))
 		base_pos->y += HEAD_H * 4;
@@ -526,9 +544,9 @@ int Note_Print(Staff *staff, Step *step, int id_note, Note *note, SDL_Rect *base
 		for(i = 45; i <= note_y; i+= HEAD_H)
 		{
 			boxRGBA(dest, 
-				base_pos->x - HEAD_W/2 + Images->rot_noteW + best_space / 2, 
+				base_pos->x - HEAD_W/2 + Images->rot_noteW + 5, 
 				base_pos->y + 4 + i - note_y + Images->rot_noteH, 
-				base_pos->x + HEAD_W + Images->rot_noteW  + best_space / 2, 
+				base_pos->x + HEAD_W + Images->rot_noteW + 5, 
 				base_pos->y + 6 + i - note_y  + Images->rot_noteH, 
 				0, 0, 0, 255);
 		}
@@ -539,9 +557,9 @@ int Note_Print(Staff *staff, Step *step, int id_note, Note *note, SDL_Rect *base
 		for(i = -135; i >= note_y; i-= HEAD_H)
 		{
 			boxRGBA(dest, 
-				base_pos->x - HEAD_W/2 + Images->rot_noteW + best_space / 2, 
+				base_pos->x - HEAD_W/2 + Images->rot_noteW , 
 				base_pos->y + 4 + i - note_y + Images->rot_noteH, 
-				base_pos->x + HEAD_W + Images->rot_noteW  + best_space / 2, 
+				base_pos->x + HEAD_W + Images->rot_noteW, 
 				base_pos->y + 6 + i - note_y  + Images->rot_noteH, 
 				0, 0, 0, 255);
 		}
@@ -589,16 +607,21 @@ int Note_Print(Staff *staff, Step *step, int id_note, Note *note, SDL_Rect *base
 		case RONDE:
 			if(note->rest)
 			{
-				base_pos->x += (Note_RealDuration(note) * best_space ) / 8 - 4 * NOTE_SPACE;
+				base_pos->x += real_space/2;
 				base_pos->y += 2*HEAD_H;
+				base_pos->x-=Images->Rest_Long->w/2;
 				Window_MyEventBlit(OBJECT_NOTE, Images->Rest_Long, NULL, dest, base_pos, step, id_note);
+				base_pos->x+=Images->Rest_Long->w/2;
 				base_pos->y -= 2*HEAD_H;
-				base_pos->x += (Note_RealDuration(note) * best_space ) / 6;
+				base_pos->x += real_space/2;
+				if(!note->rest || (note->rest && note->duration != RONDE && note->duration != BLANCHE))
+					base_pos->y -= HEAD_H * 4;
+				base_pos->y -= note_y;
+				return 1;
 			}
 			else
 			{
 				Window_MyEventBlit(OBJECT_NOTE, Images->Note_headWhole, NULL, dest, base_pos, step, id_note);
-				base_pos->x += (Note_RealDuration(note) * best_space );
 			}
 			
 			break;
@@ -606,13 +629,19 @@ int Note_Print(Staff *staff, Step *step, int id_note, Note *note, SDL_Rect *base
 		case BLANCHE:
 			if(note->rest)
 			{
+				base_pos->x += real_space/2;
 				base_pos->y += 2*HEAD_H;
 				base_pos->y -= Images->pos_BreveLong->y;
-				base_pos->x += 2*NOTE_SPACE;
+				base_pos->x-=Images->Rest_BreveLong->w/2;
 				Window_MyEventBlit(OBJECT_NOTE, Images->Rest_BreveLong, NULL, dest, base_pos, step, id_note);
-				base_pos->x -= 2*NOTE_SPACE;
+				base_pos->x+=Images->Rest_BreveLong->w/2;
 				base_pos->y -= 2*HEAD_H;
 				base_pos->y += Images->pos_BreveLong->y;
+				base_pos->x += real_space/2;
+				if(!note->rest || (note->rest && note->duration != RONDE && note->duration != BLANCHE))
+					base_pos->y -= HEAD_H * 4;
+				base_pos->y -= note_y;
+				return 1;
 			}
 			else
 			{
@@ -640,7 +669,6 @@ int Note_Print(Staff *staff, Step *step, int id_note, Note *note, SDL_Rect *base
 				base_pos->y += Images->note1_center->y;
 				base_pos->x += 2;
 			}
-			base_pos->x += (Note_RealDuration(note) * best_space );
 			break;
 			
 		case QUADRUPLECROCHE:
@@ -679,7 +707,6 @@ int Note_Print(Staff *staff, Step *step, int id_note, Note *note, SDL_Rect *base
 				}
 				
 				base_pos->y += 2*HEAD_H;
-				base_pos->x += (Note_RealDuration(note) * best_space );
 				break;
 			}
 			else {
@@ -749,11 +776,13 @@ int Note_Print(Staff *staff, Step *step, int id_note, Note *note, SDL_Rect *base
 				base_pos->y += Images->note1_center->y;
 				base_pos->x += 2;
 			}
-			base_pos->x += (Note_RealDuration(note) * best_space );
 			break;
 		default:
 			break;
 	}
+	
+	base_pos->x += real_space;
+	
 	if(!note->rest || (note->rest && note->duration != RONDE && note->duration != BLANCHE))
 		base_pos->y -= HEAD_H * 4;
 	
@@ -771,7 +800,7 @@ int Armure_Print(Step *step, SDL_Rect *base_pos, SDL_Surface *dest)
 	
 
 	if(step->sign != 0)
-		base_pos->x += 4 * NOTE_SPACE;
+		base_pos->x += NOTE_SPACE/2;
 	
 	
 	if(step->sign < 0)
@@ -802,7 +831,7 @@ int Armure_Print(Step *step, SDL_Rect *base_pos, SDL_Surface *dest)
 	if(step->sign != 0)
 	{
 		base_pos->x += Images->Flat->w;
-		base_pos->x += 2 * NOTE_SPACE;
+		base_pos->x += NOTE_SPACE/4;
 	}
 	return 1;
 }
@@ -810,7 +839,7 @@ int Armure_Print(Step *step, SDL_Rect *base_pos, SDL_Surface *dest)
 int Step_Print(Staff *staff, Step *step, SDL_Rect *base_pos, SDL_Surface *dest)
 {
 	ToNote *cur = NULL;
-	SDL_Rect depass = {0, 0, 600, 500};
+	SDL_Rect depass = {0, 0, 1000, 500};
 	int i=0;
 	if((NULL == step) || (NULL == base_pos) || (base_pos->x < 0) || (base_pos->y < 0) || (NULL == dest))
 		return 0;
@@ -818,7 +847,7 @@ int Step_Print(Staff *staff, Step *step, SDL_Rect *base_pos, SDL_Surface *dest)
 	depass.x = base_pos->x+3;
 	depass.y = base_pos->y;
 	base_pos->y -= HEAD_H ;
-	base_pos->x += 4 * NOTE_SPACE;
+	base_pos->x += NOTE_SPACE/2;
 	
 	cur = step->notes;
 	while(cur != NULL)
@@ -828,9 +857,12 @@ int Step_Print(Staff *staff, Step *step, SDL_Rect *base_pos, SDL_Surface *dest)
 		i++;
 	}
 	
+	base_pos->x += NOTE_SPACE/2;
+	
 	if(base_pos->x >= dest->w)
 	{
 		depass.y -= HEAD_H*4;
+		depass.w = base_pos->w - depass.x;
 		SDL_FillRect(dest, &depass, SDL_MapRGB(dest->format, 255, 255, 255));
 		base_pos->x = 100;
 		base_pos->y += 380;
@@ -856,11 +888,29 @@ void Window_DrawStaff(int x, int y, int x_end, SDL_Surface *dest)
 	boxRGBA(dest, x_end, y, x_end+2, y+HEAD_H*4, 0, 0, 0, 255);
 }
 
+int Step_PrintMesure(Step *step, SDL_Rect *base_pos, SDL_Surface *dest)
+{
+	SDL_Color color = {0, 0, 0};
+	char num[3] = "", den[3] = "";
+	int x=base_pos->x, y=base_pos->y;
+	if((NULL == step) || (NULL == base_pos) || (base_pos->x < 0) || (base_pos->y < 0) || (NULL == dest))
+		return 0;
+	y += HEAD_H+2;
+	sprintf(num, "%d", step->num);
+	sprintf(den, "%d", step->den);
+	Moteur_WriteText(x, y, num, HEAD_H*3-18, FONT_MESURE, color, TEXT_BLENDED, TEXT_CENTER, dest);
+	Moteur_WriteText(x, y+HEAD_H*2, den, HEAD_H*3-18, FONT_MESURE, color, TEXT_BLENDED, TEXT_CENTER, dest);
+	base_pos->x += HEAD_W*2;
+	return 1;
+}
+
 int Staff_Print(Staff *staff, SDL_Rect *base_pos, SDL_Surface *dest)
 {
 	int i = 0;
 	signed char sauv = 0;
 	int sauv_x, sauv_y;
+	int num = -1, den = -1;
+	
 	Window->_linked = 0;
 	SDL_Rect goal = {0, 0, 0, 0};
 	if(Window->pos_link != NULL)
@@ -873,6 +923,11 @@ int Staff_Print(Staff *staff, SDL_Rect *base_pos, SDL_Surface *dest)
 	
 	while(i < staff->n)
 	{
+		if(Window_GetSize(*(staff->steps + i))+base_pos->x > dest->w - 20)
+		{
+			base_pos->x = 100;
+			base_pos->y += 380;
+		}
 		sauv_x = base_pos->x;
 		sauv_y = base_pos->y;
 		goal.x = sauv_x;
@@ -881,6 +936,12 @@ int Staff_Print(Staff *staff, SDL_Rect *base_pos, SDL_Surface *dest)
 		{
 			Armure_Print(*(staff->steps + i), base_pos, dest);
 			sauv = (*(staff->steps + i))->sign;
+		}
+		if(0 == i || (*(staff->steps + i))->num != num || (*(staff->steps + i))->den != den)
+		{
+			Step_PrintMesure(*(staff->steps + i), base_pos, dest);
+			num = (*(staff->steps + i))->num;
+			den = (*(staff->steps + i))->den;
 		}
 		if(Step_Print(staff, *(staff->steps + i), base_pos, dest) == -2)
 			continue;
@@ -896,10 +957,9 @@ int Staff_Print(Staff *staff, SDL_Rect *base_pos, SDL_Surface *dest)
 
 int Window_LittleEvent(SDL_Event event, double *r, int *c, int ev, int *mouse,
 					int *clic_x, int *clic_y, int *tomaj,
-					Uint32 *time)
+					Uint32 *time, int *m)
 {
-	int m = 0;
-
+	*m = 0;
 	switch(event.type)
 	{
 		case SDL_QUIT:
@@ -920,13 +980,13 @@ int Window_LittleEvent(SDL_Event event, double *r, int *c, int ev, int *mouse,
 					if(*r > 7)
 						*r = 7;
 					else
-						m=1;
+						*m=1;
 					break;
 				case SDL_BUTTON_WHEELUP:
 					(*r)--;
 					if((*r)<1.0)
 						(*r) = 1.0;
-					m=1;
+					*m=1;
 					break;
 			}
 			*mouse = 1;
@@ -963,27 +1023,9 @@ int Window_LittleEvent(SDL_Event event, double *r, int *c, int ev, int *mouse,
 			}
 			break;
 	}
-	if(m)
-	{
-		Window_ApplyZoom((*r));
-		Window_DrawBody();
-		Window_Print();
-		EventData_SetZoom(main_events, *r);
-		SDL_Flip(Window->screen);
-		*time = SDL_GetTicks();
-		m=0;
 
-	}
-	if(*tomaj && !ev)
-	{
-		Window_DrawBody();
-		Window_Print();
-		SDL_Flip(Window->screen);
-		*time = SDL_GetTicks();
-		*tomaj = 0;
-	}
 	
-	return 1;
+	return 0;
 }
 
 

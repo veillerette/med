@@ -21,6 +21,7 @@ int main(int argc, char *argv[])
 	Uint32 time = 0;
 	Uint32 sauv = 0;
 	int x=0,y=0;
+	int m = 0;
 	
 	Window_Init();
 	menu = Menu_Create();
@@ -35,7 +36,7 @@ int main(int argc, char *argv[])
 		 
 
 		staff = Staff_Alloc("Portée trop géniale");
-		Staff_Init(staff, 4, NOIRE, CLE_SOL, 0);
+		Staff_Init(staff, 6, 8, CLE_SOL, 0);
 		Staff_ChangeArmure(staff, 0, 3);
 		Staff_AddNote(staff, 0, 0, ConvertStringToID("c4"), NOTE_DEFAULT, NOIRE);
 		Staff_AddNote(staff, 0, 1, ConvertStringToID("g4"), NOTE_DEFAULT, NOIRE);
@@ -43,6 +44,12 @@ int main(int argc, char *argv[])
 		Staff_AddNote(staff, 0, 3, ConvertStringToID("g4"), NOTE_DEFAULT, NOIRE);
 		Staff_AddNote(staff, 1, 0, ConvertStringToID("c4"), NOTE_DEFAULT, CROCHE);
 		Staff_AddNote(staff, 1, 2, ConvertStringToID("e5"), NOTE_DEFAULT, CROCHE);
+		Staff_AddNote(staff, 2, 0, ConvertStringToID("g4"), NOTE_DEFAULT, DOUBLECROCHE);
+		Staff_AddNote(staff, 2, 1, ConvertStringToID("g4"), NOTE_DEFAULT, DOUBLECROCHE);
+		Staff_AddNote(staff, 2, 2, ConvertStringToID("g4"), NOTE_DEFAULT, DOUBLECROCHE);
+		Staff_AddNote(staff, 2, 3, ConvertStringToID("g4"), NOTE_DEFAULT, DOUBLECROCHE);
+		Staff_AddNote(staff, 2, 4, ConvertStringToID("g4"), NOTE_DEFAULT, DOUBLECROCHE);
+		Staff_AddNote(staff, 2, 5, ConvertStringToID("g4"), NOTE_DEFAULT, DOUBLECROCHE);
 		Staff_Console(staff);
 		
 		Graphics_LoadAll();
@@ -71,30 +78,53 @@ int main(int argc, char *argv[])
 			ev = SDL_PollEvent(&event);
 			sauv = SDL_GetTicks();
 			Window_LittleEvent(event, &r, &c, ev, &mouse, &clic_x, 
-							&clic_y, &tomaj, &time);
-			
+							&clic_y, &tomaj, &time, &m);
+			if(m)
+			{
+				Window_ApplyZoom(r);
+				Window_DrawBody();
+				Window_Print();
+				EventData_SetZoom(main_events, r);
+				Window_TestBox(Window->screen, Window->pos_body, r);
+				Menu_Aff(menu, &x, &y);
+				SDL_Flip(Window->screen);
+				time = SDL_GetTicks();
+				m=0;
+			}
+			if(tomaj && !ev)
+			{
+				Window_DrawBody();
+				Window_Print();
+				Window_TestBox(Window->screen, Window->pos_body, r);
+				Menu_Aff(menu, &x, &y);
+				SDL_Flip(Window->screen);
+				time = SDL_GetTicks();
+				tomaj = 0;
+			}
 			if(!ev)
 			{
 				SDL_Delay(2);
 				continue;
 			}
-			
-			if(!ev)
-				SDL_Delay(1);
 			switch(Menu_PollMouse(menu, event))
 			{
 				case QUIT:
 					c = 0;
 					continue;
+				case FORCE_SCOREMAJ:
+					EventData_Flush(main_events);
+					Staff_Print(staff, SDL_SetRect(100, 200, 0, 0), Window->body[0]);
+					Window_ApplyZoom(r);
 				case FORCE_MAJ:
-					x=0;
-					y=0;
 					Window_DrawBody();
 					Window_Print();
+					Window_TestBox(Window->screen, Window->pos_body, r);
 					Menu_Aff(menu, &x, &y);
+					
 					SDL_Flip(Window->screen);
 					continue;
 					break;
+				
 				default:
 					break;
 			}
@@ -113,6 +143,7 @@ int main(int argc, char *argv[])
 					Window_DrawBody();
 					/*Window_Print(); */
 					Window_TestBox(Window->screen, Window->pos_body, r);
+					Menu_Aff(menu, &x, &y);
 					SDL_Flip(Window->screen);
 					break;
 				default:
@@ -130,6 +161,7 @@ int main(int argc, char *argv[])
 					Window_ApplyZoom(r);
 					Window_DrawBody();
 					Window_Print();
+					Menu_Aff(menu, &x, &y);
 					SDL_Flip(Window->screen);
 					break;
 				default:
@@ -183,7 +215,7 @@ int main(int argc, char *argv[])
 		{
 			ev = SDL_PollEvent(&event);
 			Window_LittleEvent(event, &r, &c, ev, &mouse, &clic_x, 
-							&clic_y, &tomaj, &time);
+							&clic_y, &tomaj, &time, &m);
 			switch(Events_PollMouse(event))
 			{
 				case QUIT:

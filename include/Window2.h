@@ -22,6 +22,8 @@
 #define ABS(A) (((A)<0)?-(A):(A))
 #define TestOK(); if(!Window_OK())return 0;
 
+#define FONT_MESURE "media/Hack-Regular.ttf"
+
 typedef enum {
 	STATE_ALLOC,
 	STATE_SDLINIT,
@@ -99,7 +101,7 @@ void Window_DrawStaff(int x, int y, int x_end, SDL_Surface *dest);
 
 int Window_LittleEvent(SDL_Event event, double *r, int *c, int ev, int *mouse,
 					int *clic_x, int *clic_y, int *tomaj, 
-					Uint32 *time);
+					Uint32 *time, int *m);
 					
 int Window_TestBox(SDL_Surface *dest, SDL_Rect *pos, int zoom);
 

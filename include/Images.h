@@ -17,7 +17,7 @@
 #define QUEUE ((int)(HEAD_H * 2.8))
 #define STAFF_H 2
 #define QUEUE_BORDER 5
-#define NOTE_SPACE 10
+#define NOTE_SPACE 50
 
 typedef struct Graphics Graphics;
 struct Graphics

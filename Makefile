@@ -21,3 +21,11 @@ clean:
 
 wc:
 	wc $(SRC)*.c $(INCL)*.h Makefile
+
+push:
+	git add $(INCL)*.h $(SRC)*.c Makefile
+	git commit -m "$M"
+	git push
+
+pull:
+	git pull

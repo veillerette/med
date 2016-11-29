@@ -655,39 +655,23 @@ int Step_Transpose(Step *step, char value)
 	return ToNote_Transpose(step->notes, value);
 }
 
-/*
-int main(int argc, char *argv[])
+
+Note_Duration Step_GetMinDuration(Step *step)
 {
-	Step *step = NULL;
-	
-	step = Step_Alloc(4, NOIRE, 0, 0, STEP_DEFAULT);
-	Step_Init(step);
-	Step_ConsolePrintf(step);
-	
-	Step_AddNote(step, 0, 7 * 5, NOTE_DEFAULT, QUADRUPLECROCHE);
-
-	ToNote_ConsolePrintf(step->notes);
-	
-	Step_Regularise(step);
-	ToNote_ConsolePrintf(step->notes);
-	
-	printf("Verif value time : %d\n", Step_TestTime(step));
-	Step_Free(&step);
-
-	char note[10] = "";
-	printf("Sizeof(Note) = %d\n", (int)sizeof(Note));
-	printf("Sizeof(Note_Flags) = %d\n", (int)sizeof(Note_Flags));
-	printf("Sizeof(Note_Duration) = %d\n", (int)sizeof(Note_Duration));
-	printf("Sizeof(ToNote) = %d\n", (int)sizeof(ToNote));
-	while(1)
+	Note_Duration duration = RONDE;
+	ToNote *notes = NULL;
+	if(NULL == step)
+		return 0;
+	notes = step->notes;
+	while(notes != NULL)
 	{
-		colorprintf(CYAN, "note = ");
-		text_color(WHITE);
-		scanf("%s", note);
-		colorprintf(GREEN, "Res = %d\n", (int)ConvertStringToID(note));
+		if(notes->note != NULL && notes->note->duration > duration)
+			duration = notes->note->duration;
+		notes = notes->next;
 	}
-	exit(EXIT_SUCCESS);
-}*/
+	
+	return duration;
+}
 
 
 

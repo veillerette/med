@@ -35,6 +35,7 @@ Area *Area_Set(SDL_Rect rect, Object_Type type, ...)
 		case OBJECT_LINE:
 		case OBJECT_CLE:
 		case OBJECT_STEP:
+		case EVENT_ADDNOTE:
 			area->staff = va_arg(va, Staff*);
 			area->id_step = va_arg(va, int);
 			break;
@@ -72,6 +73,7 @@ void Area_Console(Area *area)
 		case OBJECT_LINE:
 		case OBJECT_CLE:
 		case OBJECT_STEP:
+		case EVENT_ADDNOTE:
 			printf("\tStaff=%p, id_step=%d\n", (void *)area->staff, area->id_step);
 			break;
 		case OBJECT_SIGN:
@@ -260,6 +262,8 @@ int Events_PollMouse(SDL_Event event)
 			return HOVER;
 			break;
 		case SDL_MOUSEBUTTONDOWN:
+			if((NULL == area) && (x < main_events->base->x || y < main_events->base->y))
+				return NONE;
 			if(main_events->select == area)
 				return NONE;
 			main_events->select = area;
