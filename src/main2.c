@@ -70,9 +70,14 @@ int main(int argc, char *argv[])
 		{
 			ev = SDL_PollEvent(&event);
 			sauv = SDL_GetTicks();
-			time = sauv;
 			Window_LittleEvent(event, &r, &c, ev, &mouse, &clic_x, 
 							&clic_y, &tomaj, &time);
+			
+			if(!ev)
+			{
+				SDL_Delay(2);
+				continue;
+			}
 			
 			switch(Menu_PollMouse(menu, event))
 			{
@@ -80,19 +85,20 @@ int main(int argc, char *argv[])
 					c = 0;
 					continue;
 				case FORCE_MAJ:
-					printf("FORCE MAAAAAAAAAAAAAAAAAAAAAAAAJ\n");
 					x=0;
 					y=0;
-					printf("force maj MENU\n");
 					Window_DrawBody();
 					Window_Print();
 					Menu_Aff(menu, &x, &y);
 					SDL_Flip(Window->screen);
-					
+					continue;
 					break;
 				default:
 					break;
 			}
+			
+			if(menu->select != NULL)
+				continue;
 			
 			switch(Events_PollMouse(event))
 			{
@@ -103,7 +109,7 @@ int main(int argc, char *argv[])
 				case SELECT:
 					/*Window_ApplyZoom(r);*/
 					Window_DrawBody();
-					/*Window_Print();*/
+					/*Window_Print(); */
 					Window_TestBox(Window->screen, Window->pos_body, r);
 					SDL_Flip(Window->screen);
 					break;
@@ -130,6 +136,7 @@ int main(int argc, char *argv[])
 			
 			if(sauv-SDL_GetTicks() < 10)
 				SDL_Delay(1);
+			
 		}
 		
 		

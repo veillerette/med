@@ -49,8 +49,8 @@ Menu_Node *MenuNode_Alloc(const char *name, int need_select, Node_Type type, int
 	strcpy(temp->name, name);
 	
 	temp->type = type;
-	temp->pos.x = 0;
-	temp->pos.y = 0;
+	temp->pos.x = -1;
+	temp->pos.y = -1;
 	temp->pos.h = 0;
 	temp->pos.w = 0;
 	switch(type)
@@ -119,10 +119,59 @@ void Menu_Free(Menu **menu)
 	}
 }
 
+
+/************* FONCTIONS DU MENU *******************/
+
+
 int menu_no_action(void)
 {
 	printf("menu_no_action()\n");
-	return 1;
+	return FORCE_MAJ;
+}
+
+int _Fichier_Quit(void)
+{
+	return QUIT;
+}
+
+int _Aide_APropos(void)
+{
+	SDL_Event event;
+	int c;
+	SDL_Color color = {200, 200, 200};
+	char *text = (char *)malloc(sizeof(char) * 1000);
+	boxRGBA(Window->screen, Window->width/2-500, Window->height/2-250, Window->width/2+500, Window->height/2+250,
+										45, 56, 67, 255);
+	sprintf(text, "%s", "A Propos");
+	Moteur_WriteParagraph(Window->width/2, Window->height/2-200, 400, text, 37, 20, "media/Garamond-light.ttf", color,
+				TEXT_BLENDED, TEXT_CENTER, Window->screen);
+	
+	sprintf(text, "%s", "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam lobortis justo et odio faucibus, quis consectetur nisi tincidunt. Nullam feugiat nulla ac semper fringilla. Aliquam accumsan tortor tristique posuere ultricies. Suspendisse tellus nibh, tincidunt in sollicitudin eu, fringilla ac turpis. Aliquam nunc velit, suscipit non viverra mattis, gravida in sapien. Maecenas dapibus libero leo, quis laoreet nisi condimentum et. Pellentesque odio erat, porta eu tincidunt et, faucibus ac risus. Mauris euismod sollicitudin magna non volutpat. Curabitur elementum consequat turpis quis tristique. Vestibulum blandit ligula ligula, venenatis varius lectus luctus ac. Maecenas bibendum ultrices laoreet. Praesent tristique eros lorem, vel mattis leo scelerisque id. Nunc vel finibus dui, id pharetra justo. ");								
+	Moteur_WriteParagraph(Window->width/2, Window->height/2-135, 800, text, 19, 10, "media/Garamond-light.ttf", color,
+				TEXT_BLENDED, TEXT_CENTER, Window->screen);
+	sprintf(text, "%s", "Cliquez pour continuer...");		
+	Moteur_WriteParagraph(Window->width/2, Window->height/2+120, 400, text, 19, 20, "media/Garamond.ttf", color,
+				TEXT_BLENDED, TEXT_CENTER, Window->screen);
+	SDL_Flip(Window->screen);
+	c = 1;
+	while(c)
+	{
+		SDL_WaitEvent(&event);
+		switch(event.type)
+		{
+			case SDL_QUIT:
+				return QUIT;
+				c = 0;
+			case SDL_MOUSEBUTTONDOWN:
+				c = 0;
+				while(SDL_PollEvent(&event)); /* flush event queue */
+				break;
+			default:
+				break;
+		}
+	}
+	
+	return FORCE_MAJ;
 }
 
 Menu *Menu_Create(void)
@@ -132,7 +181,7 @@ Menu *Menu_Create(void)
 	NodeArray_Add(menu->lst, "Fichier", 0, NODE, NULL);
 	NodeArray_Add(menu->lst->next[0]->next, "Nouveau", 0, LEAF, menu_no_action);
 	NodeArray_Add(menu->lst->next[0]->next, "Ouvrir", 0, LEAF, menu_no_action);
-	NodeArray_Add(menu->lst->next[0]->next, "Quitter", 0, LEAF, menu_no_action);
+	NodeArray_Add(menu->lst->next[0]->next, "Quitter", 0, LEAF, _Fichier_Quit);
 	NodeArray_Add(menu->lst, "Sélection", 0, NODE, NULL);
 	NodeArray_Add(menu->lst->next[1]->next, "Supprimer", 1, LEAF, menu_no_action);
 	NodeArray_Add(menu->lst->next[1]->next, "Désélectionner", 1, LEAF, menu_no_action);
@@ -151,8 +200,17 @@ Menu *Menu_Create(void)
 	NodeArray_Add(menu->lst, "Aide", 0, NODE, NULL);
 	NodeArray_Add(menu->lst->next[3]->next, "Manuel", 0, LEAF, menu_no_action);
 	NodeArray_Add(menu->lst->next[3]->next, "Aide en ligne", 0, LEAF, menu_no_action);
-	NodeArray_Add(menu->lst->next[3]->next, "A propos", 0, LEAF, menu_no_action);
-	NodeArray_Add(menu->lst->next[3]->next, "Autres", 0, LEAF, menu_no_action);
+	NodeArray_Add(menu->lst->next[3]->next, "A propos", 0, LEAF, _Aide_APropos);
+	NodeArray_Add(menu->lst->next[3]->next, "Autres", 0, NODE, menu_no_action);
+	NodeArray_Add(menu->lst->next[3]->next->next[3]->next, "Menu avec des arbres", 1, LEAF, menu_no_action);
+	NodeArray_Add(menu->lst->next[3]->next->next[3]->next, "D'autres fantaisies", 1, NODE, menu_no_action);
+	NodeArray_Add(menu->lst->next[3]->next->next[3]->next->next[1]->next, "Et d'autres trucs fou", 1, LEAF, menu_no_action);
+	NodeArray_Add(menu->lst->next[3]->next->next[3]->next->next[1]->next, "Wouaa !", 1, LEAF, menu_no_action);
+	NodeArray_Add(menu->lst->next[3]->next->next[3]->next->next[1]->next, "C'est vraiment trop bien", 1, LEAF, menu_no_action);
+	NodeArray_Add(menu->lst->next[3]->next->next[3]->next->next[1]->next, "Ne fait rien", 1, LEAF, menu_no_action);
+	NodeArray_Add(menu->lst->next[3]->next->next[3]->next->next[1]->next, "Voilà", 1, LEAF, menu_no_action);
+	NodeArray_Add(menu->lst->next[3]->next->next[3]->next, "Des choses", 1, LEAF, menu_no_action);
+	NodeArray_Add(menu->lst->next[3]->next->next[3]->next, "V. Veillerette", 1, LEAF, menu_no_action);
 
 	return menu;
 }
@@ -192,6 +250,14 @@ void Menu_AffBaseOne(TTF_Font *font, Menu_Node *node, int *x, int *y, int status
 	pos.y = 1;
 	SDL_BlitSurface(surf, NULL, final, &pos);
 	
+	if(max != 0)
+	{
+		if(node->type == NODE)
+			filledTrigonRGBA(final, final->w-10, final->h/2-2, final->w-7,
+					final->h/2, final->w-10, final->h/2+2,
+					color.r, color.g, color.b, 255);
+	}
+	
 	pos.x = *x;
 	pos.y = *y;
 	SDL_BlitSurface(final, NULL, Window->screen, &pos);
@@ -225,6 +291,7 @@ void Menu_AffExtendOne(TTF_Font *font, Menu *menu, Menu_Node *node, int *x, int 
 	int temp;
 	SDL_Rect pos;
 	int status = 0;
+	int sauv;
 	if((NULL == font) || (NULL == node) || (NULL == x) || (NULL == y))
 		return;
 	
@@ -244,10 +311,12 @@ void Menu_AffExtendOne(TTF_Font *font, Menu *menu, Menu_Node *node, int *x, int 
 			status = 2;
 		else if(menu->hover == node->next->next[i])
 			status = 1;
+		sauv = pos.y;
 		Menu_AffBaseOne(font, node->next->next[i], (int *)&pos.x, (int *)&pos.y, status, 1, max_width);
 		if(status == 2 && node->next->next[i]->type != LEAF)
 		{
 			*x += max_width + 25;
+			*y = sauv;
 			Menu_AffExtendOne(font, menu, node->next->next[i], x, y);
 		}
 	}
@@ -259,8 +328,13 @@ void Menu_Aff(Menu *menu, int *x, int *y)
 	int i;
 	int tmp_x, tmp_y;
 	int status = 0;
+	int height;
 	if((NULL == menu) || (NULL == x) || (NULL == y))
 		return;
+	TTF_SizeUTF8(menu->font, "Bonjour", NULL, &height);
+	boxRGBA(Window->screen, 0, 0, Window->width, height+2, 34, 45, 56, 255);
+	boxRGBA(Window->screen, 0, height+2, Window->width, height+2, 180, 180, 180, 255);
+						
 	for(i = 0; i < menu->lst->n; i++)
 	{
 		status = 0;
@@ -309,8 +383,10 @@ Menu_Node *FindExpandZone(Menu *menu, Menu_Node *mn, int clic_x, int clic_y)
 		if(pos.x <= clic_x && clic_x <= pos.x+pos.w &&
 			pos.y <= clic_y && clic_y <= pos.y+pos.h)
 			return mn->next->next[i];
-		if(mn->next->next[i] == menu->select && mn->next->next[i] == NODE)
+		printf("test %s==%s (%d)\n", mn->next->next[i]->name, menu->select->name, MyChildrenComp(menu->select,mn->next->next[i]));
+		if(MyChildrenComp(menu->select,mn->next->next[i]) && mn->next->next[i]->type == NODE)
 		{
+			printf("recherche profond %s\n", mn->next->next[i]->name);
 			res = FindExpandZone(menu, mn->next->next[i], clic_x, clic_y);
 			if(res != NULL)
 				return res;
@@ -332,7 +408,7 @@ Menu_Node *FindNodeByZone(Menu *menu, int clic_x, int clic_y)
 		if(pos.x <= clic_x && clic_x <= pos.x+pos.w &&
 			pos.y <= clic_y && clic_y <= pos.y+pos.h)
 			return menu->lst->next[i];
-		if(menu->select == menu->lst->next[i])
+		if(MyChildrenComp(menu->select,menu->lst->next[i]))
 		{
 			res = FindExpandZone(menu, menu->lst->next[i], clic_x, clic_y);
 			if(res != NULL)
@@ -345,6 +421,7 @@ Menu_Node *FindNodeByZone(Menu *menu, int clic_x, int clic_y)
 int Menu_PollMouse(Menu *menu, SDL_Event event)
 {
 	Menu_Node *mn = NULL;
+	
 	switch(event.type)
 	{
 		case SDL_QUIT:
@@ -355,8 +432,13 @@ int Menu_PollMouse(Menu *menu, SDL_Event event)
 				return NONE;
 			menu->hover = mn;
 			return FORCE_MAJ;
-		case SDL_MOUSEBUTTONUP:
+		case SDL_MOUSEBUTTONDOWN:
 			mn = FindNodeByZone(menu, event.button.x, event.button.y);
+			if(mn != NULL && mn->type == LEAF)
+			{
+				menu->select = NULL;
+				return mn->f();
+			}
 			if(menu->select == mn)
 				return NONE;
 			menu->select = mn;

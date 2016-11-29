@@ -140,7 +140,7 @@ static int Window_InitMenu(SDL_Surface *menu)
 	
 	SDL_FillRect(menu, NULL, SDL_MapRGB(menu->format, 255, 255, 255));
 	
-	SDL_FillRect(menu, NULL, SDL_MapRGB(menu->format, 255, 200, 200));
+	SDL_FillRect(menu, NULL, SDL_MapRGB(menu->format, 100, 110, 120));
 	return 1;
 }
 
@@ -199,9 +199,9 @@ int Window_CreateWindow(int width, int height, const char *title)
 		SDL_WM_SetCaption(title, "");
 	
 	{
-		Window->pos_menu = SDL_SetRect(0, 0, Window->width, Window->height / 10);
+		Window->pos_menu = SDL_SetRect(0, 0, Window->width, 80);
 	
-		Window->pos_pal = SDL_SetRect(0, Window->height / 10, Window->width / 10, 
+		Window->pos_pal = SDL_SetRect(0, 80, Window->width / 10, 
 							Window->height * 9/10);
 	
 			Window->menu = SDL_CreateRGBSurface(SDL_HWSURFACE, Window->pos_menu->w, Window->pos_menu->h,
@@ -216,7 +216,7 @@ int Window_CreateWindow(int width, int height, const char *title)
 	}
 	
 	{			
-		Window->pos_body = SDL_SetRect(Window->width / 10, Window->height/10, 
+		Window->pos_body = SDL_SetRect(Window->pos_pal->w, Window->pos_menu->h, 
 						Window->height * 3, Window->width * 2);
 
 		Window->body = (SDL_Surface **)malloc(sizeof(SDL_Surface *) * 1);
@@ -931,6 +931,8 @@ int Window_LittleEvent(SDL_Event event, double *r, int *c, int ev, int *mouse,
 		case SDL_MOUSEMOTION:
 			if(*mouse)
 			{
+				if(*clic_x < Window->pos_pal->w || *clic_y < Window->pos_menu->h)
+					return NONE;
 				if(*clic_x > event.motion.x)
 				{
 					Window->pos_body->x -= (*clic_x - event.motion.x);

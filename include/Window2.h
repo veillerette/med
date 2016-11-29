@@ -14,6 +14,7 @@
 #include "Staff.h"
 #include "Images.h"
 #include "Events.h"
+#include "Text.h"
 
 #define ESP_BODY 100
 #define BASE_BODY_X (Window->pos_pal->x + Window->pos_pal->w)
