@@ -79,6 +79,8 @@ int main(int argc, char *argv[])
 				continue;
 			}
 			
+			if(!ev)
+				SDL_Delay(1);
 			switch(Menu_PollMouse(menu, event))
 			{
 				case QUIT:

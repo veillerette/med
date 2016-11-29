@@ -247,7 +247,7 @@ void Sign_Free(Sign **sign)
 		free(*sign);
 		*sign = NULL;
 	}
-}
+} 
 
 void Sign_FreeAll(Sign **sign)
 {
