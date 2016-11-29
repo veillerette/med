@@ -141,7 +141,7 @@ int main(int argc, char *argv[])
 				case SELECT:
 					/*Window_ApplyZoom(r);*/
 					Window_DrawBody();
-					/*Window_Print(); */
+					Window_Print();
 					Window_TestBox(Window->screen, Window->pos_body, r);
 					Menu_Aff(menu, &x, &y);
 					SDL_Flip(Window->screen);
