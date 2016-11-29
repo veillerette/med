@@ -42,7 +42,7 @@ int main(int argc, char *argv[])
 		Staff_AddNote(staff, 0, 1, ConvertStringToID("g4"), NOTE_DEFAULT, NOIRE);
 		Staff_AddNote(staff, 0, 2, ConvertStringToID("g4"), NOTE_DEFAULT, NOIRE);
 		Staff_AddNote(staff, 0, 3, ConvertStringToID("g4"), NOTE_DEFAULT, NOIRE);
-		Staff_AddNote(staff, 1, 0, ConvertStringToID("c4"), NOTE_DEFAULT, CROCHE);
+		Staff_AddNote(staff, 1, 0, ConvertStringToID("c6"), NOTE_DEFAULT, CROCHE);
 		Staff_AddNote(staff, 1, 2, ConvertStringToID("e5"), NOTE_DEFAULT, CROCHE);
 		Staff_AddNote(staff, 2, 0, ConvertStringToID("g4"), NOTE_DEFAULT, DOUBLECROCHE);
 		Staff_AddNote(staff, 2, 1, ConvertStringToID("g4"), NOTE_DEFAULT, DOUBLECROCHE);

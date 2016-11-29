@@ -411,6 +411,7 @@ int Window_TestBox(SDL_Surface *dest, SDL_Rect *pos, int zoom)
 	int r,g,b,a;
 	if(NULL == dest)
 		return 0;
+
 	area= main_events->lst;
 	while(area != NULL)
 	{
@@ -683,22 +684,22 @@ int Note_Print(Staff *staff, Step *step, int id_note, Note *note, SDL_Rect *base
 				{
 					case QUADRUPLECROCHE:
 						base_pos->y += 2*HEAD_H;
-						base_pos->x -= 2*(HEAD_W / 4 - 2);
+						base_pos->x -= 2*(HEAD_W / 4);
 						Window_MyEventBlit(OBJECT_NOTE, Images->Rest_Quaver, NULL, dest, base_pos, step, id_note);
 						base_pos->y -= 2*HEAD_H;
-						base_pos->x += 2*(HEAD_W / 4 - 2);
+						base_pos->x += 2*(HEAD_W / 4);
 					case TRIPLECROCHE:
 						base_pos->y -= HEAD_H;
-						base_pos->x += HEAD_W / 4 - 2;
+						base_pos->x += HEAD_W / 4;
 						Window_MyEventBlit(OBJECT_NOTE, Images->Rest_Quaver, NULL, dest, base_pos, step, id_note);
 						base_pos->y += HEAD_H;
-						base_pos->x -= HEAD_W / 4 - 2;
+						base_pos->x -= HEAD_W / 4;
 					case DOUBLECROCHE:
 						base_pos->y += HEAD_H;
-						base_pos->x -= HEAD_W / 4 - 2;
+						base_pos->x -= HEAD_W / 4;
 						Window_MyEventBlit(OBJECT_NOTE, Images->Rest_Quaver, NULL, dest, base_pos, step, id_note);
 						base_pos->y -= HEAD_H;
-						base_pos->x += HEAD_W / 4 - 2;
+						base_pos->x += HEAD_W / 4 ;
 					case CROCHE:
 						Window_MyEventBlit(OBJECT_NOTE, Images->Rest_Quaver, NULL, dest, base_pos, step, id_note);
 						break;
