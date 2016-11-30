@@ -151,7 +151,7 @@ static int Window_InitPal(SDL_Surface *pal)
 	
 	SDL_FillRect(pal, NULL, SDL_MapRGB(pal->format, 255, 255, 255));
 	
-	SDL_FillRect(pal, NULL, SDL_MapRGB(pal->format, 34, 45, 56));
+	SDL_FillRect(pal, NULL, SDL_MapRGB(pal->format, 65, 76, 87));
 	return 1;
 }
 
@@ -216,7 +216,7 @@ int Window_CreateWindow(int width, int height, const char *title)
 	}
 	
 	{			
-		Window->pos_body = SDL_SetRect(Window->pos_pal->w, Window->pos_menu->h, 
+		Window->pos_body = SDL_SetRect((Window->width-Window->height*3/2-Window->pos_pal->w)/2+Window->pos_pal->w, Window->pos_menu->h, 
 						Window->height * 3, Window->width * 2);
 
 		Window->body = (SDL_Surface **)malloc(sizeof(SDL_Surface *) * 1);

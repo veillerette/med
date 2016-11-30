@@ -210,6 +210,14 @@ int _Selection_Divise(void)
 	return FORCE_SCOREMAJ;
 }
 
+int _Selection_Regularise(void)
+{
+	if(NULL == main_events->select || main_events->select->type != OBJECT_STEP)
+		return FORCE_MAJ;
+	Step_Regularise(*(main_events->select->staff->steps + main_events->select->id_step));
+	return FORCE_SCOREMAJ;
+}
+
 int _Ajouter_Mesure_Before(void)
 {
 	if(NULL == main_events->select)
@@ -242,6 +250,7 @@ Menu *Menu_Create(void)
 	NodeArray_Add(menu->lst->next[1]->next, "Supprimer", 1, LEAF, _Selection_Delete);
 	NodeArray_Add(menu->lst->next[1]->next, "Désélectionner", 1, LEAF, _Selection_Deselec);
 	NodeArray_Add(menu->lst->next[1]->next, "Diviser", 1, LEAF, _Selection_Divise);
+	NodeArray_Add(menu->lst->next[1]->next, "Régulariser", 1, LEAF, _Selection_Regularise);
 	NodeArray_Add(menu->lst, "Ajouter", 0, NODE, NULL);
 	NodeArray_Add(menu->lst->next[2]->next, "Mesure", 0, NODE, menu_no_action);
 	NodeArray_Add(menu->lst->next[2]->next->next[0]->next, "Avant la sélection", 1, LEAF, _Ajouter_Mesure_Before);
