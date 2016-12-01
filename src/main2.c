@@ -172,10 +172,7 @@ int main(int argc, char *argv[])
 				SDL_Delay(1);
 			
 		}
-		
-		
-		
-		Graphics_Quit();
+		Staff_Free(&staff);
 	}
 	else if(2 == argc && !strcmp(argv[1], "-parser"))
 	
@@ -250,10 +247,12 @@ int main(int argc, char *argv[])
 					break;
 			}
 		}
-		Graphics_Quit();
+		
 		Score_Free(&score);
 	}
 	
+	EventData_Free(&main_events);
+	Graphics_Quit();
 	Menu_Free(&menu);
 	Window_Quit();
 	

@@ -335,6 +335,8 @@ void Menu_AffBaseOne(TTF_Font *font, Menu_Node *node, int *x, int *y, int status
 		*x += final->w;
 	else
 		*y += final->h;
+	SDL_FreeSurface(surf);
+	SDL_FreeSurface(final);
 	return;
 }
 
