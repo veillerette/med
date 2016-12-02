@@ -491,6 +491,45 @@ Menu_Node *FindNodeByZone(Menu *menu, int clic_x, int clic_y)
 	return NULL;
 }
 
+int Menu_NoSelect(void)
+{
+	SDL_Color color = {255, 255, 255};
+	SDL_Event event;
+	int c;
+	int complete = 0;
+	printf("A\n");
+	boxRGBA(Window->screen, Window->width/2-100, Window->height/2-50, Window->width/2+100, Window->height/2+50,
+										45, 56, 67, 255);
+	printf("a\n");
+	Moteur_WriteText(Window->width/2, Window->height/2-35, "Aucune sélection active", 22, "media/Garamond-light.ttf", color, TEXT_BLENDED, TEXT_CENTER, Window->screen);
+	printf("b\n");		
+	Moteur_WriteText(Window->width/2, Window->height/2+20, "Cliquez pour continuer ...", 19, "media/Garamond-light.ttf", color, TEXT_BLENDED, TEXT_CENTER, Window->screen);
+	SDL_Flip(Window->screen);
+	c = 1;
+	printf("B\n");
+	
+	while(c)
+	{
+		SDL_WaitEvent(&event);
+		switch(event.type)
+		{
+			case SDL_QUIT:
+				return FORCE_SCOREMAJ;
+			case SDL_MOUSEBUTTONDOWN:
+				complete = 1;
+				break;
+			case SDL_MOUSEBUTTONUP:
+				if(complete)
+					return FORCE_SCOREMAJ;
+				else
+					break;
+			default:
+				break;
+		}
+	}
+	return FORCE_SCOREMAJ;
+}
+
 int Menu_PollMouse(Menu *menu, SDL_Event event)
 {
 	Menu_Node *mn = NULL;
@@ -510,7 +549,10 @@ int Menu_PollMouse(Menu *menu, SDL_Event event)
 			if(mn != NULL && mn->type == LEAF)
 			{
 				menu->select = NULL;
-				return mn->f();
+				if(!mn->need_select || (mn->need_select && main_events->select != NULL))
+					return mn->f();
+				else
+					return Menu_NoSelect();
 			}
 			if(menu->select == mn)
 				return NONE;
