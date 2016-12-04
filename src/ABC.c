@@ -44,7 +44,7 @@ static int ABC_ScanHead(FILE *f, char *field, char *text)
 
 static void ABC_replaceSlash(char *str)
 {
-	int i;
+	unsigned int i;
 	for(i = 0; i < strlen(str); i++)
 		if(*(str + i) == '/')
 		{

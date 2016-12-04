@@ -1,6 +1,8 @@
 #include "../include/Images.h"
 
 Graphics *Images = NULL;
+Graphics *HoverImages = NULL;
+Graphics *LittleImages = NULL;
 
 Color SetColorA(int r, int g, int b, int a)
 {
@@ -14,7 +16,7 @@ Color SetColorA(int r, int g, int b, int a)
 
 Color SetColor(int r, int g, int b)
 {
-	return SetColorA(r, b, b, 255);
+	return SetColorA(r, g, b, 255);
 }
 
 SDL_Rect *SDL_SetRect(int x, int y, int w, int h)
@@ -82,7 +84,7 @@ int Draw_Border(SDL_Surface *surf, int size)
 }
 
 
-SDL_Surface *Note_CreateHead(int size_w, int size_h)
+SDL_Surface *Note_CreateHead(int size_w, int size_h, Color color)
 {
 	SDL_Surface *surf =  SDL_CreateWhiteKeySurface(size_w+1, size_h+1);
 	SDL_Surface *surf2 = NULL;
@@ -95,7 +97,7 @@ SDL_Surface *Note_CreateHead(int size_w, int size_h)
 	aaellipseRGBA(surf, size_w / 2, size_h / 2, size_w / 2, size_h / 2 - 1, 0, 0, 0, 255);
 	aaellipseRGBA(surf, size_w / 2, size_h / 2, size_w / 2 - 1, size_h / 2 - 1, 0, 0, 0, 255);
 	aaellipseRGBA(surf, size_w / 2, size_h / 2, size_w / 2 - 2, size_h / 2 - 2, 0, 0, 0, 255);
-	filledEllipseRGBA(surf, size_w / 2, size_h / 2, size_w / 2, size_h / 2, 0, 0, 0, 255);
+	filledEllipseRGBA(surf, size_w / 2, size_h / 2, size_w / 2, size_h / 2, color.r, color.g, color.b, 255);
 
 	surf2 = rotozoomSurface(surf, 30.0, 1.0, SMOOTHING_ON);
 	
@@ -107,21 +109,21 @@ SDL_Surface *Note_CreateHead(int size_w, int size_h)
 	return surf2;
 }
 
-SDL_Surface *Note_CreateHeadWhite(int size_w, int size_h)
+SDL_Surface *Note_CreateHeadWhite(int size_w, int size_h, Color color)
 {
 	SDL_Surface *surf = NULL;
 	SDL_Surface *surf2 = NULL;
 	SDL_Surface *surf3 = NULL;
 	SDL_Rect pos;
 	
-	surf = Note_CreateHead(size_w, size_h);
+	surf = Note_CreateHead(size_w, size_h, color);
 	memtest(surf);
 	
 	surf2 = SDL_CreateSurface(size_w+1, size_h+1);
 	memtest(surf2);
 	
-	SDL_FillRect(surf2, NULL, SDL_MapRGB(surf2->format, 0, 0, 255));
-	SDL_SetColorKey(surf2, SDL_SRCCOLORKEY, SDL_MapRGB(surf2->format, 0, 0, 255));
+	SDL_FillRect(surf2, NULL, SDL_MapRGB(surf2->format, 255, 0, 0));
+	SDL_SetColorKey(surf2, SDL_SRCCOLORKEY, SDL_MapRGB(surf2->format, 255, 0, 0));
 	
 	filledEllipseRGBA(surf2, size_w / 2, size_h / 2, size_w / 2 - size_w/8.0, (int)(size_h / 3.75), 255, 255, 255, 255);
 	aaellipseRGBA(surf2, size_w / 2, size_h / 2, size_w / 2 -size_w/8.0, (int)(size_h / 3.75) - 1, 255, 255, 255, 255);
@@ -463,7 +465,10 @@ Graphics *Graphics_Alloc(void)
 	temp->Rest_Long = NULL;
 	temp->pos_Long = NULL;
 	temp->Rest_BreveLong = NULL;
-	temp->pos_Long = NULL;
+	temp->pos_BreveLong = NULL;
+	
+	temp->Rest_Crotchet = NULL;
+	temp->pos_restCrotchet = NULL;
 	
 	temp->Rest_Quaver = NULL;
 	temp->pos_Quaver = NULL;
@@ -536,63 +541,63 @@ void Graphics_Free(Graphics **graphics)
 	}
 }
 
-int Graphics_LoadAll(void)
+int Graphics_Load(Graphics **data)
 {
 	int r = 1;
-	if(NULL == Images)
-		Images = Graphics_Alloc();
+	if(NULL == (*data))
+		(*data) = Graphics_Alloc();
 	printf("Begin creating graphics... ");
 	
-	Images->Note_headBlack = Note_CreateHead(HEAD_W, HEAD_H);
-	if(NULL == Images->Note_headBlack)
+	(*data)->Note_headBlack = Note_CreateHead(HEAD_W, HEAD_H, SetColor(0, 0, 0));
+	if(NULL == (*data)->Note_headBlack)
 		r = 0;
 
-	Images->Note_headWhite = Note_CreateHeadWhite(HEAD_W, HEAD_H);
-	if(NULL == Images->Note_headWhite)
+	(*data)->Note_headWhite = Note_CreateHeadWhite(HEAD_W, HEAD_H, SetColor(0, 0, 0));
+	if(NULL == (*data)->Note_headWhite)
 		r = 0;
 	
-	Images->Note_headWhole = Note_CreateHeadWhole(HEAD_W, HEAD_H);
-	if(NULL == Images->Note_headWhole)
+	(*data)->Note_headWhole = Note_CreateHeadWhole(HEAD_W, HEAD_H);
+	if(NULL == (*data)->Note_headWhole)
 		r = 0;
 	
-	Images->Note_Black = Note_CreateBlack(HEAD_W, HEAD_H, QUEUE);
-	if(NULL == Images->Note_Black)
+	(*data)->Note_Black = Note_CreateBlack(HEAD_W, HEAD_H, QUEUE);
+	if(NULL == (*data)->Note_Black)
 		r = 0;
 	
-	Images->Note_Crotchet = Note_CreateCrotchet(HEAD_W, HEAD_H, QUEUE);
-	if(NULL == Images->Note_Crotchet)
+	(*data)->Note_Crotchet = Note_CreateCrotchet(HEAD_W, HEAD_H, QUEUE);
+	if(NULL == (*data)->Note_Crotchet)
 		r = 0;
 	
-	Images->Note_CrotchetInv = Note_CreateCrotchetInv(HEAD_W, HEAD_H, QUEUE);
-	if(NULL == Images->Note_CrotchetInv)
+	(*data)->Note_CrotchetInv = Note_CreateCrotchetInv(HEAD_W, HEAD_H, QUEUE);
+	if(NULL == (*data)->Note_CrotchetInv)
 		r = 0;
 	
-	Images->Rest_Long = Rest_CreateLong(HEAD_W, HEAD_H);
-	if(NULL == Images->Rest_Long)
+	(*data)->Rest_Long = Rest_CreateLong(HEAD_W, HEAD_H);
+	if(NULL == (*data)->Rest_Long)
 		r = 0;
 	
-	Images->Rest_BreveLong = Rest_CreateBreveLong(HEAD_W, HEAD_H);
-	if(NULL == Images->Rest_BreveLong)
+	(*data)->Rest_BreveLong = Rest_CreateBreveLong(HEAD_W, HEAD_H);
+	if(NULL == (*data)->Rest_BreveLong)
 		r = 0;
 	
-	Images->Rest_Quaver = Rest_CreateQuaver(HEAD_W, HEAD_H);
-	if(NULL == Images->Rest_Quaver)
+	(*data)->Rest_Quaver = Rest_CreateQuaver(HEAD_W, HEAD_H);
+	if(NULL == (*data)->Rest_Quaver)
 		r = 0;
 	
-	Images->Rest_Breve = Rest_CreateBreave(HEAD_W, HEAD_H);
-	if(NULL == Images->Rest_Breve)
+	(*data)->Rest_Breve = Rest_CreateBreave(HEAD_W, HEAD_H);
+	if(NULL == (*data)->Rest_Breve)
 		r = 0;
 	
-	Images->Sharp = CreateSharp(HEAD_W, HEAD_H);
-	if(NULL == Images->Sharp)
+	(*data)->Sharp = CreateSharp(HEAD_W, HEAD_H);
+	if(NULL == (*data)->Sharp)
 		r = 0;
 	
-	Images->Flat = CreateFlat(HEAD_W, HEAD_H);
-	if(NULL == Images->Flat)
+	(*data)->Flat = CreateFlat(HEAD_W, HEAD_H);
+	if(NULL == (*data)->Flat)
 		r = 0;
 	
-	Images->DoubleFlat = CreateDoubleFlat(HEAD_W, HEAD_H);
-	if(NULL == Images->DoubleFlat)
+	(*data)->DoubleFlat = CreateDoubleFlat(HEAD_W, HEAD_H);
+	if(NULL == (*data)->DoubleFlat)
 		r = 0;
 	
 	if(r)
@@ -606,9 +611,157 @@ int Graphics_LoadAll(void)
 	return 1;
 }
 
+int Graphics_LoadHover(Graphics **data)
+{
+	int r = 1;
+	if(NULL == (*data))
+		(*data) = Graphics_Alloc();
+	printf("Begin creating hover graphics... \n");
+	
+	(*data)->Note_headBlack = Note_CreateHead(HEAD_W, HEAD_H, SetColor(0, 0, 80));
+	if(NULL == (*data)->Note_headBlack)
+		r = 0;
+	if(r)
+		colorprintf(GREEN, "Ok !\n");
+	else
+	{
+		colorprintf(RED, "Error 1 !\n");
+		exit(EXIT_FAILURE);
+	}
+	return 1;
+}
+
+Uint32 SDL_GetPixel(SDL_Surface *surf, int x, int y)
+{
+	int bpp = surf->format->BytesPerPixel;
+	Uint8 *p = (Uint8 *)surf->pixels + x * bpp + y * surf->pitch;
+	
+	switch(bpp)
+	{
+		case 2:
+			return *(Uint16 *)p;
+		case 3:
+			if(SDL_BYTEORDER == SDL_BIG_ENDIAN)
+				return p[0] << 16 | p[1] << 8 | p[2];
+			else
+				return p[2] << 16 | p[1] << 8 | p[0];
+		case 4:
+			return *(Uint32 *)p;
+		default:
+			break;
+	}
+	return 0;
+}
+
+int SDL_SetPixel(SDL_Surface *surf, int x, int y, Uint32 pix)
+{
+	int bpp = surf->format->BytesPerPixel;
+	Uint8 *p = (Uint8 *)surf->pixels + x * bpp + y * surf->pitch;
+	
+	switch(bpp)
+	{
+		case 2:
+			*(Uint16 *)p = pix;
+			break;
+		case 3:
+			if(SDL_BYTEORDER == SDL_BIG_ENDIAN)
+			{
+				p[0] = (pix >> 16) & 0xFF;
+				p[1] = (pix >> 8) & 0xFF;
+				p[2] = (pix & 0xFF);
+			}
+			else
+			{
+				p[2] = (pix >> 16) & 0xFF;
+				p[1] = (pix >> 8) & 0xFF;
+				p[0] = (pix & 0xFF);
+			}
+			break;
+		case 4:
+			*(Uint32 *)p = pix;
+			break;
+		default:
+			break;
+	}
+	return 1;
+}
+
+int Images_InvertBlack(SDL_Surface *surf)
+{
+	int x,y;
+	Uint32 pix;
+	if(NULL == surf)
+		return 0;
+	for(x = 0; x < surf->w; x++)
+	{
+		for(y = 0; y < surf->h; y++)
+		{
+			pix = SDL_GetPixel(surf, x, y);
+			if(pix > 0x7FFFFF)
+				pix = 0x000000;
+			else
+				pix = 0x778899;
+			SDL_SetPixel(surf, x, y, pix);
+		}
+	}
+	return 1;
+}
+
+SDL_Surface *Create_Little(SDL_Surface *src, int ratioX, int ratioY)
+{
+	SDL_Surface *dest = NULL;
+	dest = shrinkSurface(src, ratioX, ratioY);
+	Images_InvertBlack(dest);
+	SDL_SetColorKey(dest, SDL_SRCCOLORKEY, SDL_MapRGB(dest->format, 0, 0, 0));
+
+	return dest;
+}
+
+int Graphics_LoadLittle(Graphics **data)
+{
+	Graphics *cur;
+	if(NULL == (*data))
+		(*data) = Graphics_Alloc();
+	printf("Begin creating little graphics... \n");
+	if(Images == NULL)
+	{
+		colorprintf(RED, "Error 2 !\n");
+		exit(EXIT_FAILURE);
+	}
+	
+	cur = *data;
+
+
+	cur->Note_headBlack = Create_Little(Images->Note_headBlack, RATIO_LITTLE+1, RATIO_LITTLE+1);
+	cur->Note_headWhite = Create_Little(Images->Note_headWhite, RATIO_LITTLE+1, RATIO_LITTLE+1);
+	cur->Note_headWhole = Create_Little(Images->Note_headWhole, RATIO_LITTLE, RATIO_LITTLE);
+	cur->Note_Black = Create_Little(Images->Note_Black, RATIO_LITTLE+1, RATIO_LITTLE+2);
+	cur->Note_Crotchet = Create_Little(Images->Note_Crotchet, RATIO_LITTLE+1, RATIO_LITTLE+2);
+	cur->Note_CrotchetInv = Create_Little(Images->Note_CrotchetInv, RATIO_LITTLE, RATIO_LITTLE);
+	cur->Rest_Long = Create_Little(Images->Rest_Long, RATIO_LITTLE, RATIO_LITTLE);
+	cur->Rest_BreveLong = Create_Little(Images->Rest_BreveLong, RATIO_LITTLE, RATIO_LITTLE);
+	cur->Rest_Quaver = Create_Little(Images->Rest_Quaver, RATIO_LITTLE, RATIO_LITTLE);
+	cur->Rest_Breve = Create_Little(Images->Rest_Breve, RATIO_LITTLE, RATIO_LITTLE);
+	cur->Sharp = Create_Little(Images->Sharp, RATIO_LITTLE, RATIO_LITTLE);
+	cur->Flat = Create_Little(Images->Flat, RATIO_LITTLE, RATIO_LITTLE);
+	cur->DoubleFlat = Create_Little(Images->DoubleFlat, RATIO_LITTLE, RATIO_LITTLE);
+
+	return 1;
+}
+
+int Graphics_LoadAll(void)
+{
+	Graphics_Load(&Images);
+	Graphics_LoadHover(&HoverImages);
+	Graphics_LoadLittle(&LittleImages);
+	return 1;
+}
+
 void Graphics_Quit(void)
 {
 	Graphics_Free(&Images);
+	Graphics_Free(&HoverImages);
+	Graphics_Free(&LittleImages);
 }
 
 int PowerOfBezier(SDL_Surface *dest, const int *x, const int *y, int n, Color color)

@@ -31,13 +31,17 @@ Area *Area_Set(SDL_Rect rect, Object_Type type, ...)
 		case OBJECT_NOTE:
 			area->step = va_arg(va, Step *);
 			area->id_note = va_arg(va, int);
-			break;
+			break;			
 		case OBJECT_LINE:
 		case OBJECT_CLE:
 		case OBJECT_STEP:
+			area->staff = va_arg(va, Staff*);
+			area->id_step = va_arg(va, int);
+			break;
 		case EVENT_ADDNOTE:
 			area->staff = va_arg(va, Staff*);
 			area->id_step = va_arg(va, int);
+			area->id_note_add = va_arg(va, int);
 			break;
 		case OBJECT_SIGN:
 			area->sign = va_arg(va, Sign **);
@@ -62,6 +66,7 @@ void Area_Console(Area *area)
 {
 	if(NULL == area)
 		return;
+	return;
 	printf("Area, \t(%d, %d)  %d<=>  %d/|\\ type=%X next=%p\n", 
 			area->rect.x, area->rect.y, area->rect.w, area->rect.h,
 			(unsigned int)area->type, (void *)area->next);
@@ -73,8 +78,10 @@ void Area_Console(Area *area)
 		case OBJECT_LINE:
 		case OBJECT_CLE:
 		case OBJECT_STEP:
-		case EVENT_ADDNOTE:
 			printf("\tStaff=%p, id_step=%d\n", (void *)area->staff, area->id_step);
+			break;
+		case EVENT_ADDNOTE:
+			printf("\tStaff=%p, id_step=%d, id_note=%d\n", (void *)area->staff, area->id_step, area->id_note_add);
 			break;
 		case OBJECT_SIGN:
 			printf("\tSign=%p\n", *(area->sign));
@@ -95,7 +102,8 @@ EventData *EventData_Alloc(void)
 	temp->select = NULL;
 	temp->hover = NULL;
 	temp->base = NULL;
-	
+	temp->mode = MODE_EDIT;
+	temp->duration = NOIRE;
 	return temp;
 }
 
@@ -195,6 +203,7 @@ void EventData_Console(EventData *ed)
 	Area *area = NULL;
 	if(NULL == ed)
 		return;
+	return;
 	area = ed->lst;
 	
 	printf("EventData, n=%d, select=%p, hover=%p\n",
@@ -222,11 +231,37 @@ Area *Events_GetAreaByPixelAndType(int x, int y, Object_Type type)
 	while(cur != NULL)
 	{
 		if((cur->type & type) && PixelInRect(x, y, cur->rect))
-			return cur;
+		{
+			if(main_events->mode == MODE_ADD)
+			{
+				if(cur->type == EVENT_ADDNOTE)
+					return cur;
+			}
+			else if(main_events->mode == MODE_EDIT)
+			{
+				if(cur->type != EVENT_ADDNOTE)
+					return cur;
+			}
+		}
 		cur = cur->next;
 		i++;
 	}
 	return NULL;
+}
+
+char MouseToNote(Area *area, int y)
+{
+	int z = y - area->rect.y;
+	int i;
+	int goal;
+	int res = 91;
+	int tab[] = {2, 1, 2, 2, 1, 2, 2};
+	y+=HEAD_H*0.25;
+	res -= ((int)((z)/(HEAD_H*3.5)))*12;
+	goal = ((int)((z)/((int)(HEAD_H*0.5))))%7;
+	for(i = 0; i < goal; i++)
+		res -= tab[i%7];
+	return res;
 }
 
 int Events_PollMouse(SDL_Event event)
@@ -256,20 +291,36 @@ int Events_PollMouse(SDL_Event event)
 	switch(event.type)
 	{
 		case SDL_MOUSEMOTION:
-			if(main_events->hover == area)
-				return NONE;
-			main_events->hover = area;
-			return HOVER;
+			if(main_events->mode == MODE_EDIT)
+			{
+				if(main_events->hover == area)
+					return NONE;
+				main_events->hover = area;
+				return HOVER;
+			}
 			break;
 		case SDL_MOUSEBUTTONDOWN:
 			if((NULL == area) && (x < main_events->base->x || y < main_events->base->y))
 				return NONE;
-			if(main_events->select == area)
-				return NONE;
-			main_events->select = area;
-			if(area != NULL)
-				printf("select new area\n");
-			return SELECT;
+			if(main_events->mode == MODE_EDIT)
+			{
+				if(main_events->select == area)
+					return NONE;
+				main_events->select = area;
+				if(area != NULL)
+					printf("select new area\n");
+				return SELECT;
+			}
+			else
+			{
+				if((NULL == area))
+					return NONE;
+				if(area->type == EVENT_ADDNOTE)
+				{
+					Staff_AddNote(area->staff, area->id_step, area->id_note_add, MouseToNote(area, (y-main_events->base->y)*main_events->r), NOTE_DEFAULT, main_events->duration);
+					return FORCE_MAJ;
+				}
+			}
 			break;
 		default:
 			return 0;
@@ -290,7 +341,7 @@ int Events_PollKeyboard(SDL_Event event)
 			{
 				case SDLK_BACKSPACE:
 				case SDLK_DELETE:
-					if(main_events->select == NULL)
+					if(main_events->select == NULL || main_events->mode!=MODE_EDIT)
 						return NONE;
 					switch(main_events->select->type)
 					{
@@ -316,8 +367,25 @@ int Events_PollKeyboard(SDL_Event event)
 						default:
 							break;
 					}
+				case SDLK_a:
+					if(main_events->mode == MODE_ADD)
+						return NONE;
+					main_events->mode = MODE_ADD;
+					return FORCE_MAJ;
+					break;
+				case SDLK_e:
+					if(main_events->mode == MODE_EDIT)
+						return NONE;
+					main_events->mode = MODE_EDIT;
+					return FORCE_MAJ;
+					break;
 				default:
 					break;
+			}
+			if(event.key.keysym.sym > SDLK_KP0 && event.key.keysym.sym <= SDLK_KP7)
+			{
+				main_events->duration = pow(2, event.key.keysym.sym-SDLK_KP0-1);
+				return NONE;
 			}
 	}
 	return NONE;

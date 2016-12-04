@@ -8,6 +8,7 @@
 #include "Window2.h"
 #include "Events.h"
 
+
 #define MENU_FONT "media/Garamond.ttf"
 #define MENU_SIZETEXT 18
 #define FORCE_CLEAR 20
@@ -50,6 +51,9 @@ struct Menu
 	TTF_Font *font;
 	Menu_Node *select;
 	Menu_Node *hover;
+	int height;
+	
+	SDL_Rect mode;
 };
 
 Node_Array *NodeArray_Alloc(int max);
@@ -81,4 +85,10 @@ void Menu_Aff(Menu *menu, int *x, int *y);
 void Menu_Console(Node_Array *lst, int tab);
 
 int Menu_PollMouse(Menu *menu, SDL_Event event);
+
+void Toolbar_PrintMode(Menu *menu);
+
+void Toolbar_PrintNote(Menu *menu);
+
+int ToolBar_PollMouse(Menu *menu, SDL_Event event);
 #endif

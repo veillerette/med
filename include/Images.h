@@ -19,6 +19,8 @@
 #define QUEUE_BORDER 5
 #define NOTE_SPACE 50
 
+#define RATIO_LITTLE 2
+
 typedef struct Graphics Graphics;
 struct Graphics
 {
@@ -93,4 +95,7 @@ int PowerOfBezier(SDL_Surface *dest, const int *x, const int *y, int n, Color co
 
 
 extern Graphics *Images;
+extern Graphics *HoverImages;
+extern Graphics *LittleImages;
+
 #endif

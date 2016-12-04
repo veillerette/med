@@ -307,7 +307,7 @@ int Score_AddSign(Score *score, Sign_Type type, Uint value, Uint time, char *tex
 	if(NULL == score)
 		return 0;
 	
-	if(type <= 0 || time < 0)
+	if(type <= 0)
 		return 0;
 		
 	new = Sign_Alloc(type, value, time, text);

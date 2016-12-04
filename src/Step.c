@@ -438,28 +438,24 @@ int Step_AddNote(Step *step, int id, char note, Note_Flags flags,
 			return 0;
 		}
 	}
-	printf("A\n");
-	Step_ConsolePrintf(step);
+
 	if((*cur)->note->duration == RONDE)
 		tmp_duration = step->num * (64 / step->den);
 	else
 		tmp_duration = Note_RealDuration((*cur)->note);
-	printf("B %d %d\n", note_duration, tmp_duration);
-	Step_ConsolePrintf(step);
+
 	ToNote_Free(cur);
 	*cur = new_note;
 	note_duration -= tmp_duration;
 	special=new_note;
 	cur = &((*cur)->next);
-	printf("C %d %d\n", special->note->duration, note_duration);
-	Step_ConsolePrintf(step);
+
 	while(note_duration > 0)
 	{
 		if(NULL == *cur)
 		{
 			special->note->duration = 64/(64/special->note->duration - note_duration);
 			special->note->flags |= NOTE_LINKED;
-			Step_ConsolePrintf(step);
 			return 64/note_duration;
 		}
 		tmp_duration = Note_RealDuration((*cur)->note);
@@ -468,14 +464,14 @@ int Step_AddNote(Step *step, int id, char note, Note_Flags flags,
 		ToNote_Free(cur);
 		*cur = sauv;
 	}
-	printf("D\n");
+
 	if(0 == note_duration)
 		return 0;
 		
 	note_duration = -note_duration;
 	
 	rest_r = find2rest(note_duration);
-	printf("E\n");
+
 	i = 0;
 	while(*(rest_r + i) > 0)
 	{
@@ -671,6 +667,22 @@ Note_Duration Step_GetMinDuration(Step *step)
 	}
 	
 	return duration;
+}
+
+Note *Step_GetNote(Step *step, int id_note)
+{
+	ToNote *notes = NULL;
+	if(NULL == step || id_note < 0)
+		return 0;
+	notes = step->notes;
+	while(notes != NULL)
+	{
+		if(id_note == 0)
+			return notes->note;
+		id_note--;
+		notes = notes->next;
+	}
+	return NULL;
 }
 
 

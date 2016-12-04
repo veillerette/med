@@ -80,6 +80,13 @@ Menu *Menu_Alloc(void)
 	temp->select = NULL;
 	temp->hover = NULL;
 	
+	temp->height = 0;
+	
+	temp->mode.x = 0;
+	temp->mode.y = 0;
+	temp->mode.h = 0;
+	temp->mode.w = 0;
+	
 	return temp;
 }
 
@@ -138,7 +145,7 @@ int _Aide_APropos(void)
 {
 	SDL_Event event;
 	int c;
-	SDL_Color color = {200, 200, 200};
+	SDL_Color color = {200, 200, 200, 0};
 	char *text = (char *)malloc(sizeof(char) * 1000);
 	boxRGBA(Window->screen, Window->width/2-500, Window->height/2-250, Window->width/2+500, Window->height/2+250,
 										45, 56, 67, 255);
@@ -284,8 +291,8 @@ Menu *Menu_Create(void)
 void Menu_AffBaseOne(TTF_Font *font, Menu_Node *node, int *x, int *y, int status, int dir, int max)
 {
 	SDL_Surface *surf = NULL, *final = NULL;
-	SDL_Color color = {200, 200, 200};
-	SDL_Color background = {34, 45, 56};
+	SDL_Color color = {200, 200, 200, 0};
+	SDL_Color background = {34, 45, 56, 0};
 	SDL_Rect pos;
 	int width;
 	if(NULL == node)
@@ -403,8 +410,13 @@ void Menu_Aff(Menu *menu, int *x, int *y)
 	sauv_x = *x;
 	sauv_y = *y;
 	TTF_SizeUTF8(menu->font, "Bonjour", NULL, &height);
+	menu->height = height+2;
 	boxRGBA(Window->screen, 0, 0, Window->width, height+2, 34, 45, 56, 255);
 	boxRGBA(Window->screen, 0, height+2, Window->width, height+2, 120, 130, 140, 255);
+	
+	Toolbar_PrintMode(menu);
+	if(main_events->mode == MODE_ADD)
+		Toolbar_PrintNote(menu);
 						
 	for(i = 0; i < menu->lst->n; i++)
 	{
@@ -424,7 +436,6 @@ void Menu_Aff(Menu *menu, int *x, int *y)
 	}
 	*x = sauv_x;
 	*y = sauv_y;
-	printf("- - - - - - - - - - - -\n");
 }
 
 void Menu_Console(Node_Array *lst, int tab)
@@ -493,7 +504,7 @@ Menu_Node *FindNodeByZone(Menu *menu, int clic_x, int clic_y)
 
 int Menu_NoSelect(void)
 {
-	SDL_Color color = {255, 255, 255};
+	SDL_Color color = {255, 255, 255, 0};
 	SDL_Event event;
 	int c;
 	int complete = 0;
@@ -545,6 +556,13 @@ int Menu_PollMouse(Menu *menu, SDL_Event event)
 			menu->hover = mn;
 			return FORCE_MAJ;
 		case SDL_MOUSEBUTTONDOWN:
+			if(PixelInRect(event.button.x, event.button.y, menu->mode))
+			{
+				main_events->mode = 1-main_events->mode;
+				return FORCE_MAJ;
+			}
+			if(ToolBar_PollMouse(menu, event) == FORCE_MAJ)
+				return FORCE_MAJ;
 			mn = FindNodeByZone(menu, event.button.x, event.button.y);
 			if(mn != NULL && mn->type == LEAF)
 			{
@@ -557,13 +575,138 @@ int Menu_PollMouse(Menu *menu, SDL_Event event)
 			if(menu->select == mn)
 				return NONE;
 			menu->select = mn;
-			if(mn != NULL)	
-				printf("new select = %s\n", mn->name);
-			else
-				printf("new select = %p\n", (void *)mn);
 			return FORCE_MAJ;
 		default:
 			break;
 	}
 	return NONE;
 }
+
+void Toolbar_PrintMode(Menu *menu)
+{
+	char text[2] = {0, 0};
+	SDL_Color color = {200, 220, 240, 0};
+	int y = (Window->pos_menu->h - menu->height)/2 + menu->height;
+	if(main_events->mode == MODE_ADD)
+		text[0] = 'A';
+	else
+		text[0] = 'E';
+	Moteur_WriteText(25, y, text, 40, 
+				MENU_FONT, color, 
+				TEXT_BLENDED, TEXT_CENTER, 
+				Window->screen);
+	roundedRectangleRGBA(Window->screen, 5, y-20, 45, y+20, 5, color.r, color.g, color.b, 255);
+	roundedRectangleRGBA(Window->screen, 6, y-19, 44, y+19, 5, 200, 200, 200, 255);
+	roundedRectangleRGBA(Window->screen, 7, y-18, 43, y+18, 5, 200, 200, 200, 255);
+	menu->mode.x = 5;
+	menu->mode.y = y-20;
+	menu->mode.w = 40;
+	menu->mode.h = 40;
+}
+
+static void BlitCenter(SDL_Surface *src, SDL_Rect *src_rect, SDL_Surface *dest, SDL_Rect *dest_rect)
+{
+	dest_rect->x -= src->w/2;
+	dest_rect->y -= src->h/2;
+	SDL_BlitSurface(src, src_rect, dest, dest_rect);
+	dest_rect->y += src->h/2;
+	dest_rect->x += src->w/2;
+}
+
+int ToolBar_PollMouse(Menu *menu, SDL_Event event)
+{
+	int i,x,y;
+	int dy = (Window->pos_menu->h - menu->height)/2 + menu->height;
+	switch(event.type)
+	{
+		case SDL_MOUSEBUTTONDOWN:
+			x = event.button.x;
+			y = event.button.y;
+			for(i = 0; i < 7; i++)
+			{
+				if(x >= 60+i*45 && x <= 100+i*45 &&
+					y >= dy-20 && y <= dy+20)
+				{
+					main_events->duration = pow(2, i);
+					return FORCE_MAJ;
+				}
+			}
+			break;
+	}
+	return NONE;
+}
+
+void Toolbar_PrintNote(Menu *menu)
+{
+	int i;
+	SDL_Rect pos;
+	int n, t;
+	int y = (Window->pos_menu->h - menu->height)/2 + menu->height;
+	
+	pos.y = y;
+	for(i = 0; i < 7; i++)
+	{
+		pos.x = 80+i*45;
+		if(i == log(main_events->duration)/log(2))
+			roundedBoxRGBA(Window->screen, 60+i*45, y-20, 100+i*45, y+20, 3, 75, 85, 95, 255);
+		else
+			roundedBoxRGBA(Window->screen, 60+i*45, y-20, 100+i*45, y+20, 3, 90, 100, 110, 255);
+		pos.y -= 2;
+		switch(i)
+		{
+			case 0:
+				pos.y += 2;
+				BlitCenter(LittleImages->Note_headWhole, NULL, Window->screen, &pos);
+				pos.y -= 2;
+				break;
+			case 1:
+				pos.y += 12;
+				BlitCenter(LittleImages->Note_headWhite, NULL, Window->screen, &pos);
+				pos.y -= 12;
+				BlitCenter(LittleImages->Note_Black, NULL, Window->screen, &pos);
+				break;
+			case 2:
+				pos.y += 12;
+				BlitCenter(LittleImages->Note_headBlack, NULL, Window->screen, &pos);
+				pos.y -= 12;
+				BlitCenter(LittleImages->Note_Black, NULL, Window->screen, &pos);
+				break;
+			case 3:
+			case 4:
+			case 5:
+			case 6:
+				n = i;
+				t = 0;
+				pos.x-=5;
+				pos.y += 12;
+				BlitCenter(LittleImages->Note_headBlack, NULL, Window->screen, &pos);
+				pos.y -= 12;
+				BlitCenter(LittleImages->Note_Black, NULL, Window->screen, &pos);
+				while(n >= 3)
+				{
+					pos.x += 17;
+					pos.y -= 5;
+					BlitCenter(LittleImages->Note_Crotchet, NULL, Window->screen, &pos);
+					pos.x -= 17;
+					pos.y += 5;
+					pos.y += 5;
+					t += 5;
+					n--;
+				}
+				pos.y -= t;
+				break;
+				
+		}
+		pos.y += 2;
+	}
+	pos.x += 40;
+	pos.y -= 23;
+	roundedBoxRGBA(Window->screen, pos.x, pos.y, pos.x+1, pos.y+46, 7, 90, 100, 110, 255);
+}
+
+
+
+
+
+
+

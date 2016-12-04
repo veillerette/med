@@ -8,6 +8,7 @@
 #include "Staff.h"
 #include "System.h"
 #include "Images.h"
+#include "Window2.h"
 
 #define QUIT -42
 
@@ -28,6 +29,11 @@ typedef enum {
 	OBJECT_ALL	= 0xFF
 	} Object_Type;
 
+typedef enum {
+	MODE_EDIT,
+	MODE_ADD
+	} Mode;
+
 typedef struct Area Area;
 struct Area
 {
@@ -46,6 +52,7 @@ struct Area
 		{
 			Staff *	staff;
 			int 	id_step;
+			int 	id_note_add; /* only when type=EVENT_ADDNOTE */
 		};
 		
 		Sign **sign; /* OBJECT_SIGN */
@@ -67,6 +74,9 @@ struct EventData
 	SDL_Rect *base;
 	
 	double r; /* zoom */
+	
+	Mode mode;
+	Note_Duration duration;
 };
 
 Area *Area_Set(SDL_Rect rect, Object_Type type, ...);
@@ -89,6 +99,7 @@ int EventData_SetZoom(EventData *ed, double zoom);
 
 int EventData_Flush(EventData *ed);
 
+int PixelInRect(int x, int y, SDL_Rect rect);
 
 extern EventData *main_events;
 

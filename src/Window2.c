@@ -269,7 +269,7 @@ int Window_Print(void)
 	
 	pos.x = Window->pos_pal->x;
 	pos.y = Window->pos_pal->y;
-	
+
 	SDL_BlitSurface(Window->pal, NULL, Window->screen, &pos);
 	return 1;
 }
@@ -408,10 +408,11 @@ int Window_MyEventBlit(Object_Type type, SDL_Surface *surf, SDL_Rect *rect1,
 int Window_TestBox(SDL_Surface *dest, SDL_Rect *pos, int zoom)
 {
 	Area *area;
-	int r,g,b,a;
+	int r=200,g=50,b=50,a=150;
 	if(NULL == dest)
 		return 0;
-
+	if(main_events->mode == MODE_ADD)
+		return 1;
 	area= main_events->lst;
 	while(area != NULL)
 	{
@@ -419,19 +420,9 @@ int Window_TestBox(SDL_Surface *dest, SDL_Rect *pos, int zoom)
 			((pos->y  + area->rect.y/zoom) >= main_events->base->y))
 		{
 			a = 150;
-			if(main_events->hover == area && main_events->select == area)
-			{
-				r = 150;
-				g = 20;
-				b = 20;
-			}
-			else if(main_events->hover == area)
-			{
-				r = 140;
-				g = 140;
-				b = 140;
-			}
-			else if(main_events->select == area)
+
+
+			if(main_events->select == area)
 			{
 				r = 200;
 				g = 50;
@@ -439,23 +430,43 @@ int Window_TestBox(SDL_Surface *dest, SDL_Rect *pos, int zoom)
 			}
 			else
 			{
-				r = 180;
-				g = 180;
-				b = 180;
+				r = 200;
+				g = 200;
+				b = 200;
 			}
-			if(area->type & OBJECT_STEP)
+			if(area->type == EVENT_ADDNOTE)
 			{
-				r += 40;
-				a = 80;
+				r = 50;
+				g = 200;
+				b = 50;
+				a = 200;
+				if(main_events->select == area)
+				{
+					g = 150;
+					a = 120;
+				}
 			}
+			
+			
+			if(main_events->hover == area)
+			{
+				r *= 0.8;
+				g *= 0.8;
+				b *= 0.8;
+			}
+			
 			if((pos->x + (area->rect.x /zoom)) > BASE_BODY_X &&
 				(pos->y  + (area->rect.y /zoom)) > BASE_BODY_Y)
 			{
-				boxRGBA(dest, 		(pos->x + (area->rect.x /zoom)), 
-							(pos->y  + (area->rect.y /zoom)), 
-							(pos->x + area->rect.x/zoom + area->rect.w/zoom),
-							(pos->y + area->rect.y/zoom + area->rect.h/zoom), 
-							r, g, b, a);
+				if((area->type == EVENT_ADDNOTE && main_events->mode == MODE_ADD) ||
+					(area->type != EVENT_ADDNOTE && main_events->mode == MODE_EDIT))
+				{
+					boxRGBA(dest, 		(pos->x + (area->rect.x /zoom)), 
+								(pos->y  + (area->rect.y /zoom)), 
+								(pos->x + area->rect.x/zoom + area->rect.w/zoom),
+								(pos->y + area->rect.y/zoom + area->rect.h/zoom), 
+								r, g, b, a);
+				}
 			}
 		}
 		area = area->next;
@@ -482,7 +493,7 @@ int Window_GetSize(Step *step)
 	return width;
 }
 
-int Note_Print(Staff *staff, Step *step, int id_note, Note *note, SDL_Rect *base_pos, SDL_Surface *dest)
+int Note_Print(Staff *staff, Step *step, int id_step, int id_note, Note *note, SDL_Rect *base_pos, SDL_Surface *dest)
 {
 	Note_Duration cpy = note->duration;
 	int pos;
@@ -490,11 +501,11 @@ int Note_Print(Staff *staff, Step *step, int id_note, Note *note, SDL_Rect *base
 	int tab[] = {0, 2, 4, 5, 7, 9, 11};
 	int i;
 	int real_space = Window_GetSpaceNote(step, note);
+	SDL_Rect adding = {base_pos->x-real_space/4, base_pos->y-HEAD_H*3, 0, HEAD_H*12};
 	
 	if((NULL == note) || (NULL == base_pos) || (base_pos->x < 0) || (base_pos->y < 0) || (NULL == dest))
 		return 0;
-	
-	printf("REAL_SPACE = %d\n", real_space);
+
 		
 	if(!note->rest || (note->rest && note->duration != RONDE && note->duration != BLANCHE))
 		base_pos->y += HEAD_H * 4;
@@ -602,7 +613,21 @@ int Note_Print(Staff *staff, Step *step, int id_note, Note *note, SDL_Rect *base
 		Window->pos_link = SDL_SetRect(base_pos->x, base_pos->y, 0, 0);
 	}
 	
-	
+	adding.w = real_space;
+	if(note->rest)
+	{
+		switch(note->duration)
+		{
+			case RONDE:
+				adding.w += real_space/2;
+				break;
+			case BLANCHE:
+				adding.x += real_space/4;
+			default:
+				break;
+		}
+	}
+	EventData_Add(main_events, Area_Set(adding, EVENT_ADDNOTE, staff, id_step, id_note));
 	switch(note->duration)
 	{
 		case RONDE:
@@ -783,7 +808,7 @@ int Note_Print(Staff *staff, Step *step, int id_note, Note *note, SDL_Rect *base
 	}
 	
 	base_pos->x += real_space;
-	
+
 	if(!note->rest || (note->rest && note->duration != RONDE && note->duration != BLANCHE))
 		base_pos->y -= HEAD_H * 4;
 	
@@ -837,7 +862,7 @@ int Armure_Print(Step *step, SDL_Rect *base_pos, SDL_Surface *dest)
 	return 1;
 }
 
-int Step_Print(Staff *staff, Step *step, SDL_Rect *base_pos, SDL_Surface *dest)
+int Step_Print(Staff *staff, Step *step, int id_step, SDL_Rect *base_pos, SDL_Surface *dest)
 {
 	ToNote *cur = NULL;
 	SDL_Rect depass = {0, 0, 1000, 500};
@@ -853,7 +878,7 @@ int Step_Print(Staff *staff, Step *step, SDL_Rect *base_pos, SDL_Surface *dest)
 	cur = step->notes;
 	while(cur != NULL)
 	{
-		Note_Print(staff, step, i, cur->note, base_pos, dest);
+		Note_Print(staff, step, id_step, i, cur->note, base_pos, dest);
 		cur = cur->next;
 		i++;
 	}
@@ -891,7 +916,7 @@ void Window_DrawStaff(int x, int y, int x_end, SDL_Surface *dest)
 
 int Step_PrintMesure(Step *step, SDL_Rect *base_pos, SDL_Surface *dest)
 {
-	SDL_Color color = {0, 0, 0};
+	SDL_Color color = {0, 0, 0, 0};
 	char num[3] = "", den[3] = "";
 	int x=base_pos->x, y=base_pos->y;
 	if((NULL == step) || (NULL == base_pos) || (base_pos->x < 0) || (base_pos->y < 0) || (NULL == dest))
@@ -944,7 +969,7 @@ int Staff_Print(Staff *staff, SDL_Rect *base_pos, SDL_Surface *dest)
 			num = (*(staff->steps + i))->num;
 			den = (*(staff->steps + i))->den;
 		}
-		if(Step_Print(staff, *(staff->steps + i), base_pos, dest) == -2)
+		if(Step_Print(staff, *(staff->steps + i), i, base_pos, dest) == -2)
 			continue;
 		Window_DrawStaff(sauv_x, sauv_y, base_pos->x, dest);
 		goal.w = base_pos->x - goal.x;
@@ -956,9 +981,9 @@ int Staff_Print(Staff *staff, SDL_Rect *base_pos, SDL_Surface *dest)
 	return 1;
 }
 
-int Window_LittleEvent(SDL_Event event, double *r, int *c, int ev, int *mouse,
+int Window_LittleEvent(SDL_Event event, double *r, int *c, int *mouse,
 					int *clic_x, int *clic_y, int *tomaj,
-					Uint32 *time, int *m)
+					int *m)
 {
 	*m = 0;
 	switch(event.type)
@@ -974,6 +999,8 @@ int Window_LittleEvent(SDL_Event event, double *r, int *c, int ev, int *mouse,
 		case SDL_MOUSEBUTTONDOWN:
 			*clic_x = event.button.x;
 			*clic_y = event.button.y;
+			if(*clic_x <= Window->pos_pal->w || *clic_y <= Window->pos_menu->h)
+				break;
 			switch(event.button.button)
 			{
 				case SDL_BUTTON_WHEELDOWN:

@@ -42,7 +42,7 @@ int Moteur_WriteText(int x, int y, const char *text, int size,
 	}
 	
 	SDL_BlitSurface(temp, NULL, dest, &pos);
-	
+	TTF_CloseFont(font);
 	SDL_FreeSurface(temp);
 	return 1;
 }
@@ -62,7 +62,7 @@ int Moteur_WriteParagraph(int x, int y, int max_w, char *text, int size, int esp
 	if(NULL == font)
 		return 0;
 		
-	while(i < strlen(text))
+	while((unsigned int)i < strlen(text))
 	{
 
 		sauv = text[i];
@@ -77,7 +77,7 @@ int Moteur_WriteParagraph(int x, int y, int max_w, char *text, int size, int esp
 			{
 				i--;
 			}
-			while(i >= 0 && text[i] != ' ');
+			while(i > 0 && text[i] != ' ');
 			
 			if(i <= 0)
 				return 0;
