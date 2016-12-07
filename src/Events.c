@@ -302,6 +302,9 @@ int Events_PollMouse(SDL_Event event)
 		case SDL_MOUSEBUTTONDOWN:
 			if((NULL == area) && (x < main_events->base->x || y < main_events->base->y))
 				return NONE;
+			if(event.button.button == SDL_BUTTON_WHEELDOWN ||
+				event.button.button == SDL_BUTTON_WHEELUP)
+				return NONE;
 			if(main_events->mode == MODE_EDIT)
 			{
 				if(main_events->select == area)
