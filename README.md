@@ -80,7 +80,28 @@ MusicalEDitor est un éditeur de partition musicale simple écrit en C et utilis
     * Déplacement horizontal de la partition
 * Makefile
     * Amélioration du makefile (modules en .o)
-    * 
+
+
+#### Fin Novembre 2016
+* Menu
+    * Gestion d'un menu horizontal (création, ajout, sélection)
+    * Mise en avant du menu au premier plan
+*
+
+#### Début Décembre 2016
+* Interface
+    * Création de la toolbar et de deux modes : 'A'jout et 'E'dition
+    * Sélection d'une durée de note à rajouter dans la toolbar
+    * Ajout d'une note à la portée avec le clic de la souris
+* Bugs
+    * Corrections de nombreuses fuites mémoires
+    * Correction des erreurs des plans
+
+
+#### Mi-Décembre 2016
+* Audio
+    * Premiers test audio
+    * Création d'ondes sinusoïdales, carrés, triangulaires et en dents de scie
 
 ### Objectifs
 
