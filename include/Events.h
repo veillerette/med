@@ -8,7 +8,7 @@
 #include "Staff.h"
 #include "System.h"
 #include "Images.h"
-#include "Window2.h"
+#include "Window.h"
 
 #define QUIT -42
 
@@ -63,6 +63,19 @@ struct Area
 	
 };
 
+typedef struct Toolbar Toolbar;
+struct Toolbar
+{
+	char sharp;
+	char doublesharp;
+	char flat;
+	char doubleflat;
+	char pointed;
+	char doublepointed;
+	char rest;
+	Note_Duration duration;
+};
+
 typedef struct EventData EventData;
 struct EventData
 {
@@ -76,7 +89,7 @@ struct EventData
 	double r; /* zoom */
 	
 	Mode mode;
-	Note_Duration duration;
+	Toolbar tools;
 };
 
 Area *Area_Set(SDL_Rect rect, Object_Type type, ...);

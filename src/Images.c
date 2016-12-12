@@ -742,9 +742,9 @@ int Graphics_LoadLittle(Graphics **data)
 	cur->Rest_BreveLong = Create_Little(Images->Rest_BreveLong, RATIO_LITTLE, RATIO_LITTLE);
 	cur->Rest_Quaver = Create_Little(Images->Rest_Quaver, RATIO_LITTLE, RATIO_LITTLE);
 	cur->Rest_Breve = Create_Little(Images->Rest_Breve, RATIO_LITTLE, RATIO_LITTLE);
-	cur->Sharp = Create_Little(Images->Sharp, RATIO_LITTLE, RATIO_LITTLE);
-	cur->Flat = Create_Little(Images->Flat, RATIO_LITTLE, RATIO_LITTLE);
-	cur->DoubleFlat = Create_Little(Images->DoubleFlat, RATIO_LITTLE, RATIO_LITTLE);
+	cur->Sharp = Create_Little(Images->Sharp, RATIO_LITTLE+1, RATIO_LITTLE+1);
+	cur->Flat = Create_Little(Images->Flat, RATIO_LITTLE+1, RATIO_LITTLE+1);
+	cur->DoubleFlat = Create_Little(Images->DoubleFlat, RATIO_LITTLE+1, RATIO_LITTLE+1);
 
 	return 1;
 }

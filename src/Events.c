@@ -92,6 +92,18 @@ void Area_Console(Area *area)
 	
 }
 
+Toolbar InitToolbar(void)
+{
+	Toolbar tools;
+	tools.duration = NOIRE;
+	tools.sharp = 0;
+	tools.flat = 0;
+	tools.pointed = 0;
+	tools.doublepointed = 0;
+	tools.rest = 0;
+	return tools;
+}
+
 EventData *EventData_Alloc(void)
 {
 	EventData *temp = (EventData *)malloc(sizeof(EventData));
@@ -103,7 +115,8 @@ EventData *EventData_Alloc(void)
 	temp->hover = NULL;
 	temp->base = NULL;
 	temp->mode = MODE_EDIT;
-	temp->duration = NOIRE;
+	
+	temp->tools = InitToolbar();
 	return temp;
 }
 
@@ -320,7 +333,16 @@ int Events_PollMouse(SDL_Event event)
 					return NONE;
 				if(area->type == EVENT_ADDNOTE)
 				{
-					Staff_AddNote(area->staff, area->id_step, area->id_note_add, MouseToNote(area, (y-main_events->base->y)*main_events->r), NOTE_DEFAULT, main_events->duration);
+					Note_Flags add_flag = NOTE_DEFAULT;
+					if(main_events->tools.sharp)
+						add_flag |= NOTE_SHARP;
+					else if(main_events->tools.flat)
+						add_flag |= NOTE_FLAT;
+					else if(main_events->tools.doublesharp)
+						add_flag |= NOTE_DOUBLESHARP;
+					else if(main_events->tools.doubleflat)
+						add_flag |= NOTE_DOUBLEFLAT;
+					printf("addnote = %d\n", Staff_AddNote(area->staff, area->id_step, area->id_note_add, MouseToNote(area, (y-main_events->base->y)*main_events->r), add_flag, main_events->tools.duration));
 					return FORCE_MAJ;
 				}
 			}
@@ -387,7 +409,7 @@ int Events_PollKeyboard(SDL_Event event)
 			}
 			if(event.key.keysym.sym > SDLK_KP0 && event.key.keysym.sym <= SDLK_KP7)
 			{
-				main_events->duration = pow(2, event.key.keysym.sym-SDLK_KP0-1);
+				main_events->tools.duration = pow(2, event.key.keysym.sym-SDLK_KP0-1);
 				return NONE;
 			}
 	}

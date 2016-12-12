@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "Window2.h"
+#include "Window.h"
 #include "Events.h"
 
 

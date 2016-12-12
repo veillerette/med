@@ -1,7 +1,7 @@
 #ifndef __HEAD_TEXT__
 #define __HEAD_TEXT__
 
-#include "Window2.h"
+#include "Window.h"
 
 typedef enum{
 	TEXT_LEFT	= 0x01,

@@ -613,10 +613,16 @@ static void BlitCenter(SDL_Surface *src, SDL_Rect *src_rect, SDL_Surface *dest, 
 	dest_rect->x += src->w/2;
 }
 
+void InvertBoolean(char *boolean)
+{
+	*boolean = 1 - *boolean;
+}
 int ToolBar_PollMouse(Menu *menu, SDL_Event event)
 {
 	int i,x,y;
 	int dy = (Window->pos_menu->h - menu->height)/2 + menu->height;
+	int goal_alt = 0;
+	int in = 0;
 	switch(event.type)
 	{
 		case SDL_MOUSEBUTTONDOWN:
@@ -627,10 +633,68 @@ int ToolBar_PollMouse(Menu *menu, SDL_Event event)
 				if(x >= 60+i*45 && x <= 100+i*45 &&
 					y >= dy-20 && y <= dy+20)
 				{
-					main_events->duration = pow(2, i);
+					main_events->tools.duration = pow(2, i);
 					return FORCE_MAJ;
 				}
 			}
+			for(i = 0; i < 4; i++)
+			{
+				if(x >= 410+i*45 && x <= 450+i*45 && 
+					y >= dy-20 && y <= dy+20)
+				{
+					in = 1;
+					break;
+				}
+			}
+			for(i = 0; i < 4; i++)
+			{
+				if(x >= 410+i*45 && x <= 450+i*45 && 
+					y >= dy-20 && y <= dy+20)
+				{
+					goal_alt = i;
+				}
+				else
+					goal_alt = -1;
+			
+				if(goal_alt >= 0)
+				{
+					switch(goal_alt)
+					{
+						case 0:
+							InvertBoolean(&(main_events->tools.sharp));
+							break;
+						case 1:
+							InvertBoolean(&(main_events->tools.flat));
+							break;
+						case 2:
+							InvertBoolean(&(main_events->tools.doublesharp));
+							break;
+						case 3:
+							InvertBoolean(&(main_events->tools.doubleflat));
+							break;
+					}
+				}
+				else if(in)
+				{
+					switch(i)
+					{
+						case 0:
+							main_events->tools.sharp = 0;
+							break;
+						case 1:
+							main_events->tools.flat = 0;
+							break;
+						case 2:
+							main_events->tools.doublesharp = 0;
+							break;
+						case 3:
+							main_events->tools.doubleflat = 0;
+							break;
+					}
+				}
+			}
+			if(in)
+				return FORCE_MAJ;
 			break;
 	}
 	return NONE;
@@ -647,7 +711,7 @@ void Toolbar_PrintNote(Menu *menu)
 	for(i = 0; i < 7; i++)
 	{
 		pos.x = 80+i*45;
-		if(i == log(main_events->duration)/log(2))
+		if(i == log(main_events->tools.duration)/log(2))
 			roundedBoxRGBA(Window->screen, 60+i*45, y-20, 100+i*45, y+20, 3, 75, 85, 95, 255);
 		else
 			roundedBoxRGBA(Window->screen, 60+i*45, y-20, 100+i*45, y+20, 3, 90, 100, 110, 255);
@@ -677,7 +741,7 @@ void Toolbar_PrintNote(Menu *menu)
 			case 6:
 				n = i;
 				t = 0;
-				pos.x-=5;
+				pos.x -= 5;
 				pos.y += 12;
 				BlitCenter(LittleImages->Note_headBlack, NULL, Window->screen, &pos);
 				pos.y -= 12;
@@ -694,6 +758,7 @@ void Toolbar_PrintNote(Menu *menu)
 					n--;
 				}
 				pos.y -= t;
+				pos.x += 5;
 				break;
 				
 		}
@@ -702,6 +767,46 @@ void Toolbar_PrintNote(Menu *menu)
 	pos.x += 40;
 	pos.y -= 23;
 	roundedBoxRGBA(Window->screen, pos.x, pos.y, pos.x+1, pos.y+46, 7, 90, 100, 110, 255);
+	pos.x += 40;
+	pos.y += 23;
+	
+	printf("(%d,%d)\n", pos.x, pos.y);
+	if(main_events->tools.sharp)
+		roundedBoxRGBA(Window->screen, pos.x-20, y-20, pos.x+20, y+20, 3, 75, 85, 95, 255);
+	else
+		roundedBoxRGBA(Window->screen, pos.x-20, y-20, pos.x+20, y+20, 3, 90, 100, 110, 255);
+	BlitCenter(LittleImages->Sharp, NULL, Window->screen, &pos);
+	
+	pos.x += 45;
+	
+	if(main_events->tools.flat)
+		roundedBoxRGBA(Window->screen, pos.x-20, y-20, pos.x+20, y+20, 3, 75, 85, 95, 255);
+	else
+		roundedBoxRGBA(Window->screen, pos.x-20, y-20, pos.x+20, y+20, 3, 90, 100, 110, 255);
+	BlitCenter(LittleImages->Flat, NULL, Window->screen, &pos);
+	
+	pos.x += 45;
+	
+	if(main_events->tools.doublesharp) 
+		roundedBoxRGBA(Window->screen, pos.x-20, y-20, pos.x+20, y+20, 3, 75, 85, 95, 255);
+	else
+		roundedBoxRGBA(Window->screen, pos.x-20, y-20, pos.x+20, y+20, 3, 90, 100, 110, 255);
+	BlitCenter(LittleImages->Sharp, NULL, Window->screen, &pos); /* Must be DoubleSharp !! */
+	
+	pos.x += 45;
+	
+	if(main_events->tools.doubleflat)
+		roundedBoxRGBA(Window->screen, pos.x-20, y-20, pos.x+20, y+20, 3, 75, 85, 95, 255);
+	else
+		roundedBoxRGBA(Window->screen, pos.x-20, y-20, pos.x+20, y+20, 3, 90, 100, 110, 255);
+	BlitCenter(LittleImages->DoubleFlat, NULL, Window->screen, &pos);
+
+
+	pos.x += 40;
+	pos.y -= 23;
+	roundedBoxRGBA(Window->screen, pos.x, pos.y, pos.x+1, pos.y+46, 7, 90, 100, 110, 255);
+	pos.x += 40;
+	pos.y += 23;
 }
 
 

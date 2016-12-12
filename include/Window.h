@@ -14,11 +14,16 @@
 #include "Staff.h"
 #include "Images.h"
 #include "Events.h"
+#include "Text.h"
 
-#define BASE_MOTION 1
-#define BASE_WHEEL 25
-
+#define ESP_BODY 100
+#define BASE_BODY_X (Window->pos_pal->x + Window->pos_pal->w)
+#define BASE_BODY_Y (Window->pos_menu->y + Window->pos_menu->h)
+#define ABS(A) (((A)<0)?-(A):(A))
 #define TestOK(); if(!Window_OK())return 0;
+
+#define FONT_MESURE "media/Hack-Regular.ttf"
+
 typedef enum {
 	STATE_ALLOC,
 	STATE_SDLINIT,
@@ -27,7 +32,6 @@ typedef enum {
 	STATE_ERROR,
 	STATE_QUIT
 	} Window_State;
-
 
 typedef struct WindowData WindowData;
 struct WindowData
@@ -48,49 +52,61 @@ struct WindowData
 	SDL_Surface *pal; /* left */
 	SDL_Rect *pos_pal;
 	
-	SDL_Surface *body; /* The big surface */
-	SDL_Surface *body_use; /* Surface for use */
+	SDL_Surface **body; /* The bigs surfaces (pages) */
+	SDL_Surface **body_use; /* Surface for uses (pages) */
 	double ratio;
-	SDL_Rect *pos_body;
+	int nb_body;
+	SDL_Rect *pos_body; /* base of first page */
 	
 	int _linked;
 	SDL_Rect *pos_link;
+	
 };
-
 
 WindowData *WindowData_Alloc(void);
 
 void WindowData_Free(WindowData **window);
 
+int Window_GetScreenSize(int *width, int *height);
+
 int Window_Init(void);
 
 void Window_Quit(void);
+
+int Window_InitBody();
+
+void SDL_FreeRect(SDL_Rect **rect);
 
 int Window_CreateWindow(int width, int height, const char *title);
 
 int Window_ClearWindow(Color color);
 
-int Window_WaitMouse(int *x, int *y);
-
 int Window_Print(void);
 
-void SDL_FreeRect(SDL_Rect **rect);
+int Window_ApplyZoomOnRect(SDL_Rect *rect, double zoom, double old);
 
-void Window_ShowAllGraphics(void);
+int Window_ApplyZoom(double zoom);
 
-int Window_MajBody(void);
+int Window_DrawBody();
 
-int Window_DrawBodyShrink(double ratio, SDL_Rect redim, SDL_Rect pos);
+void Window_Staff(SDL_Surface *dest, int x, int y, int w);
 
-int Step_Print(Staff *staff, Step *step, SDL_Rect *base_pos, SDL_Surface *dest);
+int Window_OK(void);
+
+int Window_AddEmptyBody();
 
 int Staff_Print(Staff *staff, SDL_Rect *base_pos, SDL_Surface *dest);
 
-int ClicInRect(int x, int y, SDL_Rect *rect);
+void Window_DrawStaff(int x, int y, int x_end, SDL_Surface *dest);
 
-int Window_TestBox(SDL_Surface *dest, SDL_Rect *pos, int r);
-
+int Window_LittleEvent(SDL_Event event, double *r, int *c, int *mouse,
+					int *clic_x, int *clic_y, int *tomaj, 
+					int *m);
+					
+int Window_TestBox(SDL_Surface *dest, SDL_Rect *pos, int zoom);
 
 extern WindowData *Window;
+
+
 
 #endif
