@@ -320,11 +320,18 @@ int Events_PollMouse(SDL_Event event)
 				return NONE;
 			if(main_events->mode == MODE_EDIT)
 			{
+				if(area != NULL && area->type == OBJECT_NOTE)
+				{
+					Note *temp = Step_GetNote(area->step, area->id_note);
+					main_events->tools.duration = temp->duration;
+					main_events->tools.sharp = temp->flags & NOTE_SHARP;
+					main_events->tools.flat = temp->flags & NOTE_FLAT;
+					main_events->tools.doublesharp = temp->flags & NOTE_DOUBLESHARP;
+					main_events->tools.doubleflat = temp->flags & NOTE_DOUBLEFLAT;
+				}
 				if(main_events->select == area)
 					return NONE;
 				main_events->select = area;
-				if(area != NULL)
-					printf("select new area\n");
 				return SELECT;
 			}
 			else

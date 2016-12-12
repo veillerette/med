@@ -415,8 +415,7 @@ void Menu_Aff(Menu *menu, int *x, int *y)
 	boxRGBA(Window->screen, 0, height+2, Window->width, height+2, 120, 130, 140, 255);
 	
 	Toolbar_PrintMode(menu);
-	if(main_events->mode == MODE_ADD)
-		Toolbar_PrintNote(menu);
+	Toolbar_PrintNote(menu);
 						
 	for(i = 0; i < menu->lst->n; i++)
 	{
@@ -544,7 +543,7 @@ int Menu_NoSelect(void)
 int Menu_PollMouse(Menu *menu, SDL_Event event)
 {
 	Menu_Node *mn = NULL;
-	
+	int sauv;
 	switch(event.type)
 	{
 		case SDL_QUIT:
@@ -561,8 +560,8 @@ int Menu_PollMouse(Menu *menu, SDL_Event event)
 				main_events->mode = 1-main_events->mode;
 				return FORCE_MAJ;
 			}
-			if(ToolBar_PollMouse(menu, event) == FORCE_MAJ)
-				return FORCE_MAJ;
+			if((sauv = ToolBar_PollMouse(menu, event)) != NONE)
+				return sauv;
 			mn = FindNodeByZone(menu, event.button.x, event.button.y);
 			if(mn != NULL && mn->type == LEAF)
 			{
@@ -613,16 +612,19 @@ static void BlitCenter(SDL_Surface *src, SDL_Rect *src_rect, SDL_Surface *dest, 
 	dest_rect->x += src->w/2;
 }
 
-void InvertBoolean(char *boolean)
+int InvertBoolean(char *boolean)
 {
 	*boolean = 1 - *boolean;
+	return *boolean;
 }
 int ToolBar_PollMouse(Menu *menu, SDL_Event event)
 {
 	int i,x,y;
 	int dy = (Window->pos_menu->h - menu->height)/2 + menu->height;
 	int goal_alt = 0;
+	int none=0;
 	int in = 0;
+	int rest;
 	switch(event.type)
 	{
 		case SDL_MOUSEBUTTONDOWN:
@@ -634,6 +636,23 @@ int ToolBar_PollMouse(Menu *menu, SDL_Event event)
 					y >= dy-20 && y <= dy+20)
 				{
 					main_events->tools.duration = pow(2, i);
+					if(main_events->mode == MODE_EDIT && main_events->select != NULL)
+					{
+						if(main_events->select->type == OBJECT_NOTE)
+						{
+							Note *temp = Step_GetNote(main_events->select->step, main_events->select->id_note);
+							rest = temp->rest;
+							Step_AddNote(main_events->select->step,
+									main_events->select->id_note,
+									temp->note,
+									temp->flags,
+									main_events->tools.duration);
+							Step_ChangeRestStatus(main_events->select->step,
+										main_events->select->id_note,
+										rest);
+							return FORCE_SCOREMAJ;
+						}
+					}
 					return FORCE_MAJ;
 				}
 			}
@@ -655,23 +674,59 @@ int ToolBar_PollMouse(Menu *menu, SDL_Event event)
 				}
 				else
 					goal_alt = -1;
-			
+				none = 0;
 				if(goal_alt >= 0)
 				{
 					switch(goal_alt)
 					{
 						case 0:
-							InvertBoolean(&(main_events->tools.sharp));
+							none = InvertBoolean(&(main_events->tools.sharp));
 							break;
 						case 1:
-							InvertBoolean(&(main_events->tools.flat));
+							none = InvertBoolean(&(main_events->tools.flat));
 							break;
 						case 2:
-							InvertBoolean(&(main_events->tools.doublesharp));
+							none = InvertBoolean(&(main_events->tools.doublesharp));
 							break;
 						case 3:
-							InvertBoolean(&(main_events->tools.doubleflat));
+							none = InvertBoolean(&(main_events->tools.doubleflat));
 							break;
+					}
+					if(main_events->mode == MODE_EDIT && main_events->select != NULL)
+					{
+						if(main_events->select->type == OBJECT_NOTE)
+						{
+							Note *temp = Step_GetNote(main_events->select->step, main_events->select->id_note);
+							rest = temp->rest;
+							temp->flags = NOTE_DEFAULT;
+							if(none)
+							{
+								switch(goal_alt)
+								{
+									case 0:
+										temp->flags |= NOTE_SHARP;
+										break;
+									case 1:
+										temp->flags |= NOTE_FLAT;
+										break;
+									case 2:
+										temp->flags |= NOTE_DOUBLESHARP;
+										break;
+									case 3:
+										temp->flags |= NOTE_DOUBLEFLAT;
+										break;
+								}
+							}
+							Step_AddNote(main_events->select->step,
+									main_events->select->id_note,
+									temp->note,
+									temp->flags,
+									main_events->tools.duration);
+							Step_ChangeRestStatus(main_events->select->step,
+										main_events->select->id_note,
+										rest);
+							return FORCE_SCOREMAJ;
+						}
 					}
 				}
 				else if(in)
