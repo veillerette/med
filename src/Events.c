@@ -97,7 +97,9 @@ Toolbar InitToolbar(void)
 	Toolbar tools;
 	tools.duration = NOIRE;
 	tools.sharp = 0;
+	tools.doublesharp = 0;
 	tools.flat = 0;
+	tools.doubleflat = 0;
 	tools.pointed = 0;
 	tools.doublepointed = 0;
 	tools.rest = 0;
@@ -313,7 +315,7 @@ int Events_PollMouse(SDL_Event event)
 			}
 			break;
 		case SDL_MOUSEBUTTONDOWN:
-			if((NULL == area) && (x < main_events->base->x || y < main_events->base->y))
+			if((NULL == area) && (x < Window->pos_body->x || y < Window->pos_body->y))
 				return NONE;
 			if(event.button.button == SDL_BUTTON_WHEELDOWN ||
 				event.button.button == SDL_BUTTON_WHEELUP)
