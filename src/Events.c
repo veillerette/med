@@ -153,7 +153,7 @@ int EventData_SetBase(EventData *ed, SDL_Rect *base)
 {
 	if(NULL == ed)
 		return 0;
-	ed->base = base;
+	ed->base = SDL_SetRect(base->x, base->y, base->w, base->h);
 	return 1;
 }
 

@@ -31,9 +31,6 @@ void WindowData_Free(WindowData **window)
 {
 	if(*window != NULL)
 	{
-		if((*window)->screen != NULL)
-			SDL_FreeSurface((*window)->screen);
-		
 		free(*window);
 		*window = NULL;
 	}
@@ -126,7 +123,6 @@ void Window_Quit(void)
 		
 			
 		WindowData_Free(&Window);
-		
 		TTF_Quit();
 		SDL_Quit();
 	}

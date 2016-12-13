@@ -23,8 +23,8 @@ char *ABC_Keys[] = {
 
 static int ABC_ScanHead(FILE *f, char *field, char *text)
 {
-	char temp, *str = malloc(sizeof(char) * 100);
-	int n;
+	char *str = malloc(sizeof(char) * 100);
+	int n,temp;
 	if((NULL == f) || (NULL == field) || (NULL == text))
 		return 0;
 	temp = fgetc(f);
