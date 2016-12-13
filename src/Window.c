@@ -674,7 +674,7 @@ int Note_Print(Staff *staff, Step *step, int id_step, int id_note, Note *note, S
 				SDL_Surface *test = NULL;
 				base_pos->x -= Images->rot_noteW;
 				base_pos->y -= Images->rot_noteH;
-				Window_MyEventBlit(OBJECT_NOTE, Images->Note_headWhite, NULL, dest, base_pos, base_pos, step, id_note);
+				Window_MyEventBlit(OBJECT_NOTE, Images->Note_headWhite, NULL, dest, base_pos, step, id_note);
 				base_pos->x += Images->rot_noteW;
 				base_pos->y += Images->rot_noteH;
 				base_pos->y -= Images->note1_center->y;
