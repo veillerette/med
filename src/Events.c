@@ -142,8 +142,6 @@ void EventData_Free(EventData **ed)
 			free((*ed)->select);
 		if((*ed)->hover != NULL)
 			free((*ed)->hover);
-		if((*ed)->base != NULL)
-			free((*ed)->base);
 		free(*ed);
 		*ed = NULL;
 	}
@@ -153,7 +151,7 @@ int EventData_SetBase(EventData *ed, SDL_Rect *base)
 {
 	if(NULL == ed)
 		return 0;
-	ed->base = SDL_SetRect(base->x, base->y, base->w, base->h);
+	ed->base = base;
 	return 1;
 }
 
