@@ -625,11 +625,15 @@ int ToolBar_PollMouse(Menu *menu, SDL_Event event)
 	int none=0;
 	int in = 0;
 	int rest;
+	int sauv = 0;
+	int pointed = 0;
 	switch(event.type)
 	{
 		case SDL_MOUSEBUTTONDOWN:
 			x = event.button.x;
 			y = event.button.y;
+			if(y<dy-20 || y > dy+20)
+				return NONE;
 			for(i = 0; i < 7; i++)
 			{
 				if(x >= 60+i*45 && x <= 100+i*45 &&
@@ -748,6 +752,62 @@ int ToolBar_PollMouse(Menu *menu, SDL_Event event)
 					}
 				}
 			}
+			pointed = 0;
+			sauv = main_events->tools.statusdur;
+			for(i = 0; i < 2; i++)
+			{
+				if(x >= 625+i*45 && x <= 665+i*45 && 
+					y >= dy-20 && y <= dy+20)
+				{
+					if(main_events->tools.statusdur == 0)
+						main_events->tools.statusdur = i+1;
+					else
+						main_events->tools.statusdur = 0;
+					pointed = 1;
+				}
+			}
+			if(!pointed)
+				main_events->tools.statusdur = 0;
+				
+			if(sauv != main_events->tools.statusdur)
+			{
+				printf("modif statusdur\n");
+				if(main_events->mode == MODE_EDIT && main_events->select != NULL)
+				{
+					Note *temp = Step_GetNote(main_events->select->step, main_events->select->id_note);
+								rest = temp->rest;
+					printf("suppr & add new note\n");
+					temp->flags = NOTE_DEFAULT;
+					if(main_events->tools.sharp)
+						temp->flags |= NOTE_SHARP;
+					else if(main_events->tools.flat)
+						temp->flags |= NOTE_FLAT;
+					else if(main_events->tools.doublesharp)
+						temp->flags |= NOTE_DOUBLESHARP;
+					else if(main_events->tools.doubleflat)
+						temp->flags |= NOTE_DOUBLEFLAT;
+					switch(main_events->tools.statusdur)
+					{
+						case 1:
+							temp->flags |= NOTE_POINTED;
+							break;
+						case 2:
+							temp->flags |= NOTE_DOUBLEPOINTED;
+							break;
+					}
+					Step_AddNote(main_events->select->step,
+							main_events->select->id_note,
+							temp->note,
+							temp->flags,
+							main_events->tools.duration);
+					Step_ChangeRestStatus(main_events->select->step,
+								main_events->select->id_note,
+								rest);
+					return FORCE_SCOREMAJ;
+				}
+				return FORCE_MAJ;
+			}
+			
 			if(in)
 				return FORCE_MAJ;
 			break;
@@ -862,6 +922,22 @@ void Toolbar_PrintNote(Menu *menu)
 	roundedBoxRGBA(Window->screen, pos.x, pos.y, pos.x+1, pos.y+46, 7, 90, 100, 110, 255);
 	pos.x += 40;
 	pos.y += 23;
+	printf("last=%d\n", pos.x);
+	if(main_events->tools.statusdur == 1)
+		roundedBoxRGBA(Window->screen, pos.x-20, y-20, pos.x+20, y+20, 3, 75, 85, 95, 255);
+	else
+		roundedBoxRGBA(Window->screen, pos.x-20, y-20, pos.x+20, y+20, 3, 90, 100, 110, 255);
+	filledCircleRGBA(Window->screen, pos.x, pos.y, 4, 119, 136, 153, 255);
+	
+	pos.x += 45;
+	
+	
+	if(main_events->tools.statusdur == 2)
+		roundedBoxRGBA(Window->screen, pos.x-20, y-20, pos.x+20, y+20, 3, 75, 85, 95, 255);
+	else
+		roundedBoxRGBA(Window->screen, pos.x-20, y-20, pos.x+20, y+20, 3, 90, 100, 110, 255);
+	filledCircleRGBA(Window->screen, pos.x-6, pos.y, 4, 119, 136, 153, 255);
+	filledCircleRGBA(Window->screen, pos.x+6, pos.y, 4, 119, 136, 153, 255);
 }
 
 

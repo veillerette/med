@@ -100,8 +100,7 @@ Toolbar InitToolbar(void)
 	tools.doublesharp = 0;
 	tools.flat = 0;
 	tools.doubleflat = 0;
-	tools.pointed = 0;
-	tools.doublepointed = 0;
+	tools.statusdur = 0;
 	tools.rest = 0;
 	return tools;
 }
@@ -349,7 +348,18 @@ int Events_PollMouse(SDL_Event event)
 						add_flag |= NOTE_DOUBLESHARP;
 					else if(main_events->tools.doubleflat)
 						add_flag |= NOTE_DOUBLEFLAT;
-					printf("addnote = %d\n", Staff_AddNote(area->staff, area->id_step, area->id_note_add, MouseToNote(area, (y-main_events->base->y)*main_events->r), add_flag, main_events->tools.duration));
+					switch(main_events->tools.statusdur)
+					{
+						case 1:
+							add_flag |= NOTE_POINTED;
+							break;
+						case 2:
+							add_flag |= NOTE_DOUBLEPOINTED;
+							break;
+						default:
+							break;
+					}
+					Staff_AddNote(area->staff, area->id_step, area->id_note_add, MouseToNote(area, (y-main_events->base->y)*main_events->r), add_flag, main_events->tools.duration);
 					return FORCE_MAJ;
 				}
 			}

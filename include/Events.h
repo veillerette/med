@@ -66,30 +66,29 @@ struct Area
 typedef struct Toolbar Toolbar;
 struct Toolbar
 {
-	char sharp;
-	char doublesharp;
-	char flat;
-	char doubleflat;
-	char pointed;
-	char doublepointed;
-	char rest;
-	Note_Duration duration;
+	char 		sharp;
+	char 		doublesharp;
+	char 		flat;
+	char 		doubleflat;
+	int 		statusdur;
+	char 		rest;
+	Note_Duration 	duration;
 };
 
 typedef struct EventData EventData;
 struct EventData
 {
-	Area *lst; /* ordonned by surface size */
-	int n;
+	Area *		lst; /* ordonned by surface size */
+	int 		n;
 	
-	Area *select;
-	Area *hover;
-	SDL_Rect *base;
+	Area *		select;
+	Area *		hover;
+	SDL_Rect *	base;
 	
-	double r; /* zoom */
+	double 		r; /* zoom */
 	
-	Mode mode;
-	Toolbar tools;
+	Mode 		mode;
+	Toolbar 	tools;
 };
 
 Area *Area_Set(SDL_Rect rect, Object_Type type, ...);

@@ -22,15 +22,6 @@ void Note_Free(Note **note)
 	}
 }
 
-int Note_RealDuration(Note *note)
-{
-	int dur = 64 / note->duration;
-	if(note->flags & NOTE_POINTED)
-		return (int)(dur + dur/2);
-	else if(note->flags & NOTE_DOUBLEPOINTED)
-		return (int)(dur + dur/2 + dur/4);
-	return dur;
-}
 
 char ConvertStringToID(const char *note)
 {
@@ -397,6 +388,27 @@ Note_Duration *find2rest(int duration)
 	return tab;
 }
 
+
+int Note_RealDuration(Note *note)
+{
+	int dur = 64 / note->duration;
+	if(note->flags & NOTE_POINTED)
+		return (int)(dur + dur/2);
+	else if(note->flags & NOTE_DOUBLEPOINTED)
+		return (int)(dur + dur/2 + dur/4);
+	return dur;
+}
+
+int RealDuration(Note_Duration duration, Note_Flags flags)
+{
+	int dur = 64 / duration;
+	if(flags & NOTE_POINTED)
+		return (int)(dur + dur/2);
+	else if(flags & NOTE_DOUBLEPOINTED)
+		return (int)(dur + dur/2 + dur/4);
+	return dur;
+}
+
 int Step_AddNote(Step *step, int id, char note, Note_Flags flags,
 							Note_Duration duration)
 {
@@ -422,7 +434,6 @@ int Step_AddNote(Step *step, int id, char note, Note_Flags flags,
 		cur = &((*cur)->next);
 		id--;
 	}
-	
 	new_note = ToNote_Alloc(note, flags, duration, 0);
 	new_note->next = (*cur)->next;
 	note_duration = Note_RealDuration(new_note->note);
