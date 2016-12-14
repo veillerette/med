@@ -213,6 +213,8 @@ int _Selection_Divise(void)
 {
 	if(NULL == main_events->select)
 		return FORCE_MAJ;
+	if(main_events->select->type != OBJECT_NOTE)
+		return FORCE_MAJ;
 	Step_DiviseRest(main_events->select->step, main_events->select->id_note);
 	return FORCE_SCOREMAJ;
 }
