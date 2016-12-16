@@ -18,9 +18,6 @@ char *ABC_Keys[] = {
 	"Gb","Ebm",
 	"Cb","Abm"};   	/* -7 */
 	
-	
-
-
 static int ABC_ScanHead(FILE *f, char *field, char *text)
 {
 	char *str = malloc(sizeof(char) * 100);
@@ -114,7 +111,7 @@ static int ABC_ParseHeader(Score *score, FILE *f)
 					colorprintf(RED, "K:%s is not a good key\n", text);
 				break;
 			case 'L': /* Basic note length */
-				if(strlen(text) != 3)
+				if(strlen(text) < 3 || strlen(text) > 6)
 					break;
 				lenght = atoi(text+2);
 				if(lenght < 1 || lenght > 64)
@@ -135,6 +132,16 @@ static int ABC_ParseHeader(Score *score, FILE *f)
 	Staff_Init(score->lst[0], num, den, CLE_SOL, sign);	
 	return lenght;
 	
+}
+
+int nextcar(FILE *f)
+{
+	int car = 0;
+	if(NULL == f)
+		return 0;
+	car = fgetc(f);
+	fseek(f, - 1, SEEK_CUR);
+	return car;
 }
 
 extern Score *ABC_ParseFile(const char *path)
@@ -188,6 +195,11 @@ extern Score *ABC_ParseFile(const char *path)
 					h = 4;
 				else
 					h = 5;
+				if(nextcar(f) == '\'')
+				{
+					fgetc(f);
+					h++;
+				}
 				note[i] = car;
 				i++;
 			}
@@ -198,7 +210,10 @@ extern Score *ABC_ParseFile(const char *path)
 		}
 		else if(car >= '0' && car <= '9')
 		{
-			duration = duration / (car - '0');
+			if(car == '0')
+				duration = RONDE;
+			else
+				duration = duration / (car - '0');
 		}
 		switch(car)
 		{

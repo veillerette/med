@@ -961,6 +961,7 @@ int Staff_Print(Staff *staff, SDL_Rect *base_pos, SDL_Surface *dest)
 		}
 		if(0 == i || (*(staff->steps + i))->num != num || (*(staff->steps + i))->den != den)
 		{
+			base_pos->x += HEAD_W;
 			Step_PrintMesure(*(staff->steps + i), base_pos, dest);
 			num = (*(staff->steps + i))->num;
 			den = (*(staff->steps + i))->den;

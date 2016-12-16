@@ -39,17 +39,6 @@ int main(int argc, char *argv[])
 		Staff_ChangeArmure(staff, 0, 3);
 		Staff_AddNote(staff, 0, 0, 92, NOTE_DEFAULT, NOIRE);
 		Staff_AddNote(staff, 0, 1, ConvertStringToID("g4"), NOTE_DEFAULT, NOIRE);
-		Staff_AddNote(staff, 0, 2, ConvertStringToID("g4"), NOTE_DEFAULT, NOIRE);
-		Staff_AddNote(staff, 0, 3, ConvertStringToID("g4"), NOTE_DEFAULT, NOIRE);
-		Staff_AddNote(staff, 1, 0, ConvertStringToID("c6"), NOTE_DEFAULT, CROCHE);
-		Staff_AddNote(staff, 1, 2, ConvertStringToID("e5"), NOTE_DEFAULT, CROCHE);
-		Staff_AddNote(staff, 2, 0, ConvertStringToID("g4"), NOTE_DEFAULT, DOUBLECROCHE);
-		Staff_AddNote(staff, 2, 1, ConvertStringToID("g4"), NOTE_DEFAULT, DOUBLECROCHE);
-		Staff_AddNote(staff, 2, 2, ConvertStringToID("g4"), NOTE_DEFAULT, DOUBLECROCHE);
-		Staff_AddNote(staff, 2, 3, ConvertStringToID("g4"), NOTE_DEFAULT, DOUBLECROCHE);
-		Staff_AddNote(staff, 2, 4, ConvertStringToID("g4"), NOTE_DEFAULT, DOUBLECROCHE);
-		Staff_AddNote(staff, 2, 5, ConvertStringToID("g4"), NOTE_DEFAULT, DOUBLECROCHE);
-		Staff_AddNote(staff, 3, 0, ConvertStringToID("a4"), NOTE_DEFAULT, BLANCHE);
 		for(i = 0; i < 200; i++)
 			Staff_AddEmptyStep(staff);
 		Staff_Console(staff);
@@ -137,7 +126,7 @@ int main(int argc, char *argv[])
 				Menu_Aff(menu, &x, &y);
 				
 				SDL_Flip(Window->screen);
-				continue;
+
 				break;
 			
 			default:
