@@ -39,8 +39,9 @@ int main(int argc, char *argv[])
 		Staff_ChangeArmure(staff, 0, 3);
 		Staff_AddNote(staff, 0, 0, 92, NOTE_DEFAULT, NOIRE);
 		Staff_AddNote(staff, 0, 1, ConvertStringToID("g4"), NOTE_DEFAULT, NOIRE);
-		for(i = 0; i < 200; i++)
+		for(i = 0; i < 400; i++)
 			Staff_AddEmptyStep(staff);
+		Staff_AddNote(staff, 203, 0, ConvertStringToID("c4"), NOTE_DEFAULT, NOIRE);
 		Staff_Console(staff);
 	}
 	else if(3 == argc && !strcmp(argv[1], "-abc"))
@@ -60,7 +61,7 @@ int main(int argc, char *argv[])
 	EventData_SetBase(main_events, Window->pos_body);
 	EventData_SetZoom(main_events, r);
 	
-	Staff_Print(staff, SDL_SetRect(100, 200, 0, 0), Window->body[0]);
+	Staff_Print(staff, SDL_SetRect(100, 350, 0, 0));
 	
 	EventData_Console(main_events);
 	
@@ -117,7 +118,7 @@ int main(int argc, char *argv[])
 				continue;
 			case FORCE_SCOREMAJ:
 				EventData_Flush(main_events);
-				Staff_Print(staff, SDL_SetRect(100, 200, 0, 0), Window->body[0]);
+				Staff_Print(staff, SDL_SetRect(100, 350, 0, 0));
 				Window_ApplyZoom(r);
 			case FORCE_MAJ:
 				Window_DrawBody();
@@ -152,14 +153,19 @@ int main(int argc, char *argv[])
 				break;
 			case FORCE_MAJ:
 				EventData_Flush(main_events);
-				Staff_Print(staff, SDL_SetRect(100, 200, 0, 0), Window->body[0]);
+				Staff_Print(staff, SDL_SetRect(100, 350, 0, 0));
 				EventData_Console(main_events);
 				Window_ApplyZoom(r);
 				Window_DrawBody();
 				Window_Print();
+				
+				main_events->hover = Events_GetAreaByPixelAndType((int)((event.button.x - main_events->base->x) * 1.0 * main_events->r), 
+					 (int)((event.button.y - main_events->base->y) * 1.0 * main_events->r), EVENT_ADDNOTE);
+				
 				Window_TestBox(Window->screen, Window->pos_body, r);
 				Menu_Aff(menu, &x, &y);
 				SDL_Flip(Window->screen);
+				mouse = 0;
 			default:
 				break;
 		}
@@ -170,7 +176,7 @@ int main(int argc, char *argv[])
 				continue;
 			case FORCE_MAJ:
 				EventData_Flush(main_events);
-				Staff_Print(staff, SDL_SetRect(100, 200, 0, 0), Window->body[0]);
+				Staff_Print(staff, SDL_SetRect(100, 350, 0, 0));
 				EventData_Console(main_events);
 				Window_ApplyZoom(r);
 				Window_DrawBody();
@@ -183,8 +189,10 @@ int main(int argc, char *argv[])
 				break;
 		}
 		
-		if(sauv-SDL_GetTicks() < 10)
+		if(SDL_GetTicks()-sauv < 10)
+		{
 			SDL_Delay(1);
+		}
 		
 	}
 	if(score != NULL)

@@ -1,13 +1,20 @@
-todo list Jeudi 15 Decembre
 
 <<< Minors >>>
-- Hover ajout de note
+[OK]- Hover ajout de note
 - Queues des croches
 [OK]- Toolbar (Dieze, Bémol, DoubleDieze, DoubleBémol)
 [OK]- Toolbar (Modification durée note à la volée et altérations)
+[OK]- Gestion de plusieurs pages
 
 <<< Majors >>>
 - Explorateur de fichier
 - Importation fichier perso
 - Exportation fichier perso
 - Génération ondes génériques (Prototype 1)
+- Intégration génériques ondes
+
+
+
+Futures
+- Menu configuration audio ondes prévues
+- Export fichier partition+audio

@@ -541,6 +541,22 @@ void Graphics_Free(Graphics **graphics)
 	}
 }
 
+SDL_Surface *ConvertDisplayFormat(SDL_Surface *src)
+{
+	SDL_Surface *temp = NULL;
+	if(NULL == src)
+		return NULL;
+	temp = SDL_DisplayFormat(src);
+	SDL_FreeSurface(src);
+	
+	if(NULL == temp)
+	{
+		return NULL;
+	}
+	
+	return temp;
+}
+
 int Graphics_Load(Graphics **data)
 {
 	int r = 1;
@@ -548,55 +564,55 @@ int Graphics_Load(Graphics **data)
 		(*data) = Graphics_Alloc();
 	printf("Begin creating graphics... ");
 	
-	(*data)->Note_headBlack = Note_CreateHead(HEAD_W, HEAD_H, SetColor(0, 0, 0));
+	(*data)->Note_headBlack = ConvertDisplayFormat(Note_CreateHead(HEAD_W, HEAD_H, SetColor(0, 0, 0)));
 	if(NULL == (*data)->Note_headBlack)
 		r = 0;
 
-	(*data)->Note_headWhite = Note_CreateHeadWhite(HEAD_W, HEAD_H, SetColor(0, 0, 0));
+	(*data)->Note_headWhite = ConvertDisplayFormat(Note_CreateHeadWhite(HEAD_W, HEAD_H, SetColor(0, 0, 0)));
 	if(NULL == (*data)->Note_headWhite)
 		r = 0;
 	
-	(*data)->Note_headWhole = Note_CreateHeadWhole(HEAD_W, HEAD_H);
+	(*data)->Note_headWhole = ConvertDisplayFormat(Note_CreateHeadWhole(HEAD_W, HEAD_H));
 	if(NULL == (*data)->Note_headWhole)
 		r = 0;
 	
-	(*data)->Note_Black = Note_CreateBlack(HEAD_W, HEAD_H, QUEUE);
+	(*data)->Note_Black = ConvertDisplayFormat(Note_CreateBlack(HEAD_W, HEAD_H, QUEUE));
 	if(NULL == (*data)->Note_Black)
 		r = 0;
 	
-	(*data)->Note_Crotchet = Note_CreateCrotchet(HEAD_W, HEAD_H, QUEUE);
+	(*data)->Note_Crotchet = ConvertDisplayFormat(Note_CreateCrotchet(HEAD_W, HEAD_H, QUEUE));
 	if(NULL == (*data)->Note_Crotchet)
 		r = 0;
 	
-	(*data)->Note_CrotchetInv = Note_CreateCrotchetInv(HEAD_W, HEAD_H, QUEUE);
+	(*data)->Note_CrotchetInv = ConvertDisplayFormat(Note_CreateCrotchetInv(HEAD_W, HEAD_H, QUEUE));
 	if(NULL == (*data)->Note_CrotchetInv)
 		r = 0;
 	
-	(*data)->Rest_Long = Rest_CreateLong(HEAD_W, HEAD_H);
+	(*data)->Rest_Long = ConvertDisplayFormat(Rest_CreateLong(HEAD_W, HEAD_H));
 	if(NULL == (*data)->Rest_Long)
 		r = 0;
 	
-	(*data)->Rest_BreveLong = Rest_CreateBreveLong(HEAD_W, HEAD_H);
+	(*data)->Rest_BreveLong = ConvertDisplayFormat(Rest_CreateBreveLong(HEAD_W, HEAD_H));
 	if(NULL == (*data)->Rest_BreveLong)
 		r = 0;
 	
-	(*data)->Rest_Quaver = Rest_CreateQuaver(HEAD_W, HEAD_H);
+	(*data)->Rest_Quaver = ConvertDisplayFormat(Rest_CreateQuaver(HEAD_W, HEAD_H));
 	if(NULL == (*data)->Rest_Quaver)
 		r = 0;
 	
-	(*data)->Rest_Breve = Rest_CreateBreave(HEAD_W, HEAD_H);
+	(*data)->Rest_Breve = ConvertDisplayFormat(Rest_CreateBreave(HEAD_W, HEAD_H));
 	if(NULL == (*data)->Rest_Breve)
 		r = 0;
 	
-	(*data)->Sharp = CreateSharp(HEAD_W, HEAD_H);
+	(*data)->Sharp = ConvertDisplayFormat(CreateSharp(HEAD_W, HEAD_H));
 	if(NULL == (*data)->Sharp)
 		r = 0;
 	
-	(*data)->Flat = CreateFlat(HEAD_W, HEAD_H);
+	(*data)->Flat = ConvertDisplayFormat(CreateFlat(HEAD_W, HEAD_H));
 	if(NULL == (*data)->Flat)
 		r = 0;
 	
-	(*data)->DoubleFlat = CreateDoubleFlat(HEAD_W, HEAD_H);
+	(*data)->DoubleFlat = ConvertDisplayFormat(CreateDoubleFlat(HEAD_W, HEAD_H));
 	if(NULL == (*data)->DoubleFlat)
 		r = 0;
 	

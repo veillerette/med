@@ -448,7 +448,6 @@ void Menu_Console(Node_Array *lst, int tab)
 		{
 			for(j = 0; j < tab; j++)
 				putchar('\t');
-			printf("%s\n", lst->next[i]->name);
 			if(lst->next[i]->type == NODE)
 				Menu_Console(lst->next[i]->next, tab+1);
 		}
@@ -468,10 +467,8 @@ Menu_Node *FindExpandZone(Menu *menu, Menu_Node *mn, int clic_x, int clic_y)
 		if(pos.x <= clic_x && clic_x <= pos.x+pos.w &&
 			pos.y <= clic_y && clic_y <= pos.y+pos.h)
 			return mn->next->next[i];
-		printf("test %s==%s (%d)\n", mn->next->next[i]->name, menu->select->name, MyChildrenComp(menu->select,mn->next->next[i]));
 		if(MyChildrenComp(menu->select,mn->next->next[i]) && mn->next->next[i]->type == NODE)
 		{
-			printf("recherche profond %s\n", mn->next->next[i]->name);
 			res = FindExpandZone(menu, mn->next->next[i], clic_x, clic_y);
 			if(res != NULL)
 				return res;
@@ -509,16 +506,13 @@ int Menu_NoSelect(void)
 	SDL_Event event;
 	int c;
 	int complete = 0;
-	printf("A\n");
 	boxRGBA(Window->screen, Window->width/2-100, Window->height/2-50, Window->width/2+100, Window->height/2+50,
 										45, 56, 67, 255);
-	printf("a\n");
 	Moteur_WriteText(Window->width/2, Window->height/2-35, "Aucune sélection active", 22, "media/Garamond-light.ttf", color, TEXT_BLENDED, TEXT_CENTER, Window->screen);
-	printf("b\n");		
+
 	Moteur_WriteText(Window->width/2, Window->height/2+20, "Cliquez pour continuer ...", 19, "media/Garamond-light.ttf", color, TEXT_BLENDED, TEXT_CENTER, Window->screen);
 	SDL_Flip(Window->screen);
 	c = 1;
-	printf("B\n");
 	
 	while(c)
 	{
@@ -773,12 +767,10 @@ int ToolBar_PollMouse(Menu *menu, SDL_Event event)
 				
 			if(sauv != main_events->tools.statusdur)
 			{
-				printf("modif statusdur\n");
 				if(main_events->mode == MODE_EDIT && main_events->select != NULL)
 				{
 					Note *temp = Step_GetNote(main_events->select->step, main_events->select->id_note);
 								rest = temp->rest;
-					printf("suppr & add new note\n");
 					temp->flags = NOTE_DEFAULT;
 					if(main_events->tools.sharp)
 						temp->flags |= NOTE_SHARP;
@@ -887,7 +879,6 @@ void Toolbar_PrintNote(Menu *menu)
 	pos.x += 40;
 	pos.y += 23;
 	
-	printf("(%d,%d)\n", pos.x, pos.y);
 	if(main_events->tools.sharp)
 		roundedBoxRGBA(Window->screen, pos.x-20, y-20, pos.x+20, y+20, 3, 75, 85, 95, 255);
 	else
@@ -924,7 +915,7 @@ void Toolbar_PrintNote(Menu *menu)
 	roundedBoxRGBA(Window->screen, pos.x, pos.y, pos.x+1, pos.y+46, 7, 90, 100, 110, 255);
 	pos.x += 40;
 	pos.y += 23;
-	printf("last=%d\n", pos.x);
+	
 	if(main_events->tools.statusdur == 1)
 		roundedBoxRGBA(Window->screen, pos.x-20, y-20, pos.x+20, y+20, 3, 75, 85, 95, 255);
 	else

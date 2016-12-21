@@ -26,7 +26,7 @@ typedef enum {
 	OBJECT_STEP	= 0x0010,
 	OBJECT_SHEET	= 0x0020,
 	EVENT_ADDNOTE	= 0x0040,
-	OBJECT_ALL	= 0xFF
+	OBJECT_ALL	= 0xFFFF
 	} Object_Type;
 
 typedef enum {
@@ -40,6 +40,8 @@ struct Area
 	SDL_Rect 	rect;
 	Object_Type 	type;
 	Area *		next;
+	int		nbody;
+	
 	union 
 	{
 		struct /* OBJECT_NOTE */
@@ -91,7 +93,7 @@ struct EventData
 	Toolbar 	tools;
 };
 
-Area *Area_Set(SDL_Rect rect, Object_Type type, ...);
+Area *Area_Set(SDL_Rect rect, int nbody, Object_Type type, ...);
 
 EventData *EventData_Alloc(void);
 
@@ -110,6 +112,8 @@ int Events_PollKeyboard(SDL_Event event);
 int EventData_SetZoom(EventData *ed, double zoom);
 
 int EventData_Flush(EventData *ed);
+
+Area *Events_GetAreaByPixelAndType(int x, int y, Object_Type type);
 
 int PixelInRect(int x, int y, SDL_Rect rect);
 

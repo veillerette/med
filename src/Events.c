@@ -2,7 +2,7 @@
 
 EventData *main_events = NULL;
 
-Area *Area_Alloc(SDL_Rect rect, Object_Type type)
+Area *Area_Alloc(SDL_Rect rect, int nbody, Object_Type type)
 {
 	Area *temp = (Area *)malloc(sizeof(Area));
 	memtest(temp);
@@ -12,19 +12,20 @@ Area *Area_Alloc(SDL_Rect rect, Object_Type type)
 	
 	temp->step = NULL;
 	temp->id_note = 0;
+	temp->nbody = nbody;
 	
 	temp->next = NULL;
 	
 	return temp;
 }
 
-Area *Area_Set(SDL_Rect rect, Object_Type type, ...)
+Area *Area_Set(SDL_Rect rect, int nbody, Object_Type type, ...)
 {
 	Area *area = NULL;
 	va_list va;
 	va_start(va, type);
 	
-	area = Area_Alloc(rect, type);
+	area = Area_Alloc(rect, nbody, type);
 	
 	switch(type)
 	{
@@ -187,22 +188,20 @@ int EventData_Add(EventData *ed, Area *area)
 	return 1;
 }
 
+void Area_FreeRec(Area *area)
+{
+	if(area != NULL)
+	{
+		Area_FreeRec(area->next);
+		free(area);
+	}
+}
+
 int EventData_Flush(EventData *ed)
 {
-	Area **cur = NULL;
-	Area **sauv = NULL;
 	if(NULL == ed)
 		return 0;
-	cur = &ed->lst;
-	while(cur != NULL)
-	{
-		sauv = cur;
-		if((*cur)->next != NULL)
-			cur = &((*cur)->next);
-		else
-			cur = NULL;
-		Area_Free(sauv);
-	}
+	Area_FreeRec(ed->lst);
 	ed->lst = NULL;
 	ed->n = 0;
 	ed->hover = NULL;
@@ -242,7 +241,7 @@ Area *Events_GetAreaByPixelAndType(int x, int y, Object_Type type)
 	cur = main_events->lst;
 	while(cur != NULL)
 	{
-		if((cur->type & type) && PixelInRect(x, y, cur->rect))
+		if((cur->type & type) && PixelInRect(x-SIZE_BODY*cur->nbody, y, cur->rect))
 		{
 			if(main_events->mode == MODE_ADD)
 			{
@@ -279,6 +278,7 @@ char MouseToNote(Area *area, int y)
 int Events_PollMouse(SDL_Event event)
 {
 	int x,y;
+	Object_Type type = OBJECT_ALL;
 	Area *area = NULL;
 	if(NULL == main_events)
 		return 0;
@@ -297,20 +297,27 @@ int Events_PollMouse(SDL_Event event)
 			break;
 		default:
 			return 0;
-	}
+	}if(main_events->mode == MODE_ADD)
+		type = EVENT_ADDNOTE;
+	else
+		type = OBJECT_NOTE | OBJECT_STEP;
 	area = Events_GetAreaByPixelAndType((int)((x - main_events->base->x) * 1.0 * main_events->r), 
-					 (int)((y - main_events->base->y) * 1.0 * main_events->r), OBJECT_ALL);
+					 (int)((y - main_events->base->y) * 1.0 * main_events->r), type);
 	switch(event.type)
 	{
 		case SDL_MOUSEMOTION:
-			if(main_events->mode == MODE_EDIT)
+			if(main_events->mode == MODE_EDIT || main_events->mode == MODE_ADD)
 			{
 				if(main_events->hover == area)
 					return NONE;
 				main_events->hover = area;
 				return HOVER;
 			}
+			else
+				return NONE;
 			break;
+		case SDL_MOUSEBUTTONUP:
+			return NONE;
 		case SDL_MOUSEBUTTONDOWN:
 			if((NULL == area) && (x < Window->pos_body->x || y < Window->pos_body->y))
 				return NONE;
@@ -360,6 +367,7 @@ int Events_PollMouse(SDL_Event event)
 							break;
 					}
 					Staff_AddNote(area->staff, area->id_step, area->id_note_add, MouseToNote(area, (y-main_events->base->y)*main_events->r), add_flag, main_events->tools.duration);
+					
 					return FORCE_MAJ;
 				}
 			}

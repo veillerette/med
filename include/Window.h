@@ -21,6 +21,8 @@
 #define BASE_BODY_Y (Window->pos_menu->y + Window->pos_menu->h)
 #define ABS(A) (((A)<0)?-(A):(A))
 #define TestOK(); if(!Window_OK())return 0;
+#define SIZE_BODY (Window->body[0]->w + ESP_BODY)
+#define NPAGE (*(Window->body + nbody))
 
 #define FONT_MESURE "media/Hack-Regular.ttf"
 
@@ -56,6 +58,7 @@ struct WindowData
 	SDL_Surface **body_use; /* Surface for uses (pages) */
 	double ratio;
 	int nb_body;
+	
 	SDL_Rect *pos_body; /* base of first page */
 	
 	int _linked;
@@ -95,7 +98,7 @@ int Window_OK(void);
 
 int Window_AddEmptyBody();
 
-int Staff_Print(Staff *staff, SDL_Rect *base_pos, SDL_Surface *dest);
+int Staff_Print(Staff *staff, SDL_Rect *base_pos);
 
 void Window_DrawStaff(int x, int y, int x_end, SDL_Surface *dest);
 

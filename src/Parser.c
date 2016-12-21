@@ -61,7 +61,7 @@ int Console_Parser(void)
 	staff = Staff_Alloc("Staff trop cool");
 	Staff_Init(staff, 4, NOIRE, CLE_SOL, 0);
 	
-	Staff_Print(staff, SDL_SetRect(100, 200, 0, 0), Window->body[0]);
+	Staff_Print(staff, SDL_SetRect(100, 200, 0, 0));
 	Window_ApplyZoom(r);
 	Window_DrawBody();
 	Window_Print();
@@ -151,7 +151,7 @@ int Console_Parser(void)
 			}
 		}
 		Window_InitBody();
-		Staff_Print(staff, SDL_SetRect(100, 200, 0, 0), Window->body[0]);
+		Staff_Print(staff, SDL_SetRect(100, 200, 0, 0));
 		Window_ApplyZoom(r);
 		Window_DrawBody();
 		Window_Print();
