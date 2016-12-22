@@ -575,9 +575,9 @@ int Note_Print(Staff *staff, Step *step, int id_step, int id_note, Note *note, S
 		for(i = -135; i >= note_y; i-= HEAD_H)
 		{
 			boxRGBA(dest, 
-				base_pos->x - HEAD_W/2 + Images->rot_noteW , 
+				base_pos->x - HEAD_W/2 + Images->rot_noteW + 5, 
 				base_pos->y + 4 + i - note_y + Images->rot_noteH, 
-				base_pos->x + HEAD_W + Images->rot_noteW, 
+				base_pos->x + HEAD_W + Images->rot_noteW + 5, 
 				base_pos->y + 6 + i - note_y  + Images->rot_noteH, 
 				0, 0, 0, 255);
 		}
