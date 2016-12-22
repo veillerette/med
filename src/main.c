@@ -8,6 +8,8 @@
 #include "../include/ABC.h"
 #include "../include/Menu.h"
 
+#include "../include/Audio.h"
+
 int main(int argc, char *argv[])
 {
 	SDL_Event event;
@@ -48,6 +50,11 @@ int main(int argc, char *argv[])
 	{
 		score = ABC_ParseFile(argv[2]);
 		staff = score->lst[0];
+	}
+	else if(2 == argc && !strcmp(argv[1], "-audio"))
+	{
+		TEST();
+		exit(EXIT_SUCCESS);
 	}
 
 

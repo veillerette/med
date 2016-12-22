@@ -334,6 +334,7 @@ int Events_PollMouse(SDL_Event event)
 					main_events->tools.flat = temp->flags & NOTE_FLAT;
 					main_events->tools.doublesharp = temp->flags & NOTE_DOUBLESHARP;
 					main_events->tools.doubleflat = temp->flags & NOTE_DOUBLEFLAT;
+					main_events->tools.statusdur = 1*(temp->flags & NOTE_POINTED) + 2*(temp->flags & NOTE_DOUBLEPOINTED);
 				}
 				if(main_events->select == area)
 					return NONE;

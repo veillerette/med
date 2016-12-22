@@ -438,7 +438,6 @@ int Step_AddNote(Step *step, int id, char note, Note_Flags flags,
 	new_note->next = (*cur)->next;
 	note_duration = Note_RealDuration(new_note->note);
 	
-	
 	if((*cur)->note->rest)
 	{
 		tmp_duration = Note_RealDuration((*cur)->note);
@@ -449,11 +448,8 @@ int Step_AddNote(Step *step, int id, char note, Note_Flags flags,
 			return 0;
 		}
 	}
-
-	if((*cur)->note->duration == RONDE)
-		tmp_duration = step->num * (64 / step->den);
-	else
-		tmp_duration = Note_RealDuration((*cur)->note);
+	
+	tmp_duration = Note_RealDuration((*cur)->note);
 
 	ToNote_Free(cur);
 	*cur = new_note;
@@ -493,19 +489,6 @@ int Step_AddNote(Step *step, int id, char note, Note_Flags flags,
 		cur = &(*cur)->next;
 		i++;
 	}
-	
-	/*
-	while(note_duration > 0)
-	{
-		sauv = *cur;
-		*cur = ToNote_Alloc(0, NOTE_DEFAULT, 64/find2min(note_duration), 1);
-		note_duration -= find2min(note_duration);
-		(*cur)->next = sauv;
-		cur = &(*cur)->next;
-		ToNote_ConsolePrintf(step->notes);
-	}
-	*/
-	
 	if(rest_r != NULL)
 		free(rest_r);
 	
