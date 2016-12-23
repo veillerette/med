@@ -1,0 +1,10 @@
+X:1
+T:Mozart
+M:2/4
+L:1/4
+K:C
+V:1
+%%MIDI program 40
+CC|GG|AA|GG|FF|EE|DD|C2|GG|FF|EE|D2|GG|FF|EE|DD|CC|GG|AA|GG|FF|EE|DD|C2
+
+

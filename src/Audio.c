@@ -226,16 +226,19 @@ int Test_PlayStep(Step *step)
 		if(!note->note->rest)
 		{
 			Audio_SetConfig(carre, 
-					GetFreqFromId(GetRealId(note->note)), 30000);
+					GetFreqFromId(GetRealId(note->note)), 1000);
 			Audio_Play();
 		}
 		else
 			Audio_Pause();
 		begin = SDL_GetTicks();
 		while(SDL_GetTicks() - begin < 
-				(1000 * ((64.0/note->note->duration) / 16.0)))
+				(100 * ((64.0/note->note->duration) / 16.0)))
 			SDL_Delay(1);
-
+		Audio_Pause();
+		begin = SDL_GetTicks();
+		while(SDL_GetTicks() - begin < 30)
+			SDL_Delay(1);
 		note = note->next;
 	}
 	while(note != NULL);

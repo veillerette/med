@@ -389,13 +389,15 @@ Note_Duration *find2rest(int duration)
 }
 
 
-int Note_RealDuration(Note *note)
+int Note_RealDuration(Note *note, Step *step)
 {
 	int dur = 64 / note->duration;
 	if(note->flags & NOTE_POINTED)
 		return (int)(dur + dur/2);
 	else if(note->flags & NOTE_DOUBLEPOINTED)
 		return (int)(dur + dur/2 + dur/4);
+	if(note->rest && note->duration == RONDE)
+		return step->num * (64/step->den);
 	return dur;
 }
 
@@ -436,11 +438,11 @@ int Step_AddNote(Step *step, int id, char note, Note_Flags flags,
 	}
 	new_note = ToNote_Alloc(note, flags, duration, 0);
 	new_note->next = (*cur)->next;
-	note_duration = Note_RealDuration(new_note->note);
+	note_duration = Note_RealDuration(new_note->note, step);
 	
 	if((*cur)->note->rest)
 	{
-		tmp_duration = Note_RealDuration((*cur)->note);
+		tmp_duration = Note_RealDuration((*cur)->note, step);
 		if(note_duration == tmp_duration)
 		{
 			ToNote_Free(cur);
@@ -449,7 +451,7 @@ int Step_AddNote(Step *step, int id, char note, Note_Flags flags,
 		}
 	}
 	
-	tmp_duration = Note_RealDuration((*cur)->note);
+	tmp_duration = Note_RealDuration((*cur)->note, step);
 
 	ToNote_Free(cur);
 	*cur = new_note;
@@ -465,7 +467,7 @@ int Step_AddNote(Step *step, int id, char note, Note_Flags flags,
 			special->note->flags |= NOTE_LINKED;
 			return 64/note_duration;
 		}
-		tmp_duration = Note_RealDuration((*cur)->note);
+		tmp_duration = Note_RealDuration((*cur)->note, step);
 		sauv = (*cur)->next;
 		note_duration -= tmp_duration;
 		ToNote_Free(cur);
@@ -520,7 +522,7 @@ int Step_DelLocal(Step *step, int begin, int end)
 		if(*cur == NULL)
 			break;
 		sauv = (*cur)->next;
-		duration += Note_RealDuration((*cur)->note);
+		duration += Note_RealDuration((*cur)->note, step);
 		ToNote_Free(cur);
 		*cur = sauv;
 		end--;
@@ -560,7 +562,7 @@ int Step_Verif(Step *step)
 	cur = step->notes;
 	while(cur != NULL)
 	{
-		sum += Note_RealDuration(cur->note);
+		sum += Note_RealDuration(cur->note, step);
 		cur = cur->next;
 	}
 	

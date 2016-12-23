@@ -89,8 +89,10 @@ int main(int argc, char *argv[])
 						
 		if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_s)
 		{
+			int i;
 			printf("begin playing audio\n");
-			Test_PlayStep(*(staff->steps));
+			for(i=0; i < staff->n; i++)
+				Test_PlayStep(*(staff->steps + i));
 			printf("end playing audio\n");
 		}
 		

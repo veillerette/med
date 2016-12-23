@@ -76,7 +76,7 @@ Note *Note_Alloc(char note, Note_Flags flags, Note_Duration duration, char rest)
 
 void Note_Free(Note **note);
 
-int Note_RealDuration(Note *note);
+int Note_RealDuration(Note *note, Step *step);
 
 char ConvertStringToID(const char *note);
 
