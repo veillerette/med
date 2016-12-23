@@ -5,18 +5,17 @@ AudioMain *main_audio = NULL;
 void MYCALLBACK(void *userdata, Uint8 *stream, int len)
 {
 	int i = 0;
-	double freq = main_audio->config.freq;
+	double freq = (double)(int)main_audio->config.freq;
 	int volume = main_audio->config.volume;
 
 	if((NULL == main_audio) || (main_audio->status != AUDIO_INIT) 
 		|| (NULL == main_audio->hardware))
 		return;
-	for(i = 0; i < len; i++)
+	for(i = 0; i < len; i+=2)
 	{
 		*((Sint16 *) &stream[i]) = (Sint16)(volume * 
 				main_audio->config.f(main_audio->progress, freq));
-		printf("%d\n", *((Sint16 *) &stream[i]));
-		main_audio->progress = (main_audio->progress+1) % main_audio->hardware->freq;
+		main_audio->progress = (main_audio->progress+1);
 	}
 	
 	userdata = userdata; /* to avoid Wunused-variable */
@@ -54,7 +53,7 @@ AudioMain *AudioMain_Alloc(void)
 	return temp;
 }
 
-void Audio_SetConfig(double (*f)(int x, double freq), int freq, int volume)
+void Audio_SetConfig(double (*f)(int x, double freq), double freq, int volume)
 {
 	if(NULL == main_audio)
 		return;
@@ -112,7 +111,7 @@ int Audio_DevInit(int freq, Uint16 format, Uint8 channels, Uint16 samples,
 
 int Audio_Init(void)
 {
-	return Audio_DevInit(44100, AUDIO_S8, 2, 1024, MYCALLBACK, NULL);
+	return Audio_DevInit(44100, AUDIO_S16, 2, 512, MYCALLBACK, NULL);
 }
 
 int Audio_Quit(void)
@@ -132,6 +131,7 @@ void Audio_Play(void)
 
 void Audio_Pause(void)
 {
+	main_audio->progress = 0;
 	SDL_PauseAudio(1);
 }
 
@@ -165,10 +165,16 @@ void PlaySeconds(unsigned int n, int freq)
 
 void TEST(void)
 {
-	int f = 300;
+	double f = 300.;
 	int i = 0;
+	int j = 0;
 	Uint32 begin = 0;
 	Audio_Init();
+	
+	for(j = 21; j < 108; j++)
+		printf("%d => %g Hz\n", j, GetFreqFromId(j));
+	exit(1);
+	
 	Audio_SetConfig(sinusoide, f, 100);
 	Audio_Play();
 	while(i < 6)
@@ -187,6 +193,56 @@ void TEST(void)
 			SDL_Delay(1);
 	}
 	Audio_Quit();
+}
+
+double GetFreqFromId(int id)
+{
+	int oct = id/12 ;
+	int add = id%12;
+	return (33.0) * pow(2.0, oct - 2) * pow(1.059463, add) ;
+}
+
+int GetRealId(Note *note)
+{
+	return note->note 	+ ((note->flags & NOTE_SHARP) != 0) 
+				+ 2 * ((note->flags & NOTE_DOUBLESHARP) != 0)
+				- ((note->flags & NOTE_FLAT) != 0)
+				- 2 * ((note->flags & NOTE_DOUBLEFLAT) != 0);
+}
+
+int Test_PlayStep(Step *step)
+{
+	Uint32 begin = 0;
+	ToNote *note = NULL;
+	if((NULL == step) || (NULL == step->notes))
+		return 0;
+	
+	Audio_Init();
+	
+	note = step->notes;
+	do
+	{
+		printf("playing note %f...\n", GetFreqFromId(GetRealId(note->note)));
+		if(!note->note->rest)
+		{
+			Audio_SetConfig(carre, 
+					GetFreqFromId(GetRealId(note->note)), 30000);
+			Audio_Play();
+		}
+		else
+			Audio_Pause();
+		begin = SDL_GetTicks();
+		while(SDL_GetTicks() - begin < 
+				(1000 * ((64.0/note->note->duration) / 16.0)))
+			SDL_Delay(1);
+
+		note = note->next;
+	}
+	while(note != NULL);
+	
+	
+	Audio_Quit();
+	return 1;
 }
 
 

@@ -34,10 +34,10 @@ struct AudioMain
 	SDL_AudioSpec *hardware;
 	Audio_Status status;
 	AudioConfig config;
-	int progress;
+	unsigned int progress;
 };
 
-void Audio_SetConfig(double (*f)(int x, double freq), int freq, int volume);
+void Audio_SetConfig(double (*f)(int x, double freq), double freq, int volume);
 
 int Audio_Quit(void);
 
@@ -49,7 +49,11 @@ int Audio_Init(void);
 
 void PlaySeconds(unsigned int n, int freq);
 
+double GetFreqFromId(int id);
+
 void TEST(void);
+
+int Test_PlayStep(Step *step);
 
 extern AudioMain *main_audio;
 

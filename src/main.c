@@ -27,7 +27,6 @@ int main(int argc, char *argv[])
 	Staff *staff = NULL;
 	Score *score = NULL;
 	char title[100] = "";
-	int i;
 	
 	sprintf(title, "%s %g", SYS_NAME, SYS_VERSION);
 		
@@ -38,12 +37,8 @@ int main(int argc, char *argv[])
 	{
 		staff = Staff_Alloc("Portée trop géniale");
 		Staff_Init(staff, 4, NOIRE, CLE_SOL, 0);
-		Staff_ChangeArmure(staff, 0, 3);
-		Staff_AddNote(staff, 0, 0, 92, NOTE_DEFAULT, NOIRE);
-		Staff_AddNote(staff, 0, 1, ConvertStringToID("g4"), NOTE_DEFAULT, NOIRE);
-		for(i = 0; i < 400; i++)
-			Staff_AddEmptyStep(staff);
-		Staff_AddNote(staff, 203, 0, ConvertStringToID("c4"), NOTE_DEFAULT, NOIRE);
+		Staff_ChangeArmure(staff, 0, 0);
+		Staff_AddNote(staff, 0, 0, ConvertStringToID("g4"), NOTE_DEFAULT, RONDE);
 		Staff_Console(staff);
 	}
 	else if(3 == argc && !strcmp(argv[1], "-abc"))
@@ -91,6 +86,15 @@ int main(int argc, char *argv[])
 		sauv = SDL_GetTicks();
 		Window_LittleEvent(event, &r, &c, &mouse, &clic_x, 
 						&clic_y, &tomaj, &m);
+						
+		if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_s)
+		{
+			printf("begin playing audio\n");
+			Test_PlayStep(*(staff->steps));
+			printf("end playing audio\n");
+		}
+		
+		
 		if(m)
 		{
 			Window_ApplyZoom(r);
