@@ -27,6 +27,7 @@ int main(int argc, char *argv[])
 	Staff *staff = NULL;
 	Score *score = NULL;
 	char title[100] = "";
+	SDL_Thread *thread_audio = NULL;
 	
 	sprintf(title, "%s %g", SYS_NAME, SYS_VERSION);
 		
@@ -87,16 +88,23 @@ int main(int argc, char *argv[])
 		Window_LittleEvent(event, &r, &c, &mouse, &clic_x, 
 						&clic_y, &tomaj, &m);
 						
-		if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_s)
+		if(ev && event.type == SDL_KEYUP && event.key.keysym.sym == SDLK_s)
 		{
-			int i;
-			printf("begin playing audio\n");
-			for(i=0; i < staff->n; i++)
-				Test_PlayStep(*(staff->steps + i));
-			printf("end playing audio\n");
+			if(thread_audio == NULL)
+			{
+				printf("Playing !\n");
+				thread_audio = SDL_CreateThread(ThreadAudioStaff, 
+									(void *)staff);
+			}
+			else
+			{
+				printf("Stopping audio !\n");
+				Audio_Pause();
+				SDL_KillThread(thread_audio);
+				thread_audio = NULL;
+			}
+			
 		}
-		
-		
 		if(m)
 		{
 			Window_ApplyZoom(r);

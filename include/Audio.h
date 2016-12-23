@@ -53,7 +53,11 @@ double GetFreqFromId(int id);
 
 void TEST(void);
 
-int Test_PlayStep(Step *step);
+int ThreadAudioStaff(void *data);
+
+int PlayStaff(Staff *staff);
+
+int PlayStep(Step *step);
 
 extern AudioMain *main_audio;
 

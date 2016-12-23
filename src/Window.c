@@ -61,7 +61,7 @@ int Window_Init(void)
 	}
 	if(Window->state < STATE_SDLINIT)
 	{
-		if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) != 0)
+		if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER) != 0)
 		{
 			colorprintf(RED, "Error while launching SDL\n");
 			exit(EXIT_FAILURE);
@@ -494,6 +494,14 @@ int Window_GetSize(Step *step)
 	while(cur != NULL)
 	{
 		width += Window_GetSpaceNote(step, cur->note);
+		if(cur->note->flags & NOTE_SHARP)
+			width += HEAD_W;
+		if(cur->note->flags & NOTE_DOUBLESHARP)
+			width += HEAD_W;
+		if(cur->note->flags & NOTE_FLAT)
+			width += HEAD_W*3.0/4;
+		if(cur->note->flags & NOTE_DOUBLEFLAT)
+			width += HEAD_W*3.0/2;
 		cur = cur->next;
 	}
 	return width;

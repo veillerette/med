@@ -147,7 +147,7 @@ double carre(int x, double freq)
 
 double other(int x, double freq)
 {
-	return (double)(x%((int)freq));
+	return 1.0/(double)(x%((int)freq));
 }
 
 void PlaySeconds(unsigned int n, int freq)
@@ -197,9 +197,7 @@ void TEST(void)
 
 double GetFreqFromId(int id)
 {
-	int oct = id/12 ;
-	int add = id%12;
-	return (33.0) * pow(2.0, oct - 2) * pow(1.059463, add) ;
+	return (33.0) * pow(2.0, id / 12 - 2) * pow(1.059463, id % 12) ;
 }
 
 int GetRealId(Note *note)
@@ -210,19 +208,33 @@ int GetRealId(Note *note)
 				- 2 * ((note->flags & NOTE_DOUBLEFLAT) != 0);
 }
 
-int Test_PlayStep(Step *step)
+int ThreadAudioStaff(void *data)
+{
+	Staff *staff = (Staff *)data;
+	Audio_Init();
+	PlayStaff(staff);
+	Audio_Quit();
+	return 1;
+}
+
+int PlayStaff(Staff *staff)
+{
+	int i;
+	for(i = 0; i < staff->n; i++)
+		PlayStep(*(staff->steps + i));
+	return 1;
+}
+
+int PlayStep(Step *step)
 {
 	Uint32 begin = 0;
 	ToNote *note = NULL;
 	if((NULL == step) || (NULL == step->notes))
 		return 0;
-	
-	Audio_Init();
-	
+		
 	note = step->notes;
 	do
 	{
-		printf("playing note %f...\n", GetFreqFromId(GetRealId(note->note)));
 		if(!note->note->rest)
 		{
 			Audio_SetConfig(carre, 
@@ -233,7 +245,7 @@ int Test_PlayStep(Step *step)
 			Audio_Pause();
 		begin = SDL_GetTicks();
 		while(SDL_GetTicks() - begin < 
-				(100 * ((64.0/note->note->duration) / 16.0)))
+				(400 * ((64.0/note->note->duration) / 16.0)))
 			SDL_Delay(1);
 		Audio_Pause();
 		begin = SDL_GetTicks();
@@ -242,9 +254,6 @@ int Test_PlayStep(Step *step)
 		note = note->next;
 	}
 	while(note != NULL);
-	
-	
-	Audio_Quit();
 	return 1;
 }
 

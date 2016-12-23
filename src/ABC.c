@@ -155,6 +155,8 @@ extern Score *ABC_ParseFile(const char *path)
 	int step_id = 0, note_id = 0;
 	int h = 4;
 	int duration = base_l;
+	Note_Flags flags = NOTE_DEFAULT;
+	
 	if(NULL == path)
 		return NULL;
 	
@@ -175,15 +177,30 @@ extern Score *ABC_ParseFile(const char *path)
 	do
 	{
 		car = fgetc(f);
+		switch(car)
+		{
+			case '+':
+				flags |= NOTE_SHARP;
+				break;
+			case '-':
+				flags |= NOTE_FLAT;
+				break;
+			default:
+				break;
+		}
 		if(ABC_isNote(car) || car == '|' || car=='\n' || car == EOF)
 		{
 			if(i != 0 )
 			{
 				note[i] = (char)h+'0';
-				printf("ADDING step_id=%d note_id=%d, note=%s, duration=%d\n",
-						step_id, note_id, note, duration);
+				
+				printf("ADDING step_id=%d note_id=%d, note=%s, duration=%d flags=%d\n",
+						step_id, note_id, note, duration, flags);
+				if(step_id+1 == score->lst[0]->n)
+					Staff_AddEmptyStep(score->lst[0]);
 				Staff_AddNote(score->lst[0], step_id, note_id, 
-						ConvertStringToID(note), NOTE_DEFAULT, duration);
+						ConvertStringToID(note), flags, duration);
+				flags = NOTE_DEFAULT;
 				if(duration != base_l)
 					duration = base_l;
 				note_id++;
@@ -215,6 +232,10 @@ extern Score *ABC_ParseFile(const char *path)
 			else
 				duration = duration / (car - '0');
 		}
+		else if(car == '\'')
+			h++;
+		else if(car == ',')
+			h--;
 		switch(car)
 		{
 			case '|':
