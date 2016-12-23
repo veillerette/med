@@ -129,7 +129,9 @@ static int ABC_ParseHeader(Score *score, FILE *f)
 		return 0;
 	}
 	printf("Init with %d %d %d %d\n", num, den, CLE_SOL, sign);
-	Staff_Init(score->lst[0], num, den, CLE_SOL, sign);	
+	Staff_Init(score->lst[0], num, den, CLE_SOL, sign);
+	while(fgetc(f) != '\n')
+		fseek(f, -2, SEEK_CUR);	
 	return lenght;
 	
 }
@@ -177,6 +179,12 @@ extern Score *ABC_ParseFile(const char *path)
 	do
 	{
 		car = fgetc(f);
+		printf("'%c'\n", car);
+		if('%' == car)
+		{
+			while((car = fgetc(f)) != '\n');
+		}
+		printf("'%c'\n", car);
 		switch(car)
 		{
 			case '+':

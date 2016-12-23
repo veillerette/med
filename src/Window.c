@@ -216,7 +216,7 @@ int Window_CreateWindow(int width, int height, const char *title)
 	
 	{			
 		Window->pos_body = SDL_SetRect((Window->width-Window->height*3/2-Window->pos_pal->w)/2+Window->pos_pal->w, Window->pos_menu->h, 
-						Window->height * 3, Window->width * 2);
+						Window->height * 4, Window->width * 2);
 		printf("size body : w=%d h=%d\n", Window->height * 3, Window->width * 2);
 
 		Window->body = (SDL_Surface **)malloc(sizeof(SDL_Surface *) * 1);
@@ -601,7 +601,7 @@ int Note_Print(Staff *staff, Step *step, int id_step, int id_note, Note *note, S
 		filledCircleRGBA(dest, base_pos->x + HEAD_W + 7*QUEUE_BORDER, base_pos->y + HEAD_H/5, 5, 0, 0, 0, 255);
 	}
 	
-	if(Window->_linked)
+	if(0 && Window->_linked)
 	{
 		int x[] = {Window->pos_link->x+HEAD_W/2, (Window->pos_link->x+2*HEAD_W/2 + base_pos->x)/2, base_pos->x+HEAD_W/2};
 		int y[] = {base_pos->y-20, base_pos->y-75,base_pos->y-20};

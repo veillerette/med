@@ -4,7 +4,7 @@
 #include "System.h"
 #include "Step.h"
 
-#define STAFF_BASE 25
+#define STAFF_BASE 5
 
 typedef struct Staff Staff;
 struct Staff

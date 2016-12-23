@@ -245,15 +245,15 @@ int PlayStep(Step *step)
 			Audio_Pause();
 		begin = SDL_GetTicks();
 		while(SDL_GetTicks() - begin < 
-				(400 * ((64.0/note->note->duration) / 16.0)))
+				(800 * ((64.0/note->note->duration) / 16.0)) - 20)
 			SDL_Delay(1);
 		Audio_Pause();
 		begin = SDL_GetTicks();
-		while(SDL_GetTicks() - begin < 30)
-			SDL_Delay(1);
+		while(SDL_GetTicks() - begin < 10);
 		note = note->next;
 	}
 	while(note != NULL);
+
 	return 1;
 }
 
