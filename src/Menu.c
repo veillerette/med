@@ -556,9 +556,12 @@ int Menu_PollMouse(Menu *menu, SDL_Event event)
 				main_events->mode = 1-main_events->mode;
 				return FORCE_MAJ;
 			}
-			if((sauv = ToolBar_PollMouse(menu, event)) != NONE)
-				return sauv;
+			
 			mn = FindNodeByZone(menu, event.button.x, event.button.y);
+			
+			if(mn == NULL && ((sauv = ToolBar_PollMouse(menu, event)) != NONE))
+				return sauv;
+				
 			if(mn != NULL && mn->type == LEAF)
 			{
 				menu->select = NULL;

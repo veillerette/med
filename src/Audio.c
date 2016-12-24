@@ -238,18 +238,22 @@ int PlayStep(Step *step)
 		if(!note->note->rest)
 		{
 			Audio_SetConfig(carre, 
-					GetFreqFromId(GetRealId(note->note)), 1000);
+					GetFreqFromId(GetRealId(note->note)), 32000);
 			Audio_Play();
 		}
 		else
 			Audio_Pause();
 		begin = SDL_GetTicks();
 		while(SDL_GetTicks() - begin < 
-				(800 * ((64.0/note->note->duration) / 16.0)) - 20)
+				(700 * ((64.0/note->note->duration) / 16.0)) - 20)
 			SDL_Delay(1);
-		Audio_Pause();
-		begin = SDL_GetTicks();
-		while(SDL_GetTicks() - begin < 10);
+		if(note->next == NULL || GetRealId(note->next->note) == GetRealId(note->note))
+		{
+			Audio_Pause();
+			begin = SDL_GetTicks();
+			while(SDL_GetTicks() - begin < 20)
+				SDL_Delay(1);
+		}
 		note = note->next;
 	}
 	while(note != NULL);

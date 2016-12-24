@@ -216,7 +216,7 @@ int Window_CreateWindow(int width, int height, const char *title)
 	
 	{			
 		Window->pos_body = SDL_SetRect((Window->width-Window->height*3/2-Window->pos_pal->w)/2+Window->pos_pal->w, Window->pos_menu->h, 
-						Window->height * 4, Window->width * 2);
+						Window->height * 4, Window->width * 2.5);
 		printf("size body : w=%d h=%d\n", Window->height * 3, Window->width * 2);
 
 		Window->body = (SDL_Surface **)malloc(sizeof(SDL_Surface *) * 1);
