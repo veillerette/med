@@ -261,7 +261,6 @@ extern Score *ABC_ParseFile(const char *path)
 	
 	
 	
-	
 	fclose(f);
 	return score;
 }

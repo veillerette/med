@@ -4,7 +4,7 @@
 #include "System.h"
 #include "Step.h"
 
-#define STAFF_BASE 5
+#define STAFF_BASE 2
 
 typedef struct Staff Staff;
 struct Staff
@@ -95,6 +95,7 @@ int Score_ShowSignConsole(Score *score);
 
 int Score_Init(Score *score);
 
+int Score_AddEmpty(Score *score);
 
 
 #endif

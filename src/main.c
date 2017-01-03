@@ -13,7 +13,7 @@
 int main(int argc, char *argv[])
 {
 	SDL_Event event;
-	double r=2.0;
+	double r=1.0;
 	int c=1;
 	int ev;
 	const SDL_VideoInfo* info = NULL;
@@ -25,27 +25,51 @@ int main(int argc, char *argv[])
 	int x=0,y=0;
 	int m = 0;
 	Staff *staff = NULL;
-	Score *score = NULL;
 	char title[100] = "";
 	SDL_Thread *thread_audio = NULL;
+	SDL_Thread *thread_audio2 = NULL;
+	int i;
+	Score *new_score = NULL;
 	
 	sprintf(title, "%s %g", SYS_NAME, SYS_VERSION);
 		
 	
 	Window_Init();
 	menu = Menu_Create();
+	new_score = Score_Alloc();
+	Score_Init(new_score);
+	printf("A\n");
 	if(argc==1)
 	{
 		staff = Staff_Alloc("Portée trop géniale");
-		Staff_Init(staff, 4, NOIRE, CLE_SOL, 0);
+		Staff_Init(staff, 2, NOIRE, CLE_SOL, 0);
+		printf("B\n");
 		Staff_ChangeArmure(staff, 0, 0);
-		Staff_AddNote(staff, 0, 0, ConvertStringToID("g4"), NOTE_DEFAULT, RONDE);
-		Staff_Console(staff);
+		
+		for(i = 0; i < 5; i++)
+			Staff_AddEmptyStep(staff);
+			
+		Staff_Init(new_score->lst[0], 2, NOIRE, CLE_SOL, 0);
+		Score_AddEmpty(new_score);
+		Staff_Init(new_score->lst[1], 2, NOIRE, CLE_SOL, 0);
+		Staff_ChangeArmure(new_score->lst[0], 0, 0);
+		Staff_ChangeArmure(new_score->lst[1], 0, 0);
+		Staff_AddNote(new_score->lst[0], 0, 0, ConvertStringToID("g4"), NOTE_DEFAULT, RONDE);
+		Staff_AddNote(new_score->lst[1], 0, 0, ConvertStringToID("g4"), NOTE_DEFAULT, RONDE);
+		for(i = 0; i < 50; i++)
+		{
+			Staff_AddEmptyStep(new_score->lst[0]);
+			Staff_AddEmptyStep(new_score->lst[1]);
+		}
+		Staff_Console(new_score->lst[0]);
 	}
 	else if(3 == argc && !strcmp(argv[1], "-abc"))
 	{
-		score = ABC_ParseFile(argv[2]);
-		staff = score->lst[0];
+		printf("begin ABC...\n");
+		new_score = ABC_ParseFile(argv[2]);
+		printf("mid ABC...\n");
+		Score_AddEmpty(new_score);
+		printf("end ABC\n");
 	}
 	else if(2 == argc && !strcmp(argv[1], "-audio"))
 	{
@@ -64,7 +88,7 @@ int main(int argc, char *argv[])
 	EventData_SetBase(main_events, Window->pos_body);
 	EventData_SetZoom(main_events, r);
 	
-	Staff_Print(staff, SDL_SetRect(100, 350, 0, 0));
+	Score_Print(new_score, SDL_SetRect(100, 350, 0, 0));
 	
 	EventData_Console(main_events);
 	
@@ -79,6 +103,8 @@ int main(int argc, char *argv[])
 	
 	
 	SDL_Flip(Window->screen);
+	
+	printf("END FIRST !\n");
 	time = SDL_GetTicks();
 	sauv = time;
 	while(c)
@@ -87,14 +113,13 @@ int main(int argc, char *argv[])
 		sauv = SDL_GetTicks();
 		Window_LittleEvent(event, &r, &c, &mouse, &clic_x, 
 						&clic_y, &tomaj, &m);
-						
 		if(ev && event.type == SDL_KEYUP && event.key.keysym.sym == SDLK_s)
 		{
 			if(thread_audio == NULL)
 			{
 				printf("Playing !\n");
 				thread_audio = SDL_CreateThread(ThreadAudioStaff, 
-									(void *)staff);
+									new_score->lst[0]);
 			}
 			else
 			{
@@ -139,7 +164,7 @@ int main(int argc, char *argv[])
 				continue;
 			case FORCE_SCOREMAJ:
 				EventData_Flush(main_events);
-				Staff_Print(staff, SDL_SetRect(100, 350, 0, 0));
+				Score_Print(new_score, SDL_SetRect(100, 350, 0, 0));
 				Window_ApplyZoom(r);
 			case FORCE_MAJ:
 				Window_DrawBody();
@@ -174,7 +199,7 @@ int main(int argc, char *argv[])
 				break;
 			case FORCE_MAJ:
 				EventData_Flush(main_events);
-				Staff_Print(staff, SDL_SetRect(100, 350, 0, 0));
+				Score_Print(new_score, SDL_SetRect(100, 350, 0, 0));
 				EventData_Console(main_events);
 				Window_ApplyZoom(r);
 				Window_DrawBody();
@@ -197,7 +222,7 @@ int main(int argc, char *argv[])
 				continue;
 			case FORCE_MAJ:
 				EventData_Flush(main_events);
-				Staff_Print(staff, SDL_SetRect(100, 350, 0, 0));
+				Score_Print(new_score, SDL_SetRect(100, 350, 0, 0));
 				EventData_Console(main_events);
 				Window_ApplyZoom(r);
 				Window_DrawBody();
@@ -216,8 +241,8 @@ int main(int argc, char *argv[])
 		}
 		
 	}
-	if(score != NULL)
-		Score_Free(&score);
+	if(new_score != NULL)
+		Score_Free(&new_score);
 	else
 		Staff_Free(&staff);
 	

@@ -22,7 +22,7 @@ int Staff_Init(Staff *staff, int num, Note_Duration den, int cle, char sign)
 	int i;
 	if(NULL == staff)
 		return 0;
-	
+
 	if(0 == staff->n && STAFF_BASE == staff->max)
 		staff->n = STAFF_BASE;
 	
@@ -113,9 +113,6 @@ int Staff_AddEmptyStep(Staff *staff)
 {
 	Step *last = NULL;
 	if(NULL == staff)
-		return 0;
-	
-	if(0 == staff->n)
 		return 0;
 
 	Staff_VerifAlloc(staff);
@@ -379,6 +376,31 @@ int Score_Init(Score *score)
 	if(score->n != 0)
 		return 0;
 	score->lst[score->n] = Staff_Alloc(" ");
+	score->n++;
+	return 1;
+}
+
+int Score_AddEmpty(Score *score)
+{
+	
+	if(NULL == score)
+		return 0;
+	score->lst = (Staff **)realloc(score->lst, score->n+1);
+	memtest(score->lst);
+	score->lst[score->n] = Staff_Alloc(" ");
+	if(score->n > 0)
+	{
+		printf("1(\n");
+		Staff_Init(score->lst[score->n], score->lst[score->n-1]->steps[0]->num, score->lst[score->n-1]->steps[0]->den,  score->lst[score->n-1]->steps[0]->cle, score->lst[score->n-1]->steps[0]->sign);
+		printf("2( %d %p %p\n", score->lst[score->n]->n, score->lst[score->n], score->lst[score->n - 1]);
+		while(score->lst[score->n]->n < score->lst[score->n - 1]->n)
+		{
+			printf("boucle A\n");
+			Staff_AddEmptyStep(score->lst[score->n]);
+			printf("boucle end\n");
+		}
+		printf("3(\n");
+	}
 	score->n++;
 	return 1;
 }

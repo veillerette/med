@@ -52,16 +52,20 @@ int Console_Parser(void)
 	int i;
 	double r=2.0;
 	Note_Flags flags = NOTE_DEFAULT;
-	
+	Score *score = NULL;
 	char *temp = NULL;
 	
 	char **com = NULL;
 	int n_com;
 	
-	staff = Staff_Alloc("Staff trop cool");
+	score = Score_Alloc();
+	Score_Init(score);
+	Score_AddEmpty(score);
+	
+	score->lst[0] = staff = Staff_Alloc("Staff trop cool");
 	Staff_Init(staff, 4, NOIRE, CLE_SOL, 0);
 	
-	Staff_Print(staff, SDL_SetRect(100, 200, 0, 0));
+	Score_Print(score, SDL_SetRect(100, 200, 0, 0));
 	Window_ApplyZoom(r);
 	Window_DrawBody();
 	Window_Print();
@@ -151,7 +155,7 @@ int Console_Parser(void)
 			}
 		}
 		Window_InitBody();
-		Staff_Print(staff, SDL_SetRect(100, 200, 0, 0));
+		Score_Print(score, SDL_SetRect(100, 200, 0, 0));
 		Window_ApplyZoom(r);
 		Window_DrawBody();
 		Window_Print();

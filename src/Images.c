@@ -429,6 +429,74 @@ SDL_Surface *CreateFlat(int size_w, int size_h)
 	return surf;
 }
 
+
+SDL_Surface *CreateCleSol(int size_w, int size_h)
+{
+	int i,j;
+	SDL_Surface *surf = NULL;
+	
+	int x[] = {size_w*1.25-20, (size_w*2+size_w*1.25-40)/2, size_w*2-20};
+	int y[] = {size_h*5.25, size_h*4, size_h*5};
+	
+	int x2[] = {size_w*2-20, (size_w*2.25-20)/2, size_w*0.25};
+	int y2[] = {size_h*5, size_h*6.5, size_h*5};
+	
+	int x3[] = {size_w*0.25+2, 0, x[1]+5, x[1]+10};
+	int y3[] = {size_h * 5 - 5, size_h*4, size_h*3, size_h*1.5};
+	
+	int x4[] = {x3[3]-6, x3[3]-17, x3[3]-45, x3[3]-30}; 
+	int y4[] = {size_h*1.5, size_h/2, size_h*1.5, size_h*2};
+	
+	surf = SDL_CreateWhiteKeySurface(size_w * 2, size_h * 8);
+	memtest(surf);
+	
+	for(i = 0; i < 20; i++)
+	{
+		y[1] -= i;
+		x[2] += (i % 3 == 0) ? 1 : 0;
+		x[0] -= (i % 10 == 0) ? 1 : 0;
+		PowerOfBezier(surf, x, y, 3, SetColor(0, 0, 0));
+		y[1]+=i;
+	}
+	
+	for(i = 0; i < 8; i++)
+	{
+		arcRGBA(surf, (x2[2]+x2[0])/2+6-5, y2[0]+i%5-2-5, x2[1]-x2[2]-3+i/2-1+5, 3, 180, 0, 0, 0, 255);
+		arcRGBA(surf, (x2[2]+x2[0])/2+6-5-1, y2[0]+i%5-2-5, x2[1]-x2[2]-3+i/2-1+5, 3, 180, 0, 0, 0, 255);
+		arcRGBA(surf, (x2[2]+x2[0])/2+6-5, y2[0]+i%5-2-5-1, x2[1]-x2[2]-3+i/2-1+5, 3, 180, 0, 0, 0, 255);
+	}
+	
+	for(i = 0; i < 8; i++)
+	{
+		x3[0]-=(i%2==0)?1:0;
+		x3[2]--;
+		x3[3]-=(i%2==0)?1:0;
+		x3[1]--;
+		PowerOfBezier(surf, x3, y3, 4, SetColor(0, 0, 0));
+	}
+	
+	for(i = 0; i < 8; i++)
+	{
+		y4[1]--;
+		x4[3]-=(i%2==0)?1:0;;
+		x4[0]+=(i%2==0)?1:0;
+		PowerOfBezier(surf, x4, y4, 4, SetColor(0, 0, 0));
+	}
+	
+	for(i = 0; i < 4; i++)
+	{
+		for(j = 0; j < 2; j++)
+			aalineRGBA(surf, x4[3]+i, y4[3], size_w*1.4+j, size_h*7, 0, 0, 0, 255);
+	}
+	
+	for(i = 0; i < 4; i++)
+		arcRGBA(surf, size_w*1.4-16, size_h*7-i-1, 15, 0,180, 0, 0, 0, 255);
+	
+	filledCircleRGBA(surf, size_w*1.4-22, size_h*7, 9, 0, 0, 0, 255);
+	
+	return surf;
+}
+
 SDL_Surface *CreateDoubleFlat(int size_w, int size_h)
 {
 	SDL_Surface *surf = NULL;
@@ -483,6 +551,7 @@ Graphics *Graphics_Alloc(void)
 	temp->rot_noteH = 0;
 	temp->note1_center = NULL;
 	
+	temp->Cle_Sol = NULL;
 	
 	return temp;
 }
@@ -535,7 +604,10 @@ void Graphics_Free(Graphics **graphics)
 			SDL_FreeSurface((*graphics)->Flat);
 		if((*graphics)->DoubleFlat != NULL)
 			SDL_FreeSurface((*graphics)->DoubleFlat);
-			
+		
+		if((*graphics)->Cle_Sol != NULL)
+			SDL_FreeSurface((*graphics)->Cle_Sol);
+		
 		free(*graphics);
 		*graphics = NULL;
 	}
@@ -614,6 +686,10 @@ int Graphics_Load(Graphics **data)
 	
 	(*data)->DoubleFlat = ConvertDisplayFormat(CreateDoubleFlat(HEAD_W, HEAD_H));
 	if(NULL == (*data)->DoubleFlat)
+		r = 0;
+	
+	(*data)->Cle_Sol = ConvertDisplayFormat(CreateCleSol(HEAD_W, HEAD_H));
+	if(NULL == (*data)->Cle_Sol)
 		r = 0;
 	
 	if(r)

@@ -98,7 +98,9 @@ int Window_OK(void);
 
 int Window_AddEmptyBody();
 
-int Staff_Print(Staff *staff, SDL_Rect *base_pos);
+/*int Staff_Print(Staff *staff, SDL_Rect *base_pos);*/
+
+int Score_Print(Score *score, SDL_Rect *base_pos);
 
 void Window_DrawStaff(int x, int y, int x_end, SDL_Surface *dest);
 

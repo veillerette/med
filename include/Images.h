@@ -17,7 +17,7 @@
 #define QUEUE ((int)(HEAD_H * 2.8))
 #define STAFF_H 2
 #define QUEUE_BORDER 5
-#define NOTE_SPACE 40
+#define NOTE_SPACE 60
 
 #define RATIO_LITTLE 2
 
@@ -57,6 +57,8 @@ struct Graphics
 	SDL_Surface *Sharp;
 	SDL_Surface *Flat;
 	SDL_Surface *DoubleFlat;
+	
+	SDL_Surface *Cle_Sol;
 };
 
 

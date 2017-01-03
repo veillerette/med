@@ -280,8 +280,12 @@ int Events_PollMouse(SDL_Event event)
 	int x,y;
 	Object_Type type = OBJECT_ALL;
 	Area *area = NULL;
+	
+	
 	if(NULL == main_events)
 		return 0;
+		
+		
 	switch(event.type)
 	{
 		case SDL_QUIT:
@@ -297,15 +301,54 @@ int Events_PollMouse(SDL_Event event)
 			break;
 		default:
 			return 0;
-	}if(main_events->mode == MODE_ADD)
+	}
+	
+	if(main_events->mode == MODE_ADD)
 		type = EVENT_ADDNOTE;
 	else
 		type = OBJECT_NOTE | OBJECT_STEP;
+		
+		
 	area = Events_GetAreaByPixelAndType((int)((x - main_events->base->x) * 1.0 * main_events->r), 
 					 (int)((y - main_events->base->y) * 1.0 * main_events->r), type);
+					 
+					 
 	switch(event.type)
 	{
 		case SDL_MOUSEMOTION:
+			/*if(main_events->mode == MODE_ADD)
+			{
+				if(area)
+				{
+					int tab[] = {0, 2, 4, 5, 7, 9, 11};
+					int note = MouseToNote(area, y);
+					int dest_y = 0;
+					int i;
+					double zoom = main_events->r;
+					SDL_Surface *temp = NULL;
+					
+					SDL_Rect pos_temp;
+					
+					for(i = 0; i < 7; i++)
+					{
+						if((note % 12) == tab[i])
+						{
+							dest_y = -i * (HEAD_H / 2) + HEAD_H * 1.5 - (HEAD_H * 3.5) * (note / 12 - 5);
+							break;
+						}
+					}
+					temp = shrinkSurface(Images->Note_headBlack, (int)main_events->r, (int)main_events->r);
+					pos_temp.x = Window->pos_body->x + (area->rect.x + SIZE_BODY*area->nbody) /zoom + (area->rect.w/2)/zoom-temp->w/2;	
+					pos_temp.x -= Images->rot_noteW/zoom;
+					pos_temp.y = Window->pos_body->y + area->rect.y/zoom;
+					pos_temp.y += ((int)(((y - area->rect.y)/(HEAD_H/2)))*(HEAD_H/2))/zoom;
+					pos_temp.y -= Images->rot_noteH/zoom;
+					SDL_SetColorKey(temp, SDL_SRCCOLORKEY, SDL_MapRGB(temp->format, 255, 255, 255));
+					SDL_BlitSurface(temp, NULL, Window->screen, &pos_temp);
+					SDL_Flip(Window->screen);
+					return NONE;
+				}
+			}*/
 			if(main_events->mode == MODE_EDIT || main_events->mode == MODE_ADD)
 			{
 				if(main_events->hover == area)

@@ -248,7 +248,8 @@ int Step_Init(Step *step)
 	
 	if(step->notes != NULL)
 		ToNote_FreeAll(&(step->notes));
-	step->notes = ToNote_Alloc(0, NOTE_DEFAULT, RONDE, 1);
+	printf("step init num=%d den=%d\n", step->num, step->den);
+	step->notes = ToNote_Alloc(0, NOTE_DEFAULT, step->den / step->num, 1);
 	
 	return 1;
 }

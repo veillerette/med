@@ -251,7 +251,7 @@ int PlayStep(Step *step)
 		{
 			Audio_Pause();
 			begin = SDL_GetTicks();
-			while(SDL_GetTicks() - begin < 20)
+			while(SDL_GetTicks() - begin < 10)
 				SDL_Delay(1);
 		}
 		note = note->next;
