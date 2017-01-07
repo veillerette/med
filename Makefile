@@ -1,4 +1,4 @@
-CC=gcc
+CC=colorgcc
 CFLAGS=-ansi -Wall -Wextra -O2
 CLIBS=-lm -lSDL -lSDL_gfx -lSDL_ttf -lreadline
 EXE=prog

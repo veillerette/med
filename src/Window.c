@@ -645,7 +645,7 @@ int Note_Print(Score *score, Staff *staff, Step *step, int id_step, int id_note,
 		}
 		Window->pos_link = SDL_SetRect(base_pos->x, base_pos->y, 0, 0);
 	}
-	adding.w += base_pos->x - adding.x - real_space/4;
+	adding.w += base_pos->x - adding.x;
 
 	if(note->rest)
 	{
@@ -660,7 +660,9 @@ int Note_Print(Score *score, Staff *staff, Step *step, int id_step, int id_note,
 				break;
 		}
 	}
+	
 	EventData_Add(main_events, Area_Set(adding, nbody, EVENT_ADDNOTE, staff, id_step, id_note));
+	
 	switch(note->duration)
 	{
 		case RONDE:
@@ -1058,6 +1060,7 @@ int Score_Print(Score *score, SDL_Rect *base_pos)
 	int nbody = 0;
 	int begin_y = base_pos->y;
 	int sauv2_x, sauv2_y;
+	int show_scorejoin = 1;
 	Staff *staff = NULL;
 	Window->_linked = 0;
 	SDL_Rect goal = {0, 0, 0, 0};
@@ -1072,11 +1075,12 @@ int Score_Print(Score *score, SDL_Rect *base_pos)
 	{
 		for(k = 0; k < score->n; k++)
 		{
-			if(Window_GetSize(score, i, *(score->lst[k]->steps + i))+base_pos->x > Window->body[0]->w - 20)
+			if(Window_GetSize(score, i, *(score->lst[k]->steps + i))+base_pos->x > Window->body[0]->w - 60)
 			{
 				base_pos->x = 100;
-				base_pos->y += (600*score->n);
-				if(base_pos->y > (Window->body[0]->h - HEAD_H*6))
+				base_pos->y += (390*score->n);
+				show_scorejoin = 1;
+				if((base_pos->y+300*score->n) > (Window->body[0]->h - HEAD_H*6))
 				{
 					nbody++;
 					base_pos->y = begin_y;
@@ -1123,6 +1127,25 @@ int Score_Print(Score *score, SDL_Rect *base_pos)
 			
 			base_pos->y += 380;
 		}
+		
+		if(score->n > 1 && show_scorejoin)
+		{
+			int line;
+			for(line = 0; line < 3; line++)
+			{
+				aalineRGBA(NPAGE, sauv_x-25+line, sauv_y+HEAD_H*2, sauv_x-25+line, 
+							base_pos->y-380+HEAD_H*2, 0, 0, 0, 255);
+				aalineRGBA(NPAGE, sauv_x-25+line, sauv_y+HEAD_H*2, sauv_x-5,
+							 sauv_y-line, 0, 0, 0, 255);
+				aalineRGBA(NPAGE, sauv_x-25, base_pos->y-380+HEAD_H*2, sauv_x-5,
+							base_pos->y-380+HEAD_H*4+line, 0, 0, 0, 255);
+			}
+			
+			show_scorejoin = 0;
+		}
+		
+		
+		
 		base_pos->y = sauv_y;
 		i++;
 	}

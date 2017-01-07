@@ -1,97 +1,209 @@
 #include "../include/Audio.h"
 
-AudioMain *main_audio = NULL;
 
-void MYCALLBACK(void *userdata, Uint8 *stream, int len)
+AudioConfig *main_audio = NULL;
+
+
+/*****************************************************
+		ALLOCATIONS && SETTERS
+******************************************************/
+
+
+ScoreStaff *ScoreStaff_Alloc(Score *score, int id_staff)
 {
-	int i = 0;
-	double freq = (double)(int)main_audio->config.freq;
-	int volume = main_audio->config.volume;
-
-	if((NULL == main_audio) || (main_audio->status != AUDIO_INIT) 
-		|| (NULL == main_audio->hardware))
-		return;
-	for(i = 0; i < len; i+=2)
-	{
-		*((Sint16 *) &stream[i]) = (Sint16)(volume * 
-				main_audio->config.f(main_audio->progress, freq));
-		main_audio->progress = (main_audio->progress+1);
-	}
-	
-	userdata = userdata; /* to avoid Wunused-variable */
-}
-
-
-SDL_AudioSpec *AudioSpec_Alloc(void)
-{
-	SDL_AudioSpec *temp = (SDL_AudioSpec *)malloc(sizeof(SDL_AudioSpec));
+	ScoreStaff *temp = (ScoreStaff *)malloc(sizeof(ScoreStaff));
 	memtest(temp);
 	
-	temp->freq = 0;
-	temp->format = 0;
-	temp->channels = 0;
-	temp->silence = 0;
-	temp->samples = 0;
-	temp->size = 0;
-	temp->callback = NULL;
-	temp->userdata = NULL;
+	temp->score = score;
+	temp->id_staff = id_staff;
 	
 	return temp;
 }
 
-AudioMain *AudioMain_Alloc(void)
+void ScoreStaff_Free(ScoreStaff **ss)
 {
-	AudioMain *temp = (AudioMain *)malloc(sizeof(AudioMain));
+	if(*ss != NULL)
+	{
+		free(*ss);
+		*ss = NULL;
+	}
+}
+
+Wave *Wave_Alloc(double (*f)(int,double, int), double freq, int volume)
+{
+	Wave *temp = (Wave *)malloc(sizeof(Wave));
 	memtest(temp);
 	
-	temp->hardware = AudioSpec_Alloc();
-	temp->status = AUDIO_NONE;
-	temp->config.f = NULL;
-	temp->config.freq = 0;
-	temp->progress = 0;
+	temp->f = f;
+	temp->freq = freq;
+	temp->volume = volume;
 	
 	return temp;
 }
 
-void Audio_SetConfig(double (*f)(int x, double freq), double freq, int volume)
+void Wave_Free(Wave **wave)
 {
-	if(NULL == main_audio)
-		return;
-	main_audio->config.f = f;
-	main_audio->config.freq = freq;
-	main_audio->config.volume = volume;
-}
-
-void AudioMain_Free(AudioMain **am)
-{
-	if(*am != NULL)
+	if(*wave != NULL)
 	{
-		if((*am)->hardware != NULL)
-			free((*am)->hardware);
-		free(*am);
-		*am = NULL;
+		free(*wave);
+		*wave = NULL;
 	}
 }
 
-int Audio_DevInit(int freq, Uint16 format, Uint8 channels, Uint16 samples, 
-			void (*callback)(void*, Uint8 *, int), void *userdata)
+Channel *Channel_Alloc(void)
 {
-	SDL_AudioSpec temp;
+	Channel *temp = (Channel *)malloc(sizeof(Channel));
+	memtest(temp);
 	
-	if(main_audio != NULL && main_audio->status != AUDIO_NONE)
+	temp->waves = (Wave **)malloc(sizeof(Wave *) * 2);
+	memtest(temp->waves);
+	
+	temp->n = 0;
+	temp->m = 2;
+	temp->on = 0;
+	
+	return temp;
+}
+
+void Channel_Free(Channel **chan)
+{
+	if(*chan != NULL)
+	{
+		int i;
+		for(i = 0; i < (*chan)->n; i++)
+			Wave_Free(&((*chan)->waves[i]));
+			
+		free((*chan)->waves);
+		
+		free(*chan);
+		*chan = NULL;
+	}
+}
+
+int Channel_Add(Channel *chan, Wave *wave)
+{
+	if((NULL == chan) || (NULL == wave))
 		return 0;
 	
-	if(NULL == main_audio)
+	if(chan->n == chan->m)
 	{
-		main_audio = AudioMain_Alloc();
+		chan->waves = (Wave **)realloc(chan->waves, sizeof(Wave *) * (chan->m * 2));
+		memtest(chan->waves);
+		
+		chan->m *= 2;
 	}
 	
-	temp.freq = freq;
-	temp.format = format;
-	temp.channels = channels;
-	temp.samples = samples;
-	temp.callback = callback;
-	temp.userdata = userdata;
+	chan->waves[chan->n] = wave;
+	chan->n++;
+	
+	return 1;
+}
+
+int Channel_Delete(Channel *chan, int id)
+{
+	int i;
+	if((NULL == chan) || (id < 0) || (id >= chan->n))
+		return 0;
+		
+	Wave_Free(&(chan->waves[id]));
+	
+	for(i = id; i < chan->n-1; i++)
+		chan->waves[i] = chan->waves[id + 1];
+	chan->n--;
+	return 1;
+}
+
+int Channel_ReRoll(Channel *chan)
+{
+	int i;
+	if((NULL == chan) || (NULL == chan->waves))
+		return 0;
+		
+	for(i = 0; i < chan->n; i++)
+		Wave_Free(&(chan->waves[i]));
+		
+	chan->n = 0;
+	return 1;
+}
+
+void Channel_Enable(Channel *chan)
+{
+	if(chan != NULL)
+		chan->on = 1;
+}
+
+void Channel_Disable(Channel *chan)
+{
+	if(chan != NULL)
+		chan->on = 0;
+}
+
+void Mixer_Init(Mixer *mixer)
+{
+	if(mixer != NULL)
+	{
+		mixer->channels = (Channel **)malloc(sizeof(Channel *) * (2));
+		memtest(mixer->channels);
+		
+		mixer->n = 0;
+		mixer->m = 2;
+	}
+}
+
+int Mixer_Add(Mixer *mixer, Channel *chan)
+{
+	if((NULL == mixer) || (NULL == chan))
+		return 0;
+	
+	if(mixer->n == mixer->m)
+	{
+		mixer->channels = (Channel **)realloc(mixer->channels, 
+						sizeof(Channel *) * mixer->m * 2);
+		memtest(mixer->channels);
+		
+		mixer->m *= 2;
+	}
+	
+	mixer->channels[mixer->n] = chan;
+	mixer->n++;
+	
+	return 1;
+}
+
+void Mixer_Quit(Mixer *mixer)
+{
+	int i;
+	if(NULL == mixer)
+		return;
+	for(i = 0; i < mixer->n; i++)
+		Channel_Free(&(mixer->channels[i]));
+	free(mixer->channels);
+	mixer->n = 0;
+	mixer->m = 0;
+}
+
+AudioConfig *AudioConfig_DevInit(int askFreq, Uint16 format, Uint8 channels, Uint16 samples,
+					void (*callback)(void *, Uint8 *, int), void *userdata,
+					int globalVolume)
+{
+	SDL_AudioSpec spec;
+	AudioConfig *ac = (AudioConfig *)malloc(sizeof(AudioConfig));
+	memtest(ac);
+	
+	ac->x = 0;
+	ac->globalVolume = globalVolume;
+	ac->score = NULL;
+	ac->id_step = 0;
+	ac->playing = 0;
+	ac->threads = NULL;
+	Mixer_Init(&(ac->mixer));
+	
+	spec.freq = askFreq;
+	spec.format = format;
+	spec.channels = channels;
+	spec.samples = samples;
+	spec.callback = callback;
+	spec.userdata = userdata;
 	
 	if(SDL_Init(SDL_INIT_AUDIO) < 0)
 	{
@@ -99,101 +211,59 @@ int Audio_DevInit(int freq, Uint16 format, Uint8 channels, Uint16 samples,
 		exit(EXIT_FAILURE);
 	}
 	
-	if(SDL_OpenAudio(&temp, main_audio->hardware) < 0)
+	if(SDL_OpenAudio(&spec, &(ac->hardware)) < 0)
 	{
-		colorprintf(RED, "Error with SDL_OpenAudio()\n");
+		colorprintf(RED, "Error while oppening Audio (SDL_OpenAudio())\n");
 		exit(EXIT_FAILURE);
 	}
 	
-	main_audio->status = AUDIO_INIT;
-	return 1;
+	return ac;
 }
 
-int Audio_Init(void)
+void AudioConfig_Free(AudioConfig **ac)
 {
-	return Audio_DevInit(44100, AUDIO_S16, 2, 512, MYCALLBACK, NULL);
-}
-
-int Audio_Quit(void)
-{
-	if(NULL == main_audio)
-		return 0;
-	main_audio->status = AUDIO_QUIT;
-	SDL_CloseAudio();
-	AudioMain_Free(&main_audio);
-	return 1;
-}
-
-void Audio_Play(void)
-{
-	SDL_PauseAudio(0);
-}
-
-void Audio_Pause(void)
-{
-	main_audio->progress = 0;
-	SDL_PauseAudio(1);
-}
-
-double sinusoide(int x, double freq)
-{
-	return sin(M_PI * freq * x / main_audio->hardware->freq);
-}
-
-double carre(int x, double freq)
-{
-	return (sinusoide(x, freq) > 0)?1.0:-1.0;
-}
-
-double other(int x, double freq)
-{
-	return 1.0/(double)(x%((int)freq));
-}
-
-void PlaySeconds(unsigned int n, int freq)
-{
-	Uint32 begin = 0;
-	
-	begin = SDL_GetTicks();
-	Audio_SetConfig(sinusoide, freq, 254);
-	
-	Audio_Play();
-	while(SDL_GetTicks() - begin < n*1000)
-		SDL_Delay(1);
-	Audio_Pause();
-}
-
-void TEST(void)
-{
-	double f = 300.;
-	int i = 0;
-	int j = 0;
-	Uint32 begin = 0;
-	Audio_Init();
-	
-	for(j = 21; j < 108; j++)
-		printf("%d => %g Hz\n", j, GetFreqFromId(j));
-	exit(1);
-	
-	Audio_SetConfig(sinusoide, f, 100);
-	Audio_Play();
-	while(i < 6)
-	{	
-		Audio_SetConfig(sinusoide, f, 100);
-		begin = SDL_GetTicks();
-		Audio_Play();
-		while(SDL_GetTicks() - begin < 200)
-			SDL_Delay(1);
-		Audio_Pause();
-		begin = SDL_GetTicks();
-		f+=50;
-		i++;
-		
-		while(SDL_GetTicks() - begin < 50)
-			SDL_Delay(1);
+	if(*ac != NULL)
+	{
+		Mixer_Quit(&((*ac)->mixer));
+		free(*ac);
+		*ac = NULL;
 	}
-	Audio_Quit();
 }
+
+void MAIN_CALLBACK(void *userdata, Uint8 *stream, int len)
+{
+	int i;
+	AudioConfig *ac = NULL;
+	if(NULL == main_audio)
+		return;
+	ac = main_audio;
+	
+	for(i = 0; i < len; i += 2)
+	{
+		*((Sint16 *) &stream[i]) = (Sint16)Mixer_Calc(ac, &(ac->mixer));
+		ac->x++;
+	}
+	
+	userdata = userdata; /* to avoid Wunused-variable */
+}
+
+AudioConfig *AudioConfig_Init(void)
+{
+	return AudioConfig_DevInit(44100, AUDIO_S16, 2, 512, MAIN_CALLBACK, NULL, 2048);
+}
+
+void AudioConfig_SetVolume(AudioConfig *ac, int newVolume)
+{
+	if(NULL == ac)
+		return;
+		
+	ac->globalVolume = newVolume;
+}
+
+
+/*****************************************************
+		CALCS & GENERAL FUNCTIONS
+******************************************************/
 
 double GetFreqFromId(int id)
 {
@@ -208,48 +278,167 @@ int GetRealId(Note *note)
 				- 2 * ((note->flags & NOTE_DOUBLEFLAT) != 0);
 }
 
-int ThreadAudioStaff(void *data)
+double Note_GetFreq(Note *note)
 {
-	Staff *staff = (Staff *)data;
-	Audio_Init();
-	PlayStaff(staff);
-	Audio_Quit();
-	return 1;
+	if(NULL == note)
+		return 0.;
+		
+	return GetFreqFromId(GetRealId(note));
 }
 
-int PlayStaff(Staff *staff)
+double Wave_Calc(AudioConfig *ac, Wave *wave)
+{
+	if((NULL == ac) || (NULL == wave))
+		return 0.;
+		
+	return wave->f(ac->x, wave->freq, ac->hardware.freq) * wave->volume;
+}
+
+double Channel_Calc(AudioConfig *ac, Channel *chan)
 {
 	int i;
-	for(i = 0; i < staff->n; i++)
-		PlayStep(*(staff->steps + i));
-	return 1;
+	double sum = 0.;
+	
+	if((NULL == ac) || (NULL == chan))
+		return 0.;
+		
+	for(i = 0; i < chan->n; i++)
+		sum += Wave_Calc(ac, chan->waves[i]);
+		
+	if(chan->on)
+		return sum * ac->globalVolume * 1.0 / (chan->n * 100.0);
+	else
+		return ac->globalVolume + 10.;
 }
 
-int PlayStep(Step *step)
+double Mixer_Calc(AudioConfig *ac, Mixer *mixer)
+{
+	int i;
+	double sum = 0.;
+	double temp = 0.;
+	int n = 0;
+	if((NULL == ac) || (NULL == mixer))
+		return 0.;
+	
+	for(i = 0; i < mixer->n; i++)
+	{
+		temp =  Channel_Calc(ac, mixer->channels[i]);
+		if(temp != ac->globalVolume + 10.)
+		{
+			sum += temp;
+			n++;
+		}
+	}
+	
+	return sum / mixer->n;
+}
+
+Channel *Channel_CreateOne(double freq, double (*f)(int, double, int))
+{
+	Channel *chan = Channel_Alloc();
+	Channel_Add(chan, Wave_Alloc(f, freq, 100));
+	return chan;
+}
+
+void Channel_ChangeOne(Channel *chan, double freq)
+{
+	int i;
+	for(i = 0; i < chan->n; i++)
+		chan->waves[i]->freq = freq;
+}
+
+Channel *Channel_CreateSimplyOctave(double freq, double (*f)(int, double, int))
+{
+	int i;
+	Channel *chan = Channel_Alloc();
+	
+	for(i = 0; i < 3; i++)
+		Channel_Add(chan, Wave_Alloc(f, freq*pow(2, i), 100*pow(0.5, i)));
+
+	return chan; 
+}
+
+void Channel_ChangeOctave(Channel *chan, double freq)
+{
+	int i;
+	for(i = 0; i < chan->n; i++)
+	{
+		chan->waves[i]->freq = freq * pow(2, i);
+		chan->waves[i]->volume = 100 * pow(0.5, i);
+	}
+}
+
+int *Integer_Alloc(int n)
+{
+	int *temp = (int *)malloc(sizeof(int));
+	memtest(temp);
+	*temp = n;
+	return temp;
+}
+
+/*****************************************************
+		WAVE FUNCTIONS
+******************************************************/
+
+double sinusoide(int x, double freq, int hardwareFreq)
+{
+	return sin(M_PI * freq * x / hardwareFreq);
+}
+
+double carre(int x, double freq, int hardwareFreq)
+{
+	return (sinusoide(x, freq, hardwareFreq) > 0)?1.0:-1.0;
+}
+
+double carreHarmo(int x, double freq, int hardwareFreq)
+{
+	int i;
+	double sum = 0.;
+	for(i = 0; i < 3; i++)
+		sum += carre(x, freq*pow(2, i), hardwareFreq);
+	if(sum > 1.0)
+		sum = 1.0;
+	else if(sum < -1.0)
+		sum = -1.0;
+	return sum;
+}
+
+
+/*****************************************************
+		PLAYING FUNCTIONS
+******************************************************/
+
+int Audio_PlayStep(Step *step, Channel *chan)
 {
 	Uint32 begin = 0;
 	ToNote *note = NULL;
 	if((NULL == step) || (NULL == step->notes))
 		return 0;
-		
+	if((NULL == chan))
+		return 0;
+	
+	printf("playing step on channel %p\n", chan);
+	
 	note = step->notes;
 	do
 	{
 		if(!note->note->rest)
 		{
-			Audio_SetConfig(carre, 
-					GetFreqFromId(GetRealId(note->note)), 32000);
-			Audio_Play();
+			Channel_Enable(chan);
+			Channel_ChangeOne(chan, Note_GetFreq(note->note));
 		}
 		else
-			Audio_Pause();
-		begin = SDL_GetTicks();
-		while(SDL_GetTicks() - begin < 
-				(700 * ((64.0/note->note->duration) / 16.0)) - 20)
-			SDL_Delay(1);
-		if(note->next == NULL || GetRealId(note->next->note) == GetRealId(note->note))
 		{
-			Audio_Pause();
+			Channel_Disable(chan);
+		}
+		
+		begin = SDL_GetTicks();
+		while(SDL_GetTicks() - begin < (700 * ((64.0 / note->note->duration) / 16.0)) - 20)
+			SDL_Delay(1);
+		if(!note->note->rest && 
+		(note->next == NULL || Note_GetFreq(note->note) == Note_GetFreq(note->next->note)))
+		{
+			Channel_Disable(chan);
 			begin = SDL_GetTicks();
 			while(SDL_GetTicks() - begin < 10)
 				SDL_Delay(1);
@@ -257,18 +446,140 @@ int PlayStep(Step *step)
 		note = note->next;
 	}
 	while(note != NULL);
-
+	
 	return 1;
+}
+
+int Audio_PlayStaffThread(void *data)
+{
+	int id_staff = *(int *)data;
+	Score *score = main_audio->score;
+	Staff *staff = score->lst[id_staff];
+	int i;
+	for(i = main_audio->id_step; i < staff->n; i++)
+		Audio_PlayStep(*(staff->steps + i), main_audio->mixer.channels[id_staff]);
+	Channel_Disable(main_audio->mixer.channels[id_staff]);
+	main_audio->threads[id_staff] = NULL;
+	colorprintf(GREEN, "End of Playing staff n°%d\n", id_staff);
+	return 1; 
+}
+
+int Audio_KillThreads(void)
+{
+	if(main_audio != NULL && main_audio->score != NULL)
+	{
+		int i;
+		for(i = 0; i < main_audio->score->n; i++)
+		{
+			if(main_audio->threads[i] != NULL)
+			{
+				printf("Kill a thread for staff n°%d\n", i);
+				SDL_KillThread(main_audio->threads[i]);
+				main_audio->threads[i] = NULL;
+			}
+		}
+	}
+	return 1;
+}
+
+
+/*****************************************************
+		MAIN FUNCTIONS
+******************************************************/
+
+void Audio_Init(AudioConfig *ac)
+{
+	if(NULL == main_audio && ac != NULL)
+	{
+		main_audio = ac;
+	}
+}
+
+void Audio_Quit(void)
+{
+	if(main_audio != NULL)
+	{
+		AudioConfig_Free(&main_audio);
+	}
+}
+
+void Audio_AssignateScore(Score *score)
+{
+	if(main_audio != NULL)
+	{
+		int i;
+		main_audio->score = score;
+		main_audio->id_step = 0;
+		Mixer_Quit(&(main_audio->mixer));
+		Mixer_Init(&(main_audio->mixer));
+		for(i = 0; i < score->lst[0]->n; i++)
+			Mixer_Add(&(main_audio->mixer), Channel_CreateOne(0, carre));
+		main_audio->threads = (SDL_Thread **)calloc(score->n, sizeof(SDL_Thread *));
+		memtest(main_audio->threads);
+		
+		printf("end assignateScore(), mixer->n=%d score=%p, id_step=%d\n", main_audio->mixer.n, main_audio->score, main_audio->id_step);
+	}
+}
+
+void Audio_GoToStep(int id_step)
+{
+	if(main_audio != NULL && main_audio->score != NULL)
+	{
+		main_audio->id_step = id_step;
+	}
+}
+
+int Audio_isPlaying(void)
+{
+	if(NULL == main_audio)
+		return 0;
+	return main_audio->playing;
+}
+
+int Audio_isInit(void)
+{
+	return main_audio != NULL;
+}
+
+void Audio_Play(void)
+{
+	int i;
+	if((NULL == main_audio) || (NULL == main_audio->score) || (NULL == main_audio->threads)
+	|| (NULL == main_audio->mixer.channels) || (0 == main_audio->mixer.n))
+	{
+		colorprintf(RED, "Unknown error with Audio Playing\n");
+		exit(EXIT_FAILURE);
+	}
+	main_audio->playing = 1;
+	SDL_PauseAudio(0);
+	colorprintf(GREEN, "Playing audio !\n");
+	for(i = 0; i < main_audio->score->n; i++)
+	{
+		
+		if(NULL == main_audio->threads[i])
+		{
+			printf("Init a new thread for staff n°%d\n", i);
+			main_audio->threads[i] = SDL_CreateThread(Audio_PlayStaffThread, Integer_Alloc(i)); 
+		}
+		else
+			printf("(error) thread n°%d is already playing !\n", i);
+	}
+}
+
+void Audio_Pause(void)
+{
+	main_audio->playing = 0;
+	SDL_PauseAudio(1);
+	colorprintf(GREEN, "Pausing Audio !\n");
+	main_audio->x = 0;
+	Audio_KillThreads();
+	colorprintf(BLUE, "Exiting on pressing 'S'\n");
 }
 
 
 
 
-
-
-
-
-
+					
 
 
 
