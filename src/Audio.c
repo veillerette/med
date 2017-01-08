@@ -435,14 +435,13 @@ int Audio_PlayStep(Step *step, Channel *chan)
 		begin = SDL_GetTicks();
 		while(SDL_GetTicks() - begin < (700 * ((64.0 / note->note->duration) / 16.0)) - 20)
 			SDL_Delay(1);
-		if(!note->note->rest && 
-		(note->next == NULL || Note_GetFreq(note->note) == Note_GetFreq(note->next->note)))
-		{
-			Channel_Disable(chan);
-			begin = SDL_GetTicks();
-			while(SDL_GetTicks() - begin < 10)
-				SDL_Delay(1);
-		}
+			
+			
+		Channel_Disable(chan);
+		begin = SDL_GetTicks();
+		while(SDL_GetTicks() - begin < 10)
+			SDL_Delay(1);
+		
 		note = note->next;
 	}
 	while(note != NULL);

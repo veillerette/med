@@ -485,34 +485,99 @@ Note_Duration Window_GetNeperianSum(Note_Duration realMin, Note_Duration duratio
 	return (64/duration) / (64/realMin);
 }
 
-int Window_GetSpaceNote(Score *score, int idStep, Step *step, Note *note)
+int Window_GetSumStep(Step *step, int idNote, Note_Duration dur)
+{
+	int n_alt = 0;
+	ToNote *note = NULL;
+	if(NULL == step)
+		return 0;
+	note = step->notes;
+	printf("a\n");
+	while(idNote != 0 && note != NULL)
+	{
+		note = note->next;
+		idNote--;
+	}
+	
+	dur = 64/dur;
+	
+	printf("b idNote=%d dur=%d\n", idNote, dur);
+	
+	while(note != NULL && dur > 0)
+	{
+		if(note->note->flags & NOTE_SHARP)
+			n_alt += HEAD_W;
+		else if(note->note->flags & NOTE_FLAT)
+			n_alt += HEAD_W*3.0/4;
+		else if(note->note->flags & NOTE_DOUBLESHARP)
+			n_alt += HEAD_W;
+		else if(note->note->flags & NOTE_DOUBLEFLAT)
+			n_alt += HEAD_W*3.0/2;
+		dur -= 64/note->note->duration;
+		note = note->next;
+		printf("b idNote=%d dur=%d\n", idNote, dur);
+	}
+	
+	return n_alt;
+}
+
+int Window_GetSumAlt(Score *score, int idStep, int idNote, Note_Duration dur)
+{
+	int i;
+	int altMax = 0;
+	int temp;
+	if((NULL == score) || (idStep < 0) || (idStep >= score->lst[0]->n) || (idNote < 0))
+		return 0;
+	for(i = 0; i < score->n; i++)
+	{
+		temp = Window_GetSumStep(score->lst[i]->steps[idStep], idNote, dur);
+		if(temp > altMax)
+			altMax = temp;
+	}
+	
+	return altMax;
+}
+
+int Window_GetSpaceNote(Score *score, int idStep, Step *step, Note *note, int idNote)
 {
 	int k;
 	int res;
 	Note_Duration min = Step_GetMinDuration(step);
 	Note_Duration realMin = 1;
+	int temp;
+	
 	for(k = 0; k < score->n; k++)
 	{
 		min = Step_GetMinDuration(*(score->lst[k]->steps + idStep));
 		if(min > realMin)
 			realMin = min; 
 	}
+	
 	res = (Window_GetNeperianSum(realMin, note->duration)) * NOTE_SPACE;
-	if(idStep == 0)
-	{
-		printf("res=%d (dur=%d)\n", res, note->duration);
-	}
+	
+	res += (temp= Window_GetSumAlt(score, idStep, idNote, note->duration));
+	
+	if(note->flags & NOTE_SHARP)
+		res -= HEAD_W;
+	if(note->flags & NOTE_DOUBLESHARP)
+		res -= HEAD_W;
+	if(note->flags & NOTE_FLAT)
+		res -= HEAD_W*3.0/4;
+	if(note->flags & NOTE_DOUBLEFLAT)
+		res -= HEAD_W*3.0/2;
+		
 	return res;
 }
 
 int Window_GetSize(Score *score, int idStep, Step *step)
 {
+	int idNote = 0;
 	int width = 3 + NOTE_SPACE;
 	ToNote *cur = NULL;
 	cur = step->notes;
 	while(cur != NULL)
 	{
-		width += Window_GetSpaceNote(score, idStep, step, cur->note);
+		width += Window_GetSpaceNote(score, idStep, step, cur->note, idNote);
 		if(cur->note->flags & NOTE_SHARP)
 			width += HEAD_W;
 		if(cur->note->flags & NOTE_DOUBLESHARP)
@@ -522,6 +587,7 @@ int Window_GetSize(Score *score, int idStep, Step *step)
 		if(cur->note->flags & NOTE_DOUBLEFLAT)
 			width += HEAD_W*3.0/2;
 		cur = cur->next;
+		idNote++;
 	}
 	return width;
 }
@@ -533,7 +599,7 @@ int Note_Print(Score *score, Staff *staff, Step *step, int id_step, int id_note,
 	int note_y = 0;
 	int tab[] = {0, 2, 4, 5, 7, 9, 11};
 	int i;
-	int real_space = Window_GetSpaceNote(score, id_step, step, note);
+	int real_space = Window_GetSpaceNote(score, id_step, step, note, id_note);
 	SDL_Rect adding = {base_pos->x-real_space/4, base_pos->y-HEAD_H*3, 0, HEAD_H*12};
 	
 	if((NULL == note) || (NULL == base_pos) || (base_pos->x < 0) || (base_pos->y < 0) || (NULL == dest))
