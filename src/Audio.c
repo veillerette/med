@@ -436,7 +436,6 @@ int Audio_PlayStep(Step *step, Channel *chan)
 		while(SDL_GetTicks() - begin < (700 * ((64.0 / note->note->duration) / 16.0)) - 20)
 			SDL_Delay(1);
 			
-			
 		Channel_Disable(chan);
 		begin = SDL_GetTicks();
 		while(SDL_GetTicks() - begin < 10)
@@ -513,6 +512,8 @@ void Audio_AssignateScore(Score *score)
 		Mixer_Init(&(main_audio->mixer));
 		for(i = 0; i < score->lst[0]->n; i++)
 			Mixer_Add(&(main_audio->mixer), Channel_CreateOne(0, carre));
+		if(main_audio->threads != NULL)
+			free(main_audio->threads);
 		main_audio->threads = (SDL_Thread **)calloc(score->n, sizeof(SDL_Thread *));
 		memtest(main_audio->threads);
 		
