@@ -97,5 +97,13 @@ int Score_Init(Score *score);
 
 int Score_AddEmpty(Score *score);
 
+int Score_NumberStep(Score *score);
 
+int Score_SetEmptyStep(Score *score, int i);
+
+int Score_AddEmptyStep(Score *score);
+
+int Score_DeleteStep(Score *score, int i);
+
+int Score_ChangeArmure(Score *score, int i, signed char new);
 #endif

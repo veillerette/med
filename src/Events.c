@@ -38,6 +38,7 @@ Area *Area_Set(SDL_Rect rect, int nbody, Object_Type type, ...)
 		case OBJECT_STEP:
 			area->staff = va_arg(va, Staff*);
 			area->id_step = va_arg(va, int);
+			area->id_staff = va_arg(va, int);
 			break;
 		case EVENT_ADDNOTE:
 			area->staff = va_arg(va, Staff*);
@@ -117,6 +118,7 @@ EventData *EventData_Alloc(void)
 	temp->hover = NULL;
 	temp->base = NULL;
 	temp->mode = MODE_EDIT;
+	temp->score = NULL;
 	
 	temp->tools = InitToolbar();
 	return temp;
@@ -153,6 +155,14 @@ int EventData_SetBase(EventData *ed, SDL_Rect *base)
 		return 0;
 	ed->base = base;
 	return 1;
+}
+
+void MainEvents_AssociateScore(Score *score)
+{
+	if(main_events != NULL)
+	{
+		main_events->score = score;
+	}
 }
 
 int EventData_SetZoom(EventData *ed, double zoom)

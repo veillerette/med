@@ -41,7 +41,6 @@ struct Area
 	Object_Type 	type;
 	Area *		next;
 	int		nbody;
-	
 	union 
 	{
 		struct /* OBJECT_NOTE */
@@ -55,14 +54,13 @@ struct Area
 			Staff *	staff;
 			int 	id_step;
 			int 	id_note_add; /* only when type=EVENT_ADDNOTE */
+			int 	id_staff;
 		};
 		
 		Sign **sign; /* OBJECT_SIGN */
 		
 		/* OBJECT_SHEET & OBJECT_LINE => Window */
 	};
-	
-	
 };
 
 typedef struct Toolbar Toolbar;
@@ -86,6 +84,8 @@ struct EventData
 	Area *		select;
 	Area *		hover;
 	SDL_Rect *	base;
+	
+	Score *		score;
 	
 	double 		r; /* zoom */
 	
@@ -116,6 +116,8 @@ int EventData_Flush(EventData *ed);
 Area *Events_GetAreaByPixelAndType(int x, int y, Object_Type type);
 
 int PixelInRect(int x, int y, SDL_Rect rect);
+
+void MainEvents_AssociateScore(Score *score);
 
 extern EventData *main_events;
 

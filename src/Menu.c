@@ -191,7 +191,8 @@ int _Selection_Delete(void)
 			Step_ChangeRestStatus(main_events->select->step, main_events->select->id_note, 1);	
 			return FORCE_SCOREMAJ;
 		case OBJECT_STEP:
-			Staff_DeleteStep(main_events->select->staff, main_events->select->id_step);
+			printf("begin delete step\n");
+			Score_DeleteStep(main_events->score, main_events->select->id_step);
 			return FORCE_SCOREMAJ;
 		default:
 			break;
@@ -233,7 +234,7 @@ int _Ajouter_Mesure_Before(void)
 		return FORCE_MAJ;
 	if(main_events->select->type != OBJECT_STEP)
 		return FORCE_MAJ;
-	Staff_InsereEmptyStep(main_events->select->staff, main_events->select->id_step);
+	Score_SetEmptyStep(main_events->score, main_events->select->id_step);
 	return FORCE_SCOREMAJ;
 }
 
@@ -243,7 +244,23 @@ int _Ajouter_Mesure_After(void)
 		return FORCE_MAJ;
 	if(main_events->select->type != OBJECT_STEP)
 		return FORCE_MAJ;
-	Staff_InsereEmptyStep(main_events->select->staff, main_events->select->id_step+1);
+	Score_SetEmptyStep(main_events->score, main_events->select->id_step+1);
+	return FORCE_SCOREMAJ;
+}
+
+int _Ajouter_Mesure_End(void)
+{
+	if((NULL == main_events) || (NULL == main_events->score))
+		return FORCE_MAJ;
+	Score_AddEmptyStep(main_events->score);
+	return FORCE_SCOREMAJ;
+}
+
+int _Add_New_Staff(void)
+{
+	if((NULL == main_events) || (NULL == main_events->score))
+		return FORCE_MAJ;
+	Score_AddEmpty(main_events->score);
 	return FORCE_SCOREMAJ;
 }
 
@@ -264,28 +281,8 @@ Menu *Menu_Create(void)
 	NodeArray_Add(menu->lst->next[2]->next, "Mesure", 0, NODE, menu_no_action);
 	NodeArray_Add(menu->lst->next[2]->next->next[0]->next, "Avant la sélection", 1, LEAF, _Ajouter_Mesure_Before);
 	NodeArray_Add(menu->lst->next[2]->next->next[0]->next, "Après la sélection", 1, LEAF, _Ajouter_Mesure_After);
-	NodeArray_Add(menu->lst->next[2]->next, "Note", 0, NODE, menu_no_action);
-	NodeArray_Add(menu->lst->next[2]->next->next[1]->next, "Ronde", 1, LEAF, menu_no_action);
-	NodeArray_Add(menu->lst->next[2]->next->next[1]->next, "Blanche", 1, LEAF, menu_no_action);
-	NodeArray_Add(menu->lst->next[2]->next->next[1]->next, "Noire", 1, LEAF, menu_no_action);
-	NodeArray_Add(menu->lst->next[2]->next->next[1]->next, "Croche", 1, LEAF, menu_no_action);
-	NodeArray_Add(menu->lst->next[2]->next->next[1]->next, "Double-Croche", 1, LEAF, menu_no_action);
-	NodeArray_Add(menu->lst->next[2]->next->next[1]->next, "Triple-Croche", 1, LEAF, menu_no_action);
-	NodeArray_Add(menu->lst->next[2]->next->next[1]->next, "Quadruple-Croche", 1, LEAF, menu_no_action);
-	NodeArray_Add(menu->lst, "Aide", 0, NODE, NULL);
-	NodeArray_Add(menu->lst->next[3]->next, "Manuel", 0, LEAF, menu_no_action);
-	NodeArray_Add(menu->lst->next[3]->next, "Aide en ligne", 0, LEAF, menu_no_action);
-	NodeArray_Add(menu->lst->next[3]->next, "A propos", 0, LEAF, _Aide_APropos);
-	NodeArray_Add(menu->lst->next[3]->next, "Autres", 0, NODE, menu_no_action);
-	NodeArray_Add(menu->lst->next[3]->next->next[3]->next, "Menu avec des arbres", 1, LEAF, menu_no_action);
-	NodeArray_Add(menu->lst->next[3]->next->next[3]->next, "D'autres fantaisies", 1, NODE, menu_no_action);
-	NodeArray_Add(menu->lst->next[3]->next->next[3]->next->next[1]->next, "Et d'autres trucs fou", 1, LEAF, menu_no_action);
-	NodeArray_Add(menu->lst->next[3]->next->next[3]->next->next[1]->next, "Wouaa !", 1, LEAF, menu_no_action);
-	NodeArray_Add(menu->lst->next[3]->next->next[3]->next->next[1]->next, "C'est vraiment trop bien", 1, LEAF, menu_no_action);
-	NodeArray_Add(menu->lst->next[3]->next->next[3]->next->next[1]->next, "Ne fait rien", 1, LEAF, menu_no_action);
-	NodeArray_Add(menu->lst->next[3]->next->next[3]->next->next[1]->next, "Voilà", 1, LEAF, menu_no_action);
-	NodeArray_Add(menu->lst->next[3]->next->next[3]->next, "Des choses", 1, LEAF, menu_no_action);
-	NodeArray_Add(menu->lst->next[3]->next->next[3]->next, "V. Veillerette", 1, LEAF, menu_no_action);
+	NodeArray_Add(menu->lst->next[2]->next->next[0]->next, "A la fin", 0, LEAF, _Ajouter_Mesure_End);
+	NodeArray_Add(menu->lst->next[2]->next, "Portée", 0, LEAF, _Add_New_Staff);
 
 	return menu;
 }

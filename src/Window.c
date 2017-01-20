@@ -217,7 +217,6 @@ int Window_CreateWindow(int width, int height, const char *title)
 	{			
 		Window->pos_body = SDL_SetRect((Window->width-Window->height*3/2-Window->pos_pal->w)/2+Window->pos_pal->w, Window->pos_menu->h, 
 						Window->height * 4, Window->width * 2.5);
-		printf("size body : w=%d h=%d\n", Window->height * 3, Window->width * 2);
 
 		Window->body = (SDL_Surface **)malloc(sizeof(SDL_Surface *) * 1);
 		memtest(Window->body);
@@ -400,11 +399,11 @@ int Window_MyEventBlit(Object_Type type, int nbody, SDL_Surface *surf, SDL_Rect 
 			id = va_arg(va, int);
 			EventData_Add(main_events, Area_Set(goal, nbody, type, step, id));
 			break;
-		case OBJECT_LINE:
+		/*case OBJECT_LINE:
 		case OBJECT_CLE:
 		case OBJECT_STEP:
-			EventData_Add(main_events, Area_Set(goal, nbody, type, va_arg(va, Staff *), va_arg(va, int)));
-			break;
+			EventData_Add(main_events, Area_Set(goal, nbody, type, va_arg(va, Staff *), va_arg(va, int), va_arg(va, int), va_arg(va, Score *)));
+			break;*/
 		case OBJECT_SIGN:
 			EventData_Add(main_events, Area_Set(goal, nbody, type, va_arg(va, Sign **)));
 			break;
@@ -492,7 +491,7 @@ int Window_GetSumStep(Step *step, int idNote, Note_Duration dur)
 	if(NULL == step)
 		return 0;
 	note = step->notes;
-	printf("a\n");
+
 	while(idNote != 0 && note != NULL)
 	{
 		note = note->next;
@@ -501,7 +500,7 @@ int Window_GetSumStep(Step *step, int idNote, Note_Duration dur)
 	
 	dur = 64/dur;
 	
-	printf("b idNote=%d dur=%d\n", idNote, dur);
+
 	
 	while(note != NULL && dur > 0)
 	{
@@ -515,7 +514,7 @@ int Window_GetSumStep(Step *step, int idNote, Note_Duration dur)
 			n_alt += HEAD_W*3.0/2;
 		dur -= 64/note->note->duration;
 		note = note->next;
-		printf("b idNote=%d dur=%d\n", idNote, dur);
+
 	}
 	
 	return n_alt;
@@ -1133,7 +1132,6 @@ int Score_Print(Score *score, SDL_Rect *base_pos)
 	if(Window->pos_link != NULL)
 		free(Window->pos_link);
 	Window->pos_link = NULL;
-	printf("begin score print\n");
 	
 	for(j = 0; j < Window->nb_body; j++)
 		SDL_FillRect(Window->body[j], NULL, SDL_MapRGB(Window->body[j]->format, 255, 255, 255));
@@ -1189,7 +1187,7 @@ int Score_Print(Score *score, SDL_Rect *base_pos)
 			Window_DrawStaff(sauv2_x, sauv2_y, base_pos->x, NPAGE);
 			goal.w = base_pos->x - goal.x;
 			goal.h = HEAD_H * 4;
-			EventData_Add(main_events, Area_Set(goal, nbody, OBJECT_STEP, staff, i));
+			EventData_Add(main_events, Area_Set(goal, nbody, OBJECT_STEP, staff, i, k));
 			
 			base_pos->y += 380;
 		}

@@ -405,7 +405,48 @@ int Score_AddEmpty(Score *score)
 	return 1;
 }
 
+int Score_NumberStep(Score *score)
+{
+	if((NULL == score) || (NULL == score->lst) || (NULL == score->lst[0]))
+		return 0;
+	return score->lst[0]->n;
+}
 
+int Score_SetEmptyStep(Score *score, int i)
+{
+	int j;
+	if((NULL == score) || (NULL == score->lst) || (NULL == score->lst[0]))
+		return 0;
+	
+	for(j = 0; j < score->n; j++)
+		Staff_InsereEmptyStep(score->lst[j], i);
+	return 1;
+}
 
+int Score_AddEmptyStep(Score *score)
+{
+	return Score_SetEmptyStep(score, Score_NumberStep(score));
+}
+
+int Score_DeleteStep(Score *score, int i)
+{
+	int j;
+	if((NULL == score) || (NULL == score->lst) || (NULL == score->lst[0]))
+		return 0;
+	for(j = 0; j < score->n; j++)
+		Staff_DeleteStep(score->lst[j], i);
+	return 1;
+}
+
+int Score_ChangeArmure(Score *score, int i, signed char new)
+{
+	int j;
+	if((NULL == score) || (NULL == score->lst) || (NULL == score->lst[0]))
+		return 0;
+	
+	for(j = 0; j < score->n; j++)
+		Staff_ChangeArmure(score->lst[j], i, new);
+	return 1;
+}
 
 

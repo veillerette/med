@@ -24,9 +24,7 @@ int main(int argc, char *argv[])
 	Uint32 sauv = 0;
 	int x=0,y=0;
 	int m = 0;
-	Staff *staff = NULL;
 	char title[100] = "";
-	int i;
 	Score *new_score = NULL;
 	
 	sprintf(title, "%s %g", SYS_NAME, SYS_VERSION);
@@ -39,28 +37,19 @@ int main(int argc, char *argv[])
 	
 	if(argc==1)
 	{
-		staff = Staff_Alloc("Portée trop géniale");
-		Staff_Init(staff, 2, NOIRE, CLE_SOL, 0);
-		printf("B\n");
-		Staff_ChangeArmure(staff, 0, 0);
-		
-		for(i = 0; i < 5; i++)
-			Staff_AddEmptyStep(staff);
-			
-		Staff_Init(new_score->lst[0], 2, NOIRE, CLE_SOL, 0);
+	
+		Staff_Init(new_score->lst[0], 4, NOIRE, CLE_SOL, 0);
 		Score_AddEmpty(new_score);
-		Staff_Init(new_score->lst[1], 2, NOIRE, CLE_SOL, 0);
-	/*	Score_AddEmpty(new_score);
-		Staff_Init(new_score->lst[2], 2, NOIRE, CLE_SOL, 0);
-	*/	
-		
+
 		Staff_ChangeArmure(new_score->lst[0], 0, 0);
 		Staff_ChangeArmure(new_score->lst[1], 0, 0);
-	/*	Staff_ChangeArmure(new_score->lst[2], 0, 0); */
 		Staff_AddNote(new_score->lst[0], 0, 0, ConvertStringToID("g4"), NOTE_DEFAULT, RONDE);
 		Staff_AddNote(new_score->lst[1], 0, 0, ConvertStringToID("g4"), NOTE_DEFAULT, RONDE);
 		
+		
 		Staff_Console(new_score->lst[0]);
+		
+		
 	}
 	else if(3 == argc && !strcmp(argv[1], "-abc"))
 	{
@@ -80,6 +69,7 @@ int main(int argc, char *argv[])
 	main_events = EventData_Alloc();
 
 	
+	MainEvents_AssociateScore(new_score);
 	Graphics_LoadAll();
 	
 	EventData_SetBase(main_events, Window->pos_body);
@@ -234,9 +224,7 @@ int main(int argc, char *argv[])
 	}
 	if(new_score != NULL)
 		Score_Free(&new_score);
-	else
-		Staff_Free(&staff);
-	
+
 	
 	if(0 && 2 == argc && !strcmp(argv[1], "-parser"))
 	
