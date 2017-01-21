@@ -23,6 +23,7 @@
 #define TestOK(); if(!Window_OK())return 0;
 #define SIZE_BODY (Window->body[0]->w + ESP_BODY)
 #define NPAGE (*(Window->body + nbody))
+#define MAX_A_QUAVER 0.2
 
 #define FONT_MESURE "media/Hack-Regular.ttf"
 

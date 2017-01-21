@@ -938,8 +938,29 @@ int Note_Print(Score *score, Staff *staff, Step *step, int id_step, int id_note,
 					}
 					else
 					{
-						/* if(Dots_isLinear(Window->quavers) || 1) *//* Dots was aligned */
-						if(Dots_CalcCoef(Window->quavers) >= -0.3 && Dots_CalcCoef(Window->quavers) <= 0.3)
+						int real_h0, real_h1, real_hsep;
+						if(Window->quavers->totalheight/Window->quavers->n <= -45)
+						{
+							real_h0 = Window->quavers->tab[0]->y+2*QUEUE + 14 + HEAD_H;
+							real_h1 = Window->quavers->tab[Window->quavers->n - 1]->y+2*QUEUE + 14+HEAD_H;
+						}
+						else
+						{
+							real_h0 = Window->quavers->tab[0]->y;
+							real_h1 = Window->quavers->tab[Window->quavers->n - 1]->y;
+						}
+						if(Dots_CalcCoef(Window->quavers) < -MAX_A_QUAVER || Dots_CalcCoef(Window->quavers) > MAX_A_QUAVER)
+						{
+							if(Window->quavers->totalheight/Window->quavers->n <= -45)
+							{
+								real_h0 = real_h1 = Dots_GetYMax(Window->quavers) + 2*QUEUE + 14 + HEAD_H;
+							}
+							else
+							{
+								real_h0 = real_h1 = Dots_GetYMin(Window->quavers);
+							}
+						}
+						
 						{
 							int ep,num = 0,j;
 							for(num = 0; num < log(note->duration/CROCHE)/log(2) + 1; num++)
@@ -949,58 +970,48 @@ int Note_Print(Score *score, Staff *staff, Step *step, int id_step, int id_note,
 									if(Window->quavers->totalheight/Window->quavers->n <= -45)
 									{
 										aalineRGBA(dest, Window->quavers->tab[0]->x-HEAD_W+Images->rot_noteW+4,
-												Window->quavers->tab[0]->y+ep+2*QUEUE + 14 + HEAD_H-(num * 15),
+												real_h0-(num * 15) + ep,
 												Window->quavers->tab[Window->quavers->n - 1]->x+4-HEAD_W+Images->rot_noteW+5,
-												Window->quavers->tab[Window->quavers->n - 1]->y+ep+2*QUEUE + 14+HEAD_H-(num * 15),
+												real_h1 + ep - (num * 15),
 												0, 0, 0, 255);
 										aalineRGBA(dest, Window->quavers->tab[0]->x-HEAD_W+Images->rot_noteW+4,
-												Window->quavers->tab[0]->y+ep+2*QUEUE + 14 + HEAD_H-1,
+												real_h0 - (num * 15) - 1 + ep,
 												Window->quavers->tab[Window->quavers->n - 1]->x+4-HEAD_W+Images->rot_noteW+5,
-												Window->quavers->tab[Window->quavers->n - 1]->y+ep+2*QUEUE + 14+HEAD_H-1,
+												real_h1 + ep - (num * 15) - 1,
 												0, 0, 0, 255);
 									}
 									else
 									{
 										aalineRGBA(dest, Window->quavers->tab[0]->x,
-												Window->quavers->tab[0]->y+ep+(num * 15),
+												real_h0+ep+(num * 15),
 												Window->quavers->tab[Window->quavers->n - 1]->x+4,
-												Window->quavers->tab[Window->quavers->n - 1]->y+ep+(num * 15),
+												real_h1+ep+(num * 15),
 												0, 0, 0, 255);
 										aalineRGBA(dest, Window->quavers->tab[0]->x,
-												Window->quavers->tab[0]->y+ep+1+(num * 15),
+												real_h0+ep+1+(num * 15),
 												Window->quavers->tab[Window->quavers->n - 1]->x+4,
-												Window->quavers->tab[Window->quavers->n - 1]->y+ep+1+(num * 15),
+												real_h1+ep+1+(num * 15),
 												0, 0, 0, 255);
 									}
 								}
 							}
 							for(j = 0; j < Window->quavers->n; j++)
 							{
-								/*pos_quavers.y = Window->quavers->tab[j]->y + Images->rot_noteH;
-								pos_quavers.x = Window->quavers->tab[j]->x - HEAD_W + Images->rot_noteW;
-								if(Window->quavers->totalheight/Window->quavers->n <= -45)
+								if(Dots_CalcCoef(Window->quavers) >= -MAX_A_QUAVER && Dots_CalcCoef(Window->quavers) <= MAX_A_QUAVER)
 								{
-									
-									test = rotozoomSurface(Images->Note_Black, 180.0, 1.0, 0);
-									memtest(test);
-									pos_quavers.y += QUEUE + 7;
-									pos_quavers.x += 3;
-				
-									SDL_BlitSurface(test, NULL, dest, &pos_quavers);
-									pos_quavers.x -= 3;
-									pos_quavers.y -= QUEUE + 7;
-									SDL_FreeSurface(test);
+									real_hsep = Dots_EvaluateYFromX(Window->quavers, Window->quavers->tab[j]->x);
+									if(Window->quavers->totalheight/Window->quavers->n <= -45)
+										real_hsep += 2*QUEUE + 14 + HEAD_H;
 								}
 								else
 								{
-									SDL_BlitSurface(Images->Note_Black, NULL, dest, &pos_quavers);
+									real_hsep = real_h0;
 								}
-								boxRGBA(surf, size_w-QUEUE_BORDER, 0, size_w, size_h+size_queue-size_h/2, 0, 0, 0, 255);
-								*/
+								
 								if(Window->quavers->totalheight/Window->quavers->n <= -45)
 								{
 									boxRGBA(dest, Window->quavers->tab[j]->x - HEAD_W + Images->rot_noteW + 4, 
-										Dots_EvaluateYFromX(Window->quavers, Window->quavers->tab[j]->x) + 2*QUEUE + 14 + HEAD_H, 
+										real_hsep, 
 										Window->quavers->tab[j]->x - HEAD_W + Images->rot_noteW + 4 + QUEUE_BORDER,
 										Window->quavers->tab[j]->y + QUEUE + 25,
 										0, 0, 0, 255);
@@ -1009,7 +1020,7 @@ int Note_Print(Score *score, Staff *staff, Step *step, int id_step, int id_note,
 								{
 									
 									boxRGBA(dest, Window->quavers->tab[j]->x,
-									 	Dots_EvaluateYFromX(Window->quavers, Window->quavers->tab[j]->x) ,
+									 	real_hsep,
 									 	Window->quavers->tab[j]->x+QUEUE_BORDER,
 									 	Window->quavers->tab[j]->y + QUEUE + 20,
 									 	0, 0, 0, 255);

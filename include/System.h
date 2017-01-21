@@ -86,4 +86,9 @@ double Dots_CalcExtremCoef(Dots *dt);
 int Dots_isLinear(Dots *dt);
 
 int Dots_EvaluateYFromX(Dots *dt, int x);
+
+int Dots_GetYMin(Dots *dt);
+
+int Dots_GetYMax(Dots *dt);
+
 #endif

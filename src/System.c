@@ -337,7 +337,37 @@ int Dots_EvaluateYFromX(Dots *dt, int x)
 	return a * x + dt->tab[0]->y;
 }
 
+int Dots_GetYMin(Dots *dt)
+{
+	int min = 1000;
+	int i;
+	
+	if((NULL == dt) || (NULL == dt->tab) || (dt->n == 0))
+		return 0;
 
+	for(i = 0; i < dt->n; i++)
+	{
+		if(dt->tab[i]->y < min)
+			min = dt->tab[i]->y;
+	}
+	return min;
+}
+
+int Dots_GetYMax(Dots *dt)
+{
+	int max = 0;
+	int i;
+	
+	if((NULL == dt) || (NULL == dt->tab) || (dt->n == 0))
+		return 0;
+
+	for(i = 0; i < dt->n; i++)
+	{
+		if(dt->tab[i]->y > max)
+			max = dt->tab[i]->y;
+	}
+	return max;
+}
 
 
 
