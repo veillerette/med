@@ -26,6 +26,7 @@ int main(int argc, char *argv[])
 	int m = 0;
 	char title[100] = "";
 	Score *new_score = NULL;
+	int i;
 	
 	sprintf(title, "%s %g", SYS_NAME, SYS_VERSION);
 		
@@ -40,15 +41,10 @@ int main(int argc, char *argv[])
 	
 		Staff_Init(new_score->lst[0], 4, NOIRE, CLE_SOL, 0);
 		Score_AddEmpty(new_score);
-
+		for(i = 0; i < 10; i++)
+			Score_AddEmptyStep(new_score);
 		Staff_ChangeArmure(new_score->lst[0], 0, 0);
 		Staff_ChangeArmure(new_score->lst[1], 0, 0);
-		Staff_AddNote(new_score->lst[0], 0, 0, ConvertStringToID("g4"), NOTE_DEFAULT, RONDE);
-		Staff_AddNote(new_score->lst[1], 0, 0, ConvertStringToID("g4"), NOTE_DEFAULT, RONDE);
-		
-		
-		Staff_Console(new_score->lst[0]);
-		
 		
 	}
 	else if(3 == argc && !strcmp(argv[1], "-abc"))

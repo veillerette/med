@@ -64,6 +64,8 @@ struct WindowData
 	int _linked;
 	SDL_Rect *pos_link;
 	
+	Dots *quavers;
+	Note_Duration sum_duration;
 };
 
 WindowData *WindowData_Alloc(void);

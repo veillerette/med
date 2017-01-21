@@ -230,6 +230,28 @@ void AudioConfig_Free(AudioConfig **ac)
 	}
 }
 
+int Audio_RegulariseWave(Sint16 *stream, int len)
+{
+	Sint16 max = 0.;
+	Sint16 min = 0.;
+	int i;
+	for(i = 0; i < len; i++)
+		if(stream[i] > max)
+			max = stream[i];
+		else if(stream[i] < min)
+			min = stream[i];
+	
+	for(i = 0; i < len; i++)
+	{
+		if(stream[i] > 0)
+			stream[i] = stream[i] * 8000 / max;
+		else if(stream[i] < 0)
+			stream[i] = stream[i] * 8000 / min;
+	}
+	return 1;
+}
+
+
 void MAIN_CALLBACK(void *userdata, Uint8 *stream, int len)
 {
 	int i;
@@ -241,6 +263,7 @@ void MAIN_CALLBACK(void *userdata, Uint8 *stream, int len)
 	for(i = 0; i < len; i += 2)
 	{
 		*((Sint16 *) &stream[i]) = (Sint16)Mixer_Calc(ac, &(ac->mixer));
+		/* Audio_RegulariseWave((Sint16 *)stream, len / 2); */
 		ac->x++;
 	}
 	
@@ -249,7 +272,7 @@ void MAIN_CALLBACK(void *userdata, Uint8 *stream, int len)
 
 AudioConfig *AudioConfig_Init(void)
 {
-	return AudioConfig_DevInit(44100, AUDIO_S16, 2, 512, MAIN_CALLBACK, NULL, 2048);
+	return AudioConfig_DevInit(44100, AUDIO_S16, 2, 512, MAIN_CALLBACK, NULL, 8000);
 }
 
 void AudioConfig_SetVolume(AudioConfig *ac, int newVolume)
@@ -331,6 +354,7 @@ double Mixer_Calc(AudioConfig *ac, Mixer *mixer)
 	}
 	
 	return sum / mixer->n;
+	
 }
 
 Channel *Channel_CreateOne(double freq, double (*f)(int, double, int))
@@ -382,7 +406,7 @@ int *Integer_Alloc(int n)
 
 double sinusoide(int x, double freq, int hardwareFreq)
 {
-	return sin(M_PI * freq * x / hardwareFreq);
+	return sin(1.0 * M_PI * freq * x / hardwareFreq);
 }
 
 double carre(int x, double freq, int hardwareFreq)
@@ -394,12 +418,10 @@ double carreHarmo(int x, double freq, int hardwareFreq)
 {
 	int i;
 	double sum = 0.;
-	for(i = 0; i < 3; i++)
-		sum += carre(x, freq*pow(2, i), hardwareFreq);
-	if(sum > 1.0)
-		sum = 1.0;
-	else if(sum < -1.0)
-		sum = -1.0;
+
+	for(i = 0; i < 4; i++)
+		sum += carre(x, freq*pow(2.0, i), hardwareFreq);
+
 	return sum;
 }
 
@@ -433,12 +455,12 @@ int Audio_PlayStep(Step *step, Channel *chan)
 		}
 		
 		begin = SDL_GetTicks();
-		while(SDL_GetTicks() - begin < (700 * ((64.0 / note->note->duration) / 16.0)) - 20)
+		while(SDL_GetTicks() - begin < ((700-50) * ((64.0 / note->note->duration) / 16.0)))
 			SDL_Delay(1);
 			
 		Channel_Disable(chan);
 		begin = SDL_GetTicks();
-		while(SDL_GetTicks() - begin < 10)
+		while(SDL_GetTicks() - begin < 50 * ((64.0 / note->note->duration) / 16.0))
 			SDL_Delay(1);
 		
 		note = note->next;

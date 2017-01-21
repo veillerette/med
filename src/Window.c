@@ -26,6 +26,9 @@ WindowData *WindowData_Alloc(void)
 	temp->nb_body = 0;
 	temp->pos_link = NULL;
 	
+	temp->quavers = NULL;
+	temp->sum_duration = 0;
+	
 	return temp;
 }
 
@@ -243,6 +246,8 @@ int Window_CreateWindow(int width, int height, const char *title)
 		
 	}
 	
+	Dots_Init(&(Window->quavers));
+	
 	Window->state = STATE_WINDOWED;
 	
 	SDL_FillRect(Window->screen, NULL, SDL_MapRGB(Window->screen->format, 255, 255, 255));
@@ -458,6 +463,22 @@ int Window_TestBox(SDL_Surface *dest, SDL_Rect *pos, int zoom)
 				b *= 0.8;
 			}
 			
+			if(area->type == OBJECT_STEP)
+			{
+				if(main_events->select == area)
+				{
+					r = 0;
+					g = 0;
+					b = 255;
+				}
+				else
+				{
+					r = 200;
+					g = 200;
+					b = 255;
+				}
+			}
+			
 			if((pos->x + ((area->rect.x + SIZE_BODY*area->nbody) /zoom)) > BASE_BODY_X &&
 				(pos->y  + (area->rect.y /zoom)) > BASE_BODY_Y)
 			{
@@ -466,11 +487,26 @@ int Window_TestBox(SDL_Surface *dest, SDL_Rect *pos, int zoom)
 					||
 					(area->type != EVENT_ADDNOTE && main_events->mode == MODE_EDIT)))
 				{
-					boxRGBA(dest, 		(pos->x + ((area->rect.x + SIZE_BODY*area->nbody) /zoom)), 
+					switch(area->type)
+					{
+						case OBJECT_STEP:
+							if(main_events->select == area || (0 && main_events->hover == area))
+								Image_DrawRectangleBorder(dest, (pos->x + ((area->rect.x - 15 + SIZE_BODY*area->nbody) /zoom)), 
+									(pos->y  + ((area->rect.y - 50) /zoom)),
+									(pos->x + (area->rect.x - 15 + SIZE_BODY*area->nbody)/zoom + (area->rect.w + 30)/zoom),
+									(pos->y + (area->rect.y - 50)/zoom + (area->rect.h + 100)/zoom),
+									3, 
+									r, g, b, 255);
+							break;
+						default:
+							boxRGBA(dest, (pos->x + ((area->rect.x + SIZE_BODY*area->nbody) /zoom)), 
 								(pos->y  + (area->rect.y /zoom)), 
 								(pos->x + (area->rect.x + SIZE_BODY*area->nbody)/zoom + area->rect.w/zoom),
 								(pos->y + area->rect.y/zoom + area->rect.h/zoom), 
 								r, g, b, a);
+							break;
+					}
+					
 				}
 			}
 		}
@@ -518,6 +554,24 @@ int Window_GetSumStep(Step *step, int idNote, Note_Duration dur)
 	}
 	
 	return n_alt;
+}
+
+Note *Step_GetNextNote(Step *step, int id)
+{
+	ToNote *note = NULL;
+	if(NULL == step)
+		return NULL;
+
+	note = step->notes;
+	while(note && id >= 0)
+	{
+		note = note->next;
+		id--;
+	}
+	
+	if(NULL == note)
+		return NULL;
+	return note->note;
 }
 
 int Window_GetSumAlt(Score *score, int idStep, int idNote, Note_Duration dur)
@@ -599,11 +653,14 @@ int Note_Print(Score *score, Staff *staff, Step *step, int id_step, int id_note,
 	int tab[] = {0, 2, 4, 5, 7, 9, 11};
 	int i;
 	int real_space = Window_GetSpaceNote(score, id_step, step, note, id_note);
+	int continue_black = 1;
+	
 	SDL_Rect adding = {base_pos->x-real_space/4, base_pos->y-HEAD_H*3, 0, HEAD_H*12};
 	
 	if((NULL == note) || (NULL == base_pos) || (base_pos->x < 0) || (base_pos->y < 0) || (NULL == dest))
 		return 0;
 
+	Window->sum_duration += Note_RealDuration(note, step);
 		
 	if(!note->rest || (note->rest && note->duration != RONDE && note->duration != BLANCHE))
 		base_pos->y += HEAD_H * 4;
@@ -654,7 +711,7 @@ int Note_Print(Score *score, Staff *staff, Step *step, int id_step, int id_note,
 		for(i = 45; i <= note_y; i+= HEAD_H)
 		{
 			boxRGBA(dest, 
-				base_pos->x - HEAD_W/2 + Images->rot_noteW + 5, 
+				base_pos->x - HEAD_W/2 + Images->rot_noteW + 10, 
 				base_pos->y + 4 + i - note_y + Images->rot_noteH, 
 				base_pos->x + HEAD_W + Images->rot_noteW + 5, 
 				base_pos->y + 6 + i - note_y  + Images->rot_noteH, 
@@ -667,7 +724,7 @@ int Note_Print(Score *score, Staff *staff, Step *step, int id_step, int id_note,
 		for(i = -135; i >= note_y; i-= HEAD_H)
 		{
 			boxRGBA(dest, 
-				base_pos->x - HEAD_W/2 + Images->rot_noteW + 5, 
+				base_pos->x - HEAD_W/2 + Images->rot_noteW + 10, 
 				base_pos->y + 4 + i - note_y + Images->rot_noteH, 
 				base_pos->x + HEAD_W + Images->rot_noteW + 5, 
 				base_pos->y + 6 + i - note_y  + Images->rot_noteH, 
@@ -727,6 +784,8 @@ int Note_Print(Score *score, Staff *staff, Step *step, int id_step, int id_note,
 	}
 	
 	EventData_Add(main_events, Area_Set(adding, nbody, EVENT_ADDNOTE, staff, id_step, id_note));
+	
+	continue_black = 0;
 	
 	switch(note->duration)
 	{
@@ -836,32 +895,136 @@ int Note_Print(Score *score, Staff *staff, Step *step, int id_step, int id_note,
 				break;
 			}
 			else {
+				Note *next = NULL;
+				
 				base_pos->y -= Images->note1_center->y;
 				base_pos->x -= 2;
 				base_pos->x+=Images->Note_Black->w;
 				pos = 0;
-				while(cpy > NOIRE)
+				
+				Dots_Add(Window->quavers, base_pos->x-5, base_pos->y-5, note_y);
+				
+				next = Step_GetNextNote(step, id_note);
+				
+				if(Dots_Length(Window->quavers) == 4 || (NULL == next) || (next->rest) || (next->duration != note->duration))
 				{
-					if(!note->rest && note_y <= -45)
+					/* Aff quavers of the dots */
+					if(Dots_Length(Window->quavers) == 1)
 					{
-						base_pos->x -= Images->Note_Black->w - QUEUE_BORDER;
-						base_pos->y += QUEUE + HEAD_H;
-						SDL_BlitSurface(Images->Note_CrotchetInv, NULL, dest, base_pos);
-						base_pos->y -= QUEUE + HEAD_H;
-						base_pos->y -= 15;
-						pos -= 15;
-						base_pos->x += Images->Note_Black->w - QUEUE_BORDER;
+						while(cpy > NOIRE)
+						{
+							if(note_y <= -45)
+							{
+								base_pos->x -= Images->Note_Black->w - QUEUE_BORDER;
+								base_pos->y += QUEUE + HEAD_H;
+								SDL_BlitSurface(Images->Note_CrotchetInv, NULL, dest, base_pos);
+								base_pos->y -= QUEUE + HEAD_H;
+								base_pos->y -= 15;
+								pos -= 15;
+								base_pos->x += Images->Note_Black->w - QUEUE_BORDER;
+							}
+							else
+							{
+								SDL_BlitSurface(Images->Note_Crotchet, NULL, dest, base_pos);
+								base_pos->y += 20;
+								pos += 20;
+							}
+					
+							cpy /= 2;
+						}
+						
+						base_pos->y -= pos;
+						continue_black = 1;
 					}
 					else
 					{
-						SDL_BlitSurface(Images->Note_Crotchet, NULL, dest, base_pos);
-						base_pos->y += 20;
-						pos += 20;
+						/* if(Dots_isLinear(Window->quavers) || 1) *//* Dots was aligned */
+						if(Dots_CalcCoef(Window->quavers) >= -0.3 && Dots_CalcCoef(Window->quavers) <= 0.3)
+						{
+							int ep,num = 0,j;
+							for(num = 0; num < log(note->duration/CROCHE)/log(2) + 1; num++)
+							{
+								for(ep = 0; ep < 12; ep++)
+								{
+									if(Window->quavers->totalheight/Window->quavers->n <= -45)
+									{
+										aalineRGBA(dest, Window->quavers->tab[0]->x-HEAD_W+Images->rot_noteW+4,
+												Window->quavers->tab[0]->y+ep+2*QUEUE + 14 + HEAD_H-(num * 15),
+												Window->quavers->tab[Window->quavers->n - 1]->x+4-HEAD_W+Images->rot_noteW+5,
+												Window->quavers->tab[Window->quavers->n - 1]->y+ep+2*QUEUE + 14+HEAD_H-(num * 15),
+												0, 0, 0, 255);
+										aalineRGBA(dest, Window->quavers->tab[0]->x-HEAD_W+Images->rot_noteW+4,
+												Window->quavers->tab[0]->y+ep+2*QUEUE + 14 + HEAD_H-1,
+												Window->quavers->tab[Window->quavers->n - 1]->x+4-HEAD_W+Images->rot_noteW+5,
+												Window->quavers->tab[Window->quavers->n - 1]->y+ep+2*QUEUE + 14+HEAD_H-1,
+												0, 0, 0, 255);
+									}
+									else
+									{
+										aalineRGBA(dest, Window->quavers->tab[0]->x,
+												Window->quavers->tab[0]->y+ep+(num * 15),
+												Window->quavers->tab[Window->quavers->n - 1]->x+4,
+												Window->quavers->tab[Window->quavers->n - 1]->y+ep+(num * 15),
+												0, 0, 0, 255);
+										aalineRGBA(dest, Window->quavers->tab[0]->x,
+												Window->quavers->tab[0]->y+ep+1+(num * 15),
+												Window->quavers->tab[Window->quavers->n - 1]->x+4,
+												Window->quavers->tab[Window->quavers->n - 1]->y+ep+1+(num * 15),
+												0, 0, 0, 255);
+									}
+								}
+							}
+							for(j = 0; j < Window->quavers->n; j++)
+							{
+								/*pos_quavers.y = Window->quavers->tab[j]->y + Images->rot_noteH;
+								pos_quavers.x = Window->quavers->tab[j]->x - HEAD_W + Images->rot_noteW;
+								if(Window->quavers->totalheight/Window->quavers->n <= -45)
+								{
+									
+									test = rotozoomSurface(Images->Note_Black, 180.0, 1.0, 0);
+									memtest(test);
+									pos_quavers.y += QUEUE + 7;
+									pos_quavers.x += 3;
+				
+									SDL_BlitSurface(test, NULL, dest, &pos_quavers);
+									pos_quavers.x -= 3;
+									pos_quavers.y -= QUEUE + 7;
+									SDL_FreeSurface(test);
+								}
+								else
+								{
+									SDL_BlitSurface(Images->Note_Black, NULL, dest, &pos_quavers);
+								}
+								boxRGBA(surf, size_w-QUEUE_BORDER, 0, size_w, size_h+size_queue-size_h/2, 0, 0, 0, 255);
+								*/
+								if(Window->quavers->totalheight/Window->quavers->n <= -45)
+								{
+									boxRGBA(dest, Window->quavers->tab[j]->x - HEAD_W + Images->rot_noteW + 4, 
+										Dots_EvaluateYFromX(Window->quavers, Window->quavers->tab[j]->x) + 2*QUEUE + 14 + HEAD_H, 
+										Window->quavers->tab[j]->x - HEAD_W + Images->rot_noteW + 4 + QUEUE_BORDER,
+										Window->quavers->tab[j]->y + QUEUE + 25,
+										0, 0, 0, 255);
+								}
+								else
+								{
+									
+									boxRGBA(dest, Window->quavers->tab[j]->x,
+									 	Dots_EvaluateYFromX(Window->quavers, Window->quavers->tab[j]->x) ,
+									 	Window->quavers->tab[j]->x+QUEUE_BORDER,
+									 	Window->quavers->tab[j]->y + QUEUE + 20,
+									 	0, 0, 0, 255);
+								}
+								
+								
+							}
+							
+						}
 					}
-					
-					cpy /= 2;
+					Dots_Init(&(Window->quavers));	
 				}
-				base_pos->y -= pos;
+				
+				
+				
 				base_pos->x-=Images->Note_Black->w;
 				base_pos->y += Images->note1_center->y;
 				base_pos->x += 2;
@@ -884,22 +1047,24 @@ int Note_Print(Score *score, Staff *staff, Step *step, int id_step, int id_note,
 				base_pos->y += Images->rot_noteH;
 				
 				
-				
 				base_pos->y -= Images->note1_center->y;
 				base_pos->x -= 2;
-				if(!note->rest && note_y <= -45)
+				if(continue_black || NOIRE == note->duration)
 				{
-					test = rotozoomSurface(Images->Note_Black, 180.0, 1.0, 0);
-					base_pos->y += QUEUE + 7;
-					base_pos->x += 3;
+					if(!note->rest && note_y <= -45)
+					{
+						test = rotozoomSurface(Images->Note_Black, 180.0, 1.0, 0);
+						base_pos->y += QUEUE + 7;
+						base_pos->x += 3;
 				
-					SDL_BlitSurface(test, NULL, dest, base_pos);
-					base_pos->x -= 3;
-					base_pos->y -= QUEUE + 7;
-					SDL_FreeSurface(test);
+						SDL_BlitSurface(test, NULL, dest, base_pos);
+						base_pos->x -= 3;
+						base_pos->y -= QUEUE + 7;
+						SDL_FreeSurface(test);
+					}
+					else
+						SDL_BlitSurface(Images->Note_Black, NULL, dest, base_pos);
 				}
-				else
-					SDL_BlitSurface(Images->Note_Black, NULL, dest, base_pos);
 				base_pos->y += Images->note1_center->y;
 				base_pos->x += 2;
 			}

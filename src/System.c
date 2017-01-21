@@ -188,6 +188,157 @@ void *GenList_Get(GenList *lst, const char *name)
 	
 }
 
+Point *Point_Alloc(Uint x, Uint y)
+{
+	Point *temp = (Point *)malloc(sizeof(Point));
+	memtest(temp);
+	
+	temp->x = x;
+	temp->y = y;
+	
+	return temp;
+}
+
+void Point_Free(Point **pt)
+{
+	if(*pt != NULL)
+	{
+		free(*pt);
+		*pt = NULL;
+	}	
+}
+
+int Dots_Init(Dots **dt)
+{
+	if(NULL == *dt)
+	{
+		*dt = (Dots *)malloc(sizeof(Dots));
+		memtest(*dt);
+		
+		(*dt)->tab = NULL;
+		(*dt)->n = 0;
+	}
+	
+	if(NULL == (*dt)->tab)
+	{
+		(*dt)->tab = (Point **)malloc(sizeof(Point *) * 4);
+		memtest((*dt)->tab);
+		
+		(*dt)->n = 0;
+	}
+	else
+	{
+		int i;
+		for(i = 0; i < (*dt)->n; i++)
+			Point_Free(&((*dt)->tab[i]));
+		(*dt)->n = 0;
+	}
+	(*dt)->totalheight = 0;
+	
+	return 1;
+}
+
+void Dots_Free(Dots **dt)
+{
+	if(*dt != NULL)
+	{
+		if((*dt)->tab != NULL)
+		{
+			int i;
+			for(i = 0; i < (*dt)->n; i++)
+				Point_Free(&((*dt)->tab[i]));
+			free((*dt)->tab);
+		}
+		
+		(*dt)->n = 0;
+		
+		free(*dt);
+		*dt = NULL;
+	}
+}
+
+int Dots_Add(Dots *dt, Uint x, Uint y, int height)
+{
+	if((NULL == dt) || (NULL == dt->tab))
+		return 0;
+	if(dt->n == 4)
+	{
+		colorprintf(RED, "Error dots already have 4 elements\n");
+		return 0;
+	}
+	
+	dt->tab[dt->n] = Point_Alloc(x, y);
+	dt->n++;
+	dt->totalheight += height;
+	
+	return 1;
+}
+
+int Dots_Length(Dots *dt)
+{
+	if(dt != NULL)
+		return dt->n;
+	return 0;
+}
+
+double Dots_CalcCoef(Dots *dt)
+{
+	if(dt->n <= 1)
+		return 0.;
+	return ((dt->tab[dt->n-1]->y - dt->tab[0]->y) * 1.0) / (dt->tab[dt->n-1]->x - dt->tab[0]->x);
+}
+
+double Dots_CalcExtremCoef(Dots *dt)
+{
+	int i;
+	double a = 0.;
+	double temp;
+	
+	for(i = 0; i < dt->n-1; i++)
+	{
+		temp = ((dt->tab[i+1]->y - dt->tab[i]->y) * 1.0) / (dt->tab[i+1]->x - dt->tab[i]->x);
+		if(abs(temp) > abs(a))
+			a = temp;
+	}
+	return a;
+}
+
+int Dots_isLinear(Dots *dt)
+{
+	int i;
+	double a = 0;
+	double a2 = 0;
+	
+	if((NULL == dt) || (NULL == dt->tab))
+		return 0;
+
+	if(dt->n <= 2)
+		return 1;
+
+	a = ((dt->tab[1]->y - dt->tab[0]->y) * 1.0) / (dt->tab[1]->x - dt->tab[0]->x);
+	
+	for(i = 2; i < dt->n; i++)
+	{
+		a2 = ((dt->tab[i]->y - dt->tab[0]->y) * 1.0) / (dt->tab[i]->x - dt->tab[0]->x);
+		if(a2 != a)
+			return 0;
+	}
+	return 1;
+}
+
+int Dots_EvaluateYFromX(Dots *dt, int x)
+{
+	double a;
+	
+	a = Dots_CalcCoef(dt);
+	x -= dt->tab[0]->x;
+	
+	printf("Y(%d) = %g (%g * %d + %d)\n", x, a * x + dt->tab[0]->y, a, x, dt->tab[0]->y);
+	return a * x + dt->tab[0]->y;
+}
+
+
+
 
 
 

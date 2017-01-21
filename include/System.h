@@ -14,6 +14,9 @@
 #define log2(n) 	(log((n)) / log(2))
 #define memtest(ptr) 	(_mem((void*)ptr, #ptr, __FILE__, __LINE__))
 
+typedef unsigned int Uint;
+
+
 typedef enum{
 	BLACK 	= 30,
 	RED	= 31,
@@ -47,8 +50,20 @@ struct GenList
 	int lst_famous;
 };
 
+typedef struct Point Point;
+struct Point
+{
+	Uint x : 16;
+	Uint y : 16;
+};
 
-typedef unsigned int Uint;
+typedef struct Dots Dots;
+struct Dots
+{
+	Point **tab;
+	int totalheight;
+	int n;
+};
 	
 extern void _mem(void *ptr, const char *str, const char *file, int line);
 
@@ -56,6 +71,19 @@ extern int text_color(TerminalColor color);
 
 extern int colorprintf(TerminalColor color, const char *format, ...);
 
+int Dots_Init(Dots **dt);
 
+void Dots_Free(Dots **dt);
 
+int Dots_Add(Dots *dt, Uint x, Uint y, int height);
+
+int Dots_Length(Dots *dt);
+
+double Dots_CalcCoef(Dots *dt);
+
+double Dots_CalcExtremCoef(Dots *dt);
+
+int Dots_isLinear(Dots *dt);
+
+int Dots_EvaluateYFromX(Dots *dt, int x);
 #endif

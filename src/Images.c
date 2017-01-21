@@ -160,7 +160,7 @@ SDL_Surface *Note_CreateHeadWhole(int size_w, int size_h)
 	filledEllipseRGBA(surf, size_w / 2, size_h / 2, size_w / 2, size_h / 2, 0, 0, 0, 255);
 	
 	surf2 = SDL_CreateSurface(size_h / 1.25 + 1, size_w/2.5 + 1);
-	printf("w=%d, h=%d\n", size_h, size_w/3);
+
 	memtest(surf2);
 	
 	SDL_FillRect(surf2, NULL, SDL_MapRGB(surf2->format, 0, 0, 255));
@@ -382,7 +382,6 @@ SDL_Surface *CreateSharp(int size_w, int size_h)
 	surf = SDL_CreateWhiteKeySurface(w+1, m);
 	memtest(surf);
 	
-	printf("x=%d, y=%d\n", surf->w, surf->h);
 	boxRGBA(surf, size_w*1.5/8-1, 5, size_w/4-1, m, 0, 0, 0, 255);
 	boxRGBA(surf, w-size_w/4+1, 0, w-size_w*1.5/8+2, m-5, 0, 0, 0, 255);
 	
@@ -708,7 +707,7 @@ int Graphics_LoadHover(Graphics **data)
 	int r = 1;
 	if(NULL == (*data))
 		(*data) = Graphics_Alloc();
-	printf("Begin creating hover graphics... \n");
+	printf("Begin creating hover graphics... ");
 	
 	(*data)->Note_headBlack = Note_CreateHead(HEAD_W, HEAD_H, SetColor(0, 0, 80));
 	if(NULL == (*data)->Note_headBlack)
@@ -814,7 +813,7 @@ int Graphics_LoadLittle(Graphics **data)
 	Graphics *cur;
 	if(NULL == (*data))
 		(*data) = Graphics_Alloc();
-	printf("Begin creating little graphics... \n");
+	printf("Begin creating little graphics... ");
 	if(Images == NULL)
 	{
 		colorprintf(RED, "Error 2 !\n");
@@ -838,6 +837,7 @@ int Graphics_LoadLittle(Graphics **data)
 	cur->Flat = Create_Little(Images->Flat, RATIO_LITTLE+1, RATIO_LITTLE+1);
 	cur->DoubleFlat = Create_Little(Images->DoubleFlat, RATIO_LITTLE+1, RATIO_LITTLE+1);
 
+	colorprintf(GREEN, "Ok !\n");
 	return 1;
 }
 
@@ -880,6 +880,49 @@ int PowerOfBezier(SDL_Surface *dest, const int *x, const int *y, int n, Color co
 	free(new_x);
 	free(new_y);
 	return 1;
+}
+
+int Image_DrawRectangleBorder(SDL_Surface *dst, int x, int y, int x2, int y2, int borderSize, int r, int g, int b, int a)
+{
+	int temp;
+	SDL_Rect pos;
+	if((NULL == dst) || (x < 0) || (y < 0) || (x2 < 0) || (y2 < 0) || (borderSize < 1))
+		return 0;
+	
+	if(x2 < x)
+	{
+		temp = x;
+		x = x2;
+		x2 = temp;
+	}
+	if(y2 < y)
+	{
+		temp = y;
+		y = y2;
+		y2 = temp;
+	}
+	
+	pos.w = x2 - x;
+	pos.h = borderSize;
+	pos.x = x;
+	pos.y = y;
+	SDL_FillRect(dst, &pos, SDL_MapRGBA(dst->format, r, g, b, a));
+	
+	pos.y = y2 - borderSize;
+	SDL_FillRect(dst, &pos, SDL_MapRGBA(dst->format, r, g, b, a));
+	
+	pos.w = borderSize;
+	pos.h = y2 - y;
+	pos.x = x;
+	pos.y = y;
+	SDL_FillRect(dst, &pos, SDL_MapRGBA(dst->format, r, g, b, a));
+	
+	pos.x = x2 - borderSize;
+	SDL_FillRect(dst, &pos, SDL_MapRGBA(dst->format, r, g, b, a));
+	
+	return 1;
+	
+	
 }
 
 
