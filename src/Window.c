@@ -906,7 +906,9 @@ int Note_Print(Score *score, Staff *staff, Step *step, int id_step, int id_note,
 				
 				next = Step_GetNextNote(step, id_note);
 				
-				if(Dots_Length(Window->quavers) == 4 || (NULL == next) || (next->rest) || (next->duration != note->duration))
+				printf("\n%d %d\n", Window->sum_duration, 64/step->den);
+				
+				if(Dots_Length(Window->quavers) == 4 || ((Window->sum_duration % (64/step->den)) == 0 && (step->den != 4 || (step->den == 4 && (Window->sum_duration / (64/step->den) == 2)))) || (NULL == next) || (next->rest) || (next->duration != note->duration))
 				{
 					/* Aff quavers of the dots */
 					if(Dots_Length(Window->quavers) == 1)
@@ -949,7 +951,7 @@ int Note_Print(Score *score, Staff *staff, Step *step, int id_step, int id_note,
 							real_h0 = Window->quavers->tab[0]->y;
 							real_h1 = Window->quavers->tab[Window->quavers->n - 1]->y;
 						}
-						if(Dots_CalcCoef(Window->quavers) < -MAX_A_QUAVER || Dots_CalcCoef(Window->quavers) > MAX_A_QUAVER)
+						if((Dots_CalcCoef(Window->quavers) < -MAX_A_QUAVER || Dots_CalcCoef(Window->quavers) > MAX_A_QUAVER) && !Dots_isLinear(Window->quavers))
 						{
 							if(Window->quavers->totalheight/Window->quavers->n <= -45)
 							{
@@ -997,7 +999,7 @@ int Note_Print(Score *score, Staff *staff, Step *step, int id_step, int id_note,
 							}
 							for(j = 0; j < Window->quavers->n; j++)
 							{
-								if(Dots_CalcCoef(Window->quavers) >= -MAX_A_QUAVER && Dots_CalcCoef(Window->quavers) <= MAX_A_QUAVER)
+								if((Dots_CalcCoef(Window->quavers) >= -MAX_A_QUAVER && Dots_CalcCoef(Window->quavers) <= MAX_A_QUAVER) || Dots_isLinear(Window->quavers))
 								{
 									real_hsep = Dots_EvaluateYFromX(Window->quavers, Window->quavers->tab[j]->x);
 									if(Window->quavers->totalheight/Window->quavers->n <= -45)
@@ -1170,6 +1172,8 @@ int Step_Print(Score *score, Staff *staff, Step *step, int id_step, SDL_Rect *ba
 	depass.y = base_pos->y;
 	base_pos->y -= HEAD_H ;
 	base_pos->x += NOTE_SPACE/2;
+	
+	Window->sum_duration = 0;
 	
 	cur = step->notes;
 	while(cur != NULL)
