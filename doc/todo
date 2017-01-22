@@ -19,14 +19,17 @@
 - Correction bug croches bizarres (dans le mozart notamment) ????
 - Bug à l'ajout de 4/5ème portée ????
 
-<<< Facultatif >>>
-- Mettre en place les Signs (Titre, auteur)
-
 <<< Majors >>>
 - Multi-Sélections
-- Importation fichier perso
-- Exportation fichier perso
+[OK]- Exportation fichier perso
+[OK]- Importation fichier perso
+[OK]- Sauvegarde/Ouverture Fichier
 - Explorateur de fichier du disque
 - Menu configuration audio ondes
 - Export fichier partition+audio
 - Corrections des 1337 bugs et 42 erreurs de segmentations
+
+
+<<< Facultatif >>>
+- Mettre en place les Signs (Titre, auteur)
+- Importation fichiers ABC/MID ?

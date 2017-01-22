@@ -6,7 +6,7 @@ OBJ=obj/
 SRC=src/
 INCL=include/
 
-$(EXE): $(OBJ)main.o $(OBJ)Step.o $(OBJ)System.o $(OBJ)Parser.o $(OBJ)Staff.o $(OBJ)Test.o $(OBJ)Window.o $(OBJ)Images.o $(OBJ)Events.o $(OBJ)ABC.o $(OBJ)Menu.o $(OBJ)Text.o $(OBJ)Audio.o
+$(EXE): $(OBJ)main.o $(OBJ)Step.o $(OBJ)System.o $(OBJ)Parser.o $(OBJ)Staff.o $(OBJ)Test.o $(OBJ)Window.o $(OBJ)Images.o $(OBJ)Events.o $(OBJ)ABC.o $(OBJ)Menu.o $(OBJ)Text.o $(OBJ)Audio.o $(OBJ)File.o
 	$(CC) -o $(EXE) $^ $(CFLAGS) $(CLIBS)
 
 $(OBJ)%.o: $(SRC)%.c
