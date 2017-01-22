@@ -203,10 +203,10 @@ int Window_CreateWindow(int width, int height, const char *title)
 	{
 		Window->pos_menu = SDL_SetRect(0, 0, Window->width, 80);
 	
-		Window->pos_pal = SDL_SetRect(0, 80, Window->width / 10, 
+		Window->pos_pal = SDL_SetRect(0, 80, Window->width / 15, 
 							Window->height * 9/10);
 	
-			Window->menu = SDL_CreateRGBSurface(SDL_HWSURFACE, Window->pos_menu->w, Window->pos_menu->h,
+		Window->menu = SDL_CreateRGBSurface(SDL_HWSURFACE, Window->pos_menu->w, Window->pos_menu->h,
 							32, 0, 0, 0, 0);
 		memtest(Window->menu);
 		Window_InitMenu(Window->menu);
@@ -219,7 +219,7 @@ int Window_CreateWindow(int width, int height, const char *title)
 	
 	{			
 		Window->pos_body = SDL_SetRect((Window->width-Window->height*3/2-Window->pos_pal->w)/2+Window->pos_pal->w, Window->pos_menu->h, 
-						Window->height * 4, Window->width * 2.5);
+						3060, 4330);
 
 		Window->body = (SDL_Surface **)malloc(sizeof(SDL_Surface *) * 1);
 		memtest(Window->body);
@@ -273,6 +273,7 @@ int Window_AddEmptyBody(void)
 							32, 0, 0, 0, 0);
 	SDL_FillRect(temp, NULL, SDL_MapRGB(temp->format, 255, 255, 255));
 	memtest(temp);
+	
 	Window->body[Window->nb_body] = SDL_DisplayFormat(temp);
 	SDL_FreeSurface(temp);
 	
@@ -445,6 +446,7 @@ int Window_TestBox(SDL_Surface *dest, SDL_Rect *pos, int zoom)
 	area= main_events->lst;
 	while(area != NULL)
 	{
+	
 		if(((pos->x + (area->rect.x + SIZE_BODY*area->nbody)/zoom) >= main_events->base->x)  &&
 			((pos->y  + area->rect.y/zoom) >= main_events->base->y))
 		{

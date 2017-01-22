@@ -13,7 +13,7 @@
 int main(int argc, char *argv[])
 {
 	SDL_Event event;
-	double r=1.0;
+	double r=2.0;
 	int c=1;
 	int ev;
 	const SDL_VideoInfo* info = NULL;

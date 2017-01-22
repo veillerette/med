@@ -122,9 +122,6 @@ SDL_Surface *Note_CreateHeadWhite(int size_w, int size_h, Color color)
 	surf2 = SDL_CreateSurface(size_w+1, size_h+1);
 	memtest(surf2);
 	
-	SDL_FillRect(surf2, NULL, SDL_MapRGB(surf2->format, 255, 0, 0));
-	SDL_SetColorKey(surf2, SDL_SRCCOLORKEY, SDL_MapRGB(surf2->format, 255, 0, 0));
-	
 	filledEllipseRGBA(surf2, size_w / 2, size_h / 2, size_w / 2 - size_w/8.0, (int)(size_h / 3.75), 255, 255, 255, 255);
 	aaellipseRGBA(surf2, size_w / 2, size_h / 2, size_w / 2 -size_w/8.0, (int)(size_h / 3.75) - 1, 255, 255, 255, 255);
 	surf3 = rotozoomSurface(surf2, 30.0, 1.0, SMOOTHING_ON);

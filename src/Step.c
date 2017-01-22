@@ -412,6 +412,81 @@ int RealDuration(Note_Duration duration, Note_Flags flags)
 	return dur;
 }
 
+int Step_CorrectFlags(Step *step, int id, char note, Note_Flags *flags)
+{
+	/*
+	do re mi fa sol la si
+	0  1  2  3  4   5  6
+	*/
+	int i;
+	int tab_notes[] = {0, 2, 2, 1, 2, 2, 2};
+	int tab[][7] = {{0, 0, 0, 0, 0, 0, 0},
+			{0, 0, 0, 0, 0, 0, NOTE_FLAT},
+			{0, 0, NOTE_FLAT, 0, 0, 0, NOTE_FLAT},
+			{0, 0, NOTE_FLAT, 0, 0, NOTE_FLAT, NOTE_FLAT},
+			{0, NOTE_FLAT, NOTE_FLAT, 0, 0, NOTE_FLAT, NOTE_FLAT},
+			{0, NOTE_FLAT, NOTE_FLAT, 0, NOTE_FLAT, NOTE_FLAT, NOTE_FLAT},
+			{NOTE_FLAT, NOTE_FLAT, NOTE_FLAT, 0, NOTE_FLAT, NOTE_FLAT, NOTE_FLAT},
+			{NOTE_FLAT, NOTE_FLAT, NOTE_FLAT, NOTE_FLAT, NOTE_FLAT, NOTE_FLAT, NOTE_FLAT},
+			{0, 0, 0, NOTE_SHARP, 0, 0, 0},
+			{NOTE_SHARP, 0, 0, NOTE_SHARP, 0, 0, 0},
+			{NOTE_SHARP, 0, 0, NOTE_SHARP, NOTE_SHARP, 0, 0},
+			{NOTE_SHARP, NOTE_SHARP, 0, NOTE_SHARP, NOTE_SHARP, 0, 0},
+			{NOTE_SHARP, NOTE_SHARP, 0, NOTE_SHARP, NOTE_SHARP, NOTE_SHARP, 0},
+			{NOTE_SHARP, NOTE_SHARP, NOTE_SHARP, NOTE_SHARP, NOTE_SHARP, NOTE_SHARP, 0},
+			{NOTE_SHARP, NOTE_SHARP, NOTE_SHARP, NOTE_SHARP, NOTE_SHARP, NOTE_SHARP, NOTE_SHARP}
+		      };
+	Note_Flags new = 0;
+	int good_arm = -1;
+	int sauv_note = note;
+	ToNote *notes = step->notes;
+	note %= 12;
+	printf("note = %d\n", note);
+	
+	for(i = 0; i < 7; i++)
+	{
+		note -= tab_notes[i];
+		if(note == 0)
+		{
+			note = i;
+			break;
+		}
+	}
+	
+	if(step->sign < 0)
+		good_arm = abs(step->sign);
+	else if(step->sign > 0)
+		good_arm = step->sign+7;
+	else
+		good_arm = 0;
+	
+	new |= tab[good_arm][(int)note];
+	
+	while(notes != NULL && id>0)
+	{
+		if(notes->note->note%12 == sauv_note%12 && !notes->note->rest)
+		{
+			if(notes->note->flags & NOTE_SHARP)
+				new = NOTE_SHARP;
+			if(notes->note->flags & NOTE_FLAT)
+				new = NOTE_FLAT;
+			if(notes->note->flags & NOTE_DOUBLEFLAT)
+				new = NOTE_DOUBLEFLAT;
+			if(notes->note->flags & NOTE_DOUBLESHARP)
+				new = NOTE_DOUBLESHARP;
+				
+		}
+		notes = notes->next;
+		id--;
+	}
+	
+	(*flags) |= new;
+	
+	if(NULL == notes)
+		return 0;
+	return 1;
+}
+
 int Step_AddNote(Step *step, int id, char note, Note_Flags flags,
 							Note_Duration duration)
 {
@@ -430,6 +505,8 @@ int Step_AddNote(Step *step, int id, char note, Note_Flags flags,
 		return -1;
 	cur = &(step->notes);
 
+	Step_CorrectFlags(step, id, note, &flags);
+
 	while(id > 0)
 	{
 		if(NULL == (*cur)->next)
@@ -437,6 +514,8 @@ int Step_AddNote(Step *step, int id, char note, Note_Flags flags,
 		cur = &((*cur)->next);
 		id--;
 	}
+	
+	
 	new_note = ToNote_Alloc(note, flags, duration, 0);
 	new_note->next = (*cur)->next;
 	note_duration = Note_RealDuration(new_note->note, step);

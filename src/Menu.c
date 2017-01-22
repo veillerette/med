@@ -627,7 +627,7 @@ int ToolBar_PollMouse(Menu *menu, SDL_Event event)
 	int rest;
 	int sauv = 0;
 	int pointed = 0;
-	int playingX = (Window->width - 60);
+	int playingX = 750;
 	switch(event.type)
 	{
 		case SDL_MOUSEMOTION:
@@ -969,15 +969,13 @@ void Toolbar_PrintNote(Menu *menu)
 	filledCircleRGBA(Window->screen, pos.x-6, pos.y, 4, 119, 136, 153, 255);
 	filledCircleRGBA(Window->screen, pos.x+6, pos.y, 4, 119, 136, 153, 255);
 	
-	MenuPlaying_Print(menu);
-}
-
-int MenuPlaying_Print(Menu *menu)
-{
-	SDL_Rect pos;
 	
-	pos.y = (Window->pos_menu->h - menu->height)/2 + menu->height;
-	pos.x = Window->width - 60;
+	pos.x += 40;
+	pos.y -= 23;
+	roundedBoxRGBA(Window->screen, pos.x, pos.y, pos.x+1, pos.y+46, 7, 90, 100, 110, 255);
+	pos.x += 20;
+	pos.y += 23;
+
 	
 	if(!main_events->tools.hover_button1) 
 		roundedBoxRGBA(Window->screen, pos.x, pos.y-20, pos.x+40, pos.y+20, 3, 105, 60, 50, 255);
@@ -993,8 +991,8 @@ int MenuPlaying_Print(Menu *menu)
 		boxRGBA(Window->screen, pos.x+10, pos.y+7, pos.x+10+4, pos.y+33, 200, 200, 200, 255);
 		boxRGBA(Window->screen, pos.x+30-4, pos.y+7, pos.x+30, pos.y+33, 200, 200, 200, 255);
 	}
-	return 1;
 }
+
 
 
 
