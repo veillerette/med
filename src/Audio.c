@@ -62,6 +62,8 @@ Channel *Channel_Alloc(void)
 	temp->m = 2;
 	temp->on = 0;
 	
+	temp->note_playing = NULL;
+	
 	return temp;
 }
 
@@ -196,6 +198,7 @@ AudioConfig *AudioConfig_DevInit(int askFreq, Uint16 format, Uint8 channels, Uin
 	ac->id_step = 0;
 	ac->playing = 0;
 	ac->threads = NULL;
+	ac->need_refresh = 0;
 	Mixer_Init(&(ac->mixer));
 	
 	spec.freq = askFreq;
@@ -411,7 +414,12 @@ double sinusoide(int x, double freq, int hardwareFreq)
 
 double carre(int x, double freq, int hardwareFreq)
 {
-	return (sinusoide(x, freq, hardwareFreq) > 0)?1.0:-1.0;
+	return (sinusoide(x, freq, hardwareFreq) > 0)?1.0:-1.0 ;
+}
+
+double mixSinCarre(int x, double freq, int hardwareFreq)
+{
+	return carre(x, freq, hardwareFreq) + sinusoide(x, freq, hardwareFreq);
 }
 
 double carreHarmo(int x, double freq, int hardwareFreq)
@@ -448,10 +456,14 @@ int Audio_PlayStep(Step *step, Channel *chan)
 		{
 			Channel_Enable(chan);
 			Channel_ChangeOne(chan, Note_GetFreq(note->note));
+			chan->note_playing = note->note;
+			main_audio->need_refresh = 1;
 		}
 		else
 		{
 			Channel_Disable(chan);
+			chan->note_playing = note->note;
+			main_audio->need_refresh = 1;
 		}
 		
 		begin = SDL_GetTicks();
@@ -481,6 +493,8 @@ int Audio_PlayStaffThread(void *data)
 	Channel_Disable(main_audio->mixer.channels[id_staff]);
 	main_audio->threads[id_staff] = NULL;
 	colorprintf(GREEN, "End of Playing staff n°%d\n", id_staff);
+	main_audio->playing = 0;
+	main_audio->need_refresh = 1;
 	return 1; 
 }
 
@@ -533,7 +547,7 @@ void Audio_AssignateScore(Score *score)
 		Mixer_Quit(&(main_audio->mixer));
 		Mixer_Init(&(main_audio->mixer));
 		for(i = 0; i < score->lst[0]->n; i++)
-			Mixer_Add(&(main_audio->mixer), Channel_CreateOne(0, carre));
+			Mixer_Add(&(main_audio->mixer), Channel_CreateOne(0, mixSinCarre));
 		if(main_audio->threads != NULL)
 			free(main_audio->threads);
 		main_audio->threads = (SDL_Thread **)calloc(score->n, sizeof(SDL_Thread *));
@@ -597,9 +611,6 @@ void Audio_Pause(void)
 	Audio_KillThreads();
 	colorprintf(BLUE, "Exiting on pressing 'S'\n");
 }
-
-
-
 
 					
 

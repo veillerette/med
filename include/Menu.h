@@ -7,7 +7,7 @@
 
 #include "Window.h"
 #include "Events.h"
-
+#include "Audio.h"
 
 #define MENU_FONT "media/Garamond.ttf"
 #define MENU_SIZETEXT 18
@@ -91,4 +91,6 @@ void Toolbar_PrintMode(Menu *menu);
 void Toolbar_PrintNote(Menu *menu);
 
 int ToolBar_PollMouse(Menu *menu, SDL_Event event);
+
+int MenuPlaying_Print(Menu *menu);
 #endif

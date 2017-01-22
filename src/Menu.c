@@ -543,6 +543,10 @@ int Menu_PollMouse(Menu *menu, SDL_Event event)
 			return QUIT;
 		case SDL_MOUSEMOTION:
 			mn = FindNodeByZone(menu, event.motion.x, event.motion.y);
+			
+			if(mn == NULL && ((sauv = ToolBar_PollMouse(menu, event)) != NONE))
+				return sauv;
+			
 			if(menu->hover == mn)
 				return NONE;
 			menu->hover = mn;
@@ -623,13 +627,46 @@ int ToolBar_PollMouse(Menu *menu, SDL_Event event)
 	int rest;
 	int sauv = 0;
 	int pointed = 0;
+	int playingX = (Window->width - 60);
 	switch(event.type)
 	{
+		case SDL_MOUSEMOTION:
+			x = event.motion.x;
+			y = event.motion.y;
+			
+			if(x >= playingX && x <= playingX+40 && y >= dy-20 && y <= dy+20)
+			{
+				if(!main_events->tools.hover_button1)
+				{
+					main_events->tools.hover_button1 = 1;
+					return FORCE_MAJ;
+				}
+			}
+			else if(main_events->tools.hover_button1)
+			{
+				main_events->tools.hover_button1 = 0;
+				return FORCE_MAJ;
+			}
+			break;
 		case SDL_MOUSEBUTTONDOWN:
 			x = event.button.x;
 			y = event.button.y;
 			if(y<dy-20 || y > dy+20)
 				return NONE;
+				
+			if(x >= playingX && x <= playingX+40 && y >= dy-20 && y <= dy+20)
+			{
+				if(Audio_isPlaying())
+				{
+					Audio_Pause();
+				}
+				else
+				{
+					Audio_Play();
+				}
+				return FORCE_MAJ;
+			}
+				
 			for(i = 0; i < 7; i++)
 			{
 				if(x >= 60+i*45 && x <= 100+i*45 &&
@@ -931,9 +968,33 @@ void Toolbar_PrintNote(Menu *menu)
 		roundedBoxRGBA(Window->screen, pos.x-20, y-20, pos.x+20, y+20, 3, 90, 100, 110, 255);
 	filledCircleRGBA(Window->screen, pos.x-6, pos.y, 4, 119, 136, 153, 255);
 	filledCircleRGBA(Window->screen, pos.x+6, pos.y, 4, 119, 136, 153, 255);
+	
+	MenuPlaying_Print(menu);
 }
 
-
+int MenuPlaying_Print(Menu *menu)
+{
+	SDL_Rect pos;
+	
+	pos.y = (Window->pos_menu->h - menu->height)/2 + menu->height;
+	pos.x = Window->width - 60;
+	
+	if(!main_events->tools.hover_button1) 
+		roundedBoxRGBA(Window->screen, pos.x, pos.y-20, pos.x+40, pos.y+20, 3, 105, 60, 50, 255);
+	else
+		roundedBoxRGBA(Window->screen, pos.x, pos.y-20, pos.x+40, pos.y+20, 3, 150, 60, 50, 255);
+	
+	pos.y = pos.y-20;
+	
+	if(!Audio_isPlaying())
+		filledTrigonRGBA(Window->screen, pos.x+13, pos.y+7, pos.x+33, pos.y+20, pos.x+13, pos.y+33, 200, 200, 200, 255);
+	else
+	{
+		boxRGBA(Window->screen, pos.x+10, pos.y+7, pos.x+10+4, pos.y+33, 200, 200, 200, 255);
+		boxRGBA(Window->screen, pos.x+30-4, pos.y+7, pos.x+30, pos.y+33, 200, 200, 200, 255);
+	}
+	return 1;
+}
 
 
 

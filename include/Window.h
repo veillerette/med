@@ -15,6 +15,7 @@
 #include "Images.h"
 #include "Events.h"
 #include "Text.h"
+#include "Audio.h"
 
 #define ESP_BODY 100
 #define BASE_BODY_X (Window->pos_pal->x + Window->pos_pal->w)
@@ -67,6 +68,7 @@ struct WindowData
 	
 	Dots *quavers;
 	Note_Duration sum_duration;
+
 };
 
 WindowData *WindowData_Alloc(void);

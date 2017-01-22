@@ -419,6 +419,22 @@ int Window_MyEventBlit(Object_Type type, int nbody, SDL_Surface *surf, SDL_Rect 
 	return SDL_BlitSurface(surf, rect1, dest, rect2);
 }
 
+int Window_isNotePlaying(Note *note)
+{
+	if(main_audio != NULL)
+	{
+		if(Audio_isPlaying())
+		{
+			int i;
+			for(i = 0; i < main_audio->mixer.n; i++)
+				if(main_audio->mixer.channels[i]->note_playing == note)
+					return 1;
+			return 0;
+		}
+	}
+	return 0;
+}
+
 int Window_TestBox(SDL_Surface *dest, SDL_Rect *pos, int zoom)
 {
 	Area *area;
@@ -435,7 +451,8 @@ int Window_TestBox(SDL_Surface *dest, SDL_Rect *pos, int zoom)
 			a = 150;
 
 
-			if(main_events->select == area)
+			if(main_events->select == area 
+			|| (area->type == OBJECT_NOTE && Window_isNotePlaying(Step_GetNote(area->step, area->id_note))))
 			{
 				r = 200;
 				g = 50;
@@ -482,10 +499,19 @@ int Window_TestBox(SDL_Surface *dest, SDL_Rect *pos, int zoom)
 			if((pos->x + ((area->rect.x + SIZE_BODY*area->nbody) /zoom)) > BASE_BODY_X &&
 				(pos->y  + (area->rect.y /zoom)) > BASE_BODY_Y)
 			{
-				if(((area->type == EVENT_ADDNOTE && main_events->mode == MODE_ADD &&
+				if(area->type == OBJECT_NOTE && Window_isNotePlaying(Step_GetNote(area->step, area->id_note)))
+				{
+					boxRGBA(dest, (pos->x + ((area->rect.x + SIZE_BODY*area->nbody) /zoom)), 
+								(pos->y  + (area->rect.y /zoom)), 
+								(pos->x + (area->rect.x + SIZE_BODY*area->nbody)/zoom + area->rect.w/zoom),
+								(pos->y + area->rect.y/zoom + area->rect.h/zoom), 
+								r, g, b, a);
+				}
+				else if(((area->type == EVENT_ADDNOTE && main_events->mode == MODE_ADD &&
 						 (area == main_events->hover || area == main_events->select) )
 					||
-					(area->type != EVENT_ADDNOTE && main_events->mode == MODE_EDIT)))
+					(area->type != EVENT_ADDNOTE && main_events->mode == MODE_EDIT)
+					))
 				{
 					switch(area->type)
 					{
@@ -908,7 +934,7 @@ int Note_Print(Score *score, Staff *staff, Step *step, int id_step, int id_note,
 				
 				printf("\n%d %d\n", Window->sum_duration, 64/step->den);
 				
-				if(Dots_Length(Window->quavers) == 4 || ((Window->sum_duration % (64/step->den)) == 0 && (step->den != 4 || (step->den == 4 && (Window->sum_duration / (64/step->den) == 2)))) || (NULL == next) || (next->rest) || (next->duration != note->duration))
+				if(Dots_Length(Window->quavers) == 4 || ((Window->sum_duration % (64/step->den)) == 0 && ((step->den != 4 || step->num != 4) || (step->den == 4 && step->num == 4 && (Window->sum_duration / (64/step->den) == 2)))) || (NULL == next) || (next->rest) || (next->duration != note->duration))
 				{
 					/* Aff quavers of the dots */
 					if(Dots_Length(Window->quavers) == 1)
@@ -951,7 +977,8 @@ int Note_Print(Score *score, Staff *staff, Step *step, int id_step, int id_note,
 							real_h0 = Window->quavers->tab[0]->y;
 							real_h1 = Window->quavers->tab[Window->quavers->n - 1]->y;
 						}
-						if((Dots_CalcCoef(Window->quavers) < -MAX_A_QUAVER || Dots_CalcCoef(Window->quavers) > MAX_A_QUAVER) && !Dots_isLinear(Window->quavers))
+						if(((Dots_CalcCoef(Window->quavers) < -MAX_A_QUAVER || Dots_CalcCoef(Window->quavers) > MAX_A_QUAVER) && !Dots_isLinear(Window->quavers)) 
+								|| Dots_Length(Window->quavers) == 2)
 						{
 							if(Window->quavers->totalheight/Window->quavers->n <= -45)
 							{
@@ -999,15 +1026,16 @@ int Note_Print(Score *score, Staff *staff, Step *step, int id_step, int id_note,
 							}
 							for(j = 0; j < Window->quavers->n; j++)
 							{
-								if((Dots_CalcCoef(Window->quavers) >= -MAX_A_QUAVER && Dots_CalcCoef(Window->quavers) <= MAX_A_QUAVER) || Dots_isLinear(Window->quavers))
+								if(((Dots_CalcCoef(Window->quavers) < -MAX_A_QUAVER || Dots_CalcCoef(Window->quavers) > MAX_A_QUAVER) && !Dots_isLinear(Window->quavers)) 
+								|| Dots_Length(Window->quavers) == 2)
+								{
+									real_hsep = real_h0;
+								}
+								else
 								{
 									real_hsep = Dots_EvaluateYFromX(Window->quavers, Window->quavers->tab[j]->x);
 									if(Window->quavers->totalheight/Window->quavers->n <= -45)
 										real_hsep += 2*QUEUE + 14 + HEAD_H;
-								}
-								else
-								{
-									real_hsep = real_h0;
 								}
 								
 								if(Window->quavers->totalheight/Window->quavers->n <= -45)

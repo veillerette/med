@@ -71,7 +71,10 @@ struct Toolbar
 	char 		flat;
 	char 		doubleflat;
 	int 		statusdur;
-	char 		rest;
+	char 		rest;	
+	char		hover_button1;
+	char		hover_button2;
+	char		hover_button3;
 	Note_Duration 	duration;
 };
 

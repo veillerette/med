@@ -95,17 +95,15 @@ int main(int argc, char *argv[])
 		sauv = SDL_GetTicks();
 		Window_LittleEvent(event, &r, &c, &mouse, &clic_x, 
 						&clic_y, &tomaj, &m);
-		if(ev && event.type == SDL_KEYUP && event.key.keysym.sym == SDLK_s)
+		
+		if(main_audio->need_refresh)
 		{
-			if(Audio_isPlaying())
-			{
-				Audio_Pause();
-			}
-			else
-			{
-				Audio_Play();
-			}
-			
+			Window_DrawBody();
+			Window_Print();
+			Window_TestBox(Window->screen, Window->pos_body, r);
+			Menu_Aff(menu, &x, &y);
+			SDL_Flip(Window->screen);
+			main_audio->need_refresh = 0;
 		}
 		if(m)
 		{

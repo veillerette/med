@@ -35,6 +35,8 @@ struct Channel
 	int n;
 	int m;
 	int on;
+	
+	Note *note_playing;
 };
 
 typedef struct Mixer Mixer;
@@ -58,6 +60,7 @@ struct AudioConfig
 	int playing;
 	
 	SDL_Thread **threads;
+	int need_refresh;
 };
 
 
@@ -165,8 +168,6 @@ int Audio_isInit(void);
 void Audio_Play(void);
 
 void Audio_Pause(void);
-
-
 
 /*****************************************************
 ******************************************************/

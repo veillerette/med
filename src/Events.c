@@ -104,6 +104,9 @@ Toolbar InitToolbar(void)
 	tools.doubleflat = 0;
 	tools.statusdur = 0;
 	tools.rest = 0;
+	tools.hover_button1 = 0;
+	tools.hover_button2 = 0;
+	tools.hover_button3 = 0;
 	return tools;
 }
 
@@ -389,9 +392,23 @@ int Events_PollMouse(SDL_Event event)
 					main_events->tools.doubleflat = temp->flags & NOTE_DOUBLEFLAT;
 					main_events->tools.statusdur = 1*(temp->flags & NOTE_POINTED) + 2*(temp->flags & NOTE_DOUBLEPOINTED);
 				}
+				
+				if(area != NULL && area->type == OBJECT_STEP)
+				{
+					int is = Audio_isPlaying();
+					if(is)
+						Audio_Pause();
+					Audio_GoToStep(area->id_step);
+					if(is)
+						Audio_Play();
+				}
+				
 				if(main_events->select == area)
 					return NONE;
 				main_events->select = area;
+				
+				
+					
 				return SELECT;
 			}
 			else
@@ -483,6 +500,12 @@ int Events_PollKeyboard(SDL_Event event)
 					main_events->mode = MODE_EDIT;
 					return FORCE_MAJ;
 					break;
+				case SDLK_SPACE:
+					if(Audio_isPlaying())
+						Audio_Pause();
+					else
+						Audio_Play();
+					return FORCE_MAJ;
 				default:
 					break;
 			}
