@@ -33,3 +33,19 @@
 <<< Facultatif >>>
 - Mettre en place les Signs (Titre, auteur)
 - Importation fichiers ABC/MID ?
+
+
+
+calendrier
+
+<<< LUNDI SOIR >>>
+- Minor->(Armures -> Step);
+- Minor->Changer l'armure grâce au menu
+- Minor->Supprimer doubles affichages Dieze/Bémol mesure
+- Majors->Multi-Sélection
+
+<<< MARDI SOIR >>>
+- Minor->Ajout de plusieurs mesures en fin
+- Bugs->Correction bug croches bizarres
+- Bugs->Bug à l'ajout 4/5ème portée
+
