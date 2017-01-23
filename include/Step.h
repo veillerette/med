@@ -47,8 +47,8 @@ struct Note
 	char note; /* A0 = 21, B1 = 22... C8 = 108*/
 	char rest; /* bool 0 = note, 1 = rest */
 	
-	Note_Flags flags;
-	Note_Duration duration;
+	Note_Flags flags : 24;
+	Note_Duration duration : 8;
 };
 
 typedef struct ToNote ToNote;
@@ -65,9 +65,9 @@ struct Step
 	
 	int num;
 	
-	Cle cle;
-	Note_Duration den;
-	Step_Flags flags;
+	Cle cle : 16;
+	Note_Duration den : 8;
+	Step_Flags flags : 16;
 	
 	signed char sign;
 };

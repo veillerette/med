@@ -5,8 +5,10 @@ EXE=prog
 OBJ=obj/
 SRC=src/
 INCL=include/
+FILEC:= $(wildcard $(SRC)*.c)
+FILEO:= $(patsubst $(SRC)%.c,$(OBJ)%.o,$(FILEC))
 
-$(EXE): $(OBJ)main.o $(OBJ)Step.o $(OBJ)System.o $(OBJ)Parser.o $(OBJ)Staff.o $(OBJ)Test.o $(OBJ)Window.o $(OBJ)Images.o $(OBJ)Events.o $(OBJ)ABC.o $(OBJ)Menu.o $(OBJ)Text.o $(OBJ)Audio.o $(OBJ)File.o
+$(EXE): $(FILEO)
 	$(CC) -o $(EXE) $^ $(CFLAGS) $(CLIBS)
 
 $(OBJ)%.o: $(SRC)%.c
