@@ -135,6 +135,8 @@ int Step_Transpose(Step *step, char value);
 Note_Duration Step_GetMinDuration(Step *step);
 
 Note *Step_GetNote(Step *step, int id_note);
+
+int Step_VerifArmFlags(Step *step);
 #endif
 
 

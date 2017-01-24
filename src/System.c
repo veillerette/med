@@ -261,11 +261,7 @@ int Dots_Add(Dots *dt, Uint x, Uint y, int height)
 {
 	if((NULL == dt) || (NULL == dt->tab))
 		return 0;
-	if(dt->n == 4)
-	{
-		colorprintf(RED, "Error dots already have 4 elements\n");
-		return 0;
-	}
+
 	
 	dt->tab[dt->n] = Point_Alloc(x, y);
 	dt->n++;

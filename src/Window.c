@@ -936,7 +936,11 @@ int Note_Print(Score *score, Staff *staff, Step *step, int id_step, int id_note,
 				
 				printf("\n%d %d\n", Window->sum_duration, 64/step->den);
 				
-				if(Dots_Length(Window->quavers) == 4 || ((Window->sum_duration % (64/step->den)) == 0 && ((step->den != 4 || step->num != 4) || (step->den == 4 && step->num == 4 && (Window->sum_duration / (64/step->den) == 2)))) || (NULL == next) || (next->rest) || (next->duration != note->duration))
+				if( ((Window->sum_duration % (64/step->den)) == 0 && (((step->den != 4 && step->den != 8) || (step->num != 4 && step->num != 6) || (step->den == 4 && step->num == 4 && (Window->sum_duration / (64/step->den) == 2)) || (step->num == 6 && step->den == 8 && (Window->sum_duration / (64/step->den) == 3)))))
+				|| (NULL == next)
+				|| (next->rest)
+				|| (next->duration != note->duration))
+				
 				{
 					/* Aff quavers of the dots */
 					if(Dots_Length(Window->quavers) == 1)

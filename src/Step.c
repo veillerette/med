@@ -243,13 +243,25 @@ int Step_DiviseRest(Step *step, int id)
 
 int Step_Init(Step *step)
 {
+	Note_Duration dur = 0;
+	Note_Duration i = RONDE;
+	ToNote **notes = NULL;
 	if(NULL == step)
 		return 0;
 	
 	if(step->notes != NULL)
 		ToNote_FreeAll(&(step->notes));
-	printf("step init num=%d den=%d\n", step->num, step->den);
-	step->notes = ToNote_Alloc(0, NOTE_DEFAULT, step->den / step->num, 1);
+	
+	notes = &(step->notes);
+	dur = step->num * (64/step->den);
+	while(dur > 0)
+	{
+		while(64/i > dur)
+			i *= 2;
+		*notes = ToNote_Alloc(0, NOTE_DEFAULT, i, 1);
+		notes = &((*notes)->next);
+		dur -= 64/i;
+	}
 	
 	return 1;
 }
@@ -393,12 +405,12 @@ Note_Duration *find2rest(int duration)
 int Note_RealDuration(Note *note, Step *step)
 {
 	int dur = 64 / note->duration;
+	if(note->rest && note->duration == RONDE)
+		return step->num * (64/step->den);
 	if(note->flags & NOTE_POINTED)
 		return (int)(dur + dur/2);
 	else if(note->flags & NOTE_DOUBLEPOINTED)
 		return (int)(dur + dur/2 + dur/4);
-	if(note->rest && note->duration == RONDE)
-		return step->num * (64/step->den);
 	return dur;
 }
 
@@ -487,6 +499,32 @@ int Step_CorrectFlags(Step *step, int id, char note, Note_Flags *flags)
 	return 1;
 }
 
+int Step_VerifArmFlags(Step *step)
+{
+	ToNote *notes = NULL;
+	Note_Flags temp = 0;
+	int id = 0;
+	
+	if((NULL == step))
+		return 0;
+
+	notes = step->notes;
+	while(notes != NULL)
+	{
+		temp = 0;
+		if(!notes->note->rest)
+		{
+			temp = notes->note->flags;
+			Step_CorrectFlags(step, id, notes->note->note, &(temp));
+			notes->note->flags = temp;
+		}
+		id++;
+		notes = notes->next;
+	}
+	
+	return 1;
+}
+
 int Step_AddNote(Step *step, int id, char note, Note_Flags flags,
 							Note_Duration duration)
 {
@@ -514,7 +552,6 @@ int Step_AddNote(Step *step, int id, char note, Note_Flags flags,
 		cur = &((*cur)->next);
 		id--;
 	}
-	
 	
 	new_note = ToNote_Alloc(note, flags, duration, 0);
 	new_note->next = (*cur)->next;

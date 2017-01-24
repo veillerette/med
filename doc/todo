@@ -8,7 +8,7 @@
 [OK]- Toolbar (Modification durée note à la volée et altérations)
 [OK]- Gestion de plusieurs pages
 - Volume dans la toolbar
-- Armures -> Step
+[OK]- Armures -> Step
 - Changer l'armure grâce au menu
 - Supprimer doubles affichages Dieze/Bémol dans une mesure
 - Ajout de plusieurs mesures en fin (scroll souris)
@@ -39,8 +39,8 @@
 calendrier
 
 <<< LUNDI SOIR >>>
-- Minor->(Armures -> Step);
-- Minor->Changer l'armure grâce au menu
+[OK]- Minor->(Armures -> Step);
+[OK]- Minor->Changer l'armure grâce au menu
 - Minor->Supprimer doubles affichages Dieze/Bémol mesure
 - Majors->Multi-Sélection
 

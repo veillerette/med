@@ -264,6 +264,38 @@ int _Add_New_Staff(void)
 	return FORCE_SCOREMAJ;
 }
 
+int ChangeTonality(signed char new)
+{
+	int i,j;
+	if((NULL == main_events) || (NULL == main_events->score))
+		return 0;
+	if((NULL == main_events->select) || (main_events->select->type != OBJECT_STEP))
+		return 0;
+	for(i = 0; i < main_events->score->n; i++)
+	{
+		Staff_ChangeArmure(main_events->score->lst[i], main_events->select->id_step, new);
+		for(j = main_events->select->id_step; j< main_events->score->lst[i]->n; j++)
+			Step_VerifArmFlags(main_events->score->lst[i]->steps[j]);
+	}
+	return FORCE_SCOREMAJ;
+}
+
+int __0Arm(void){ return ChangeTonality(0); }
+int __1Arm(void){ return ChangeTonality(1); }
+int __2Arm(void){ return ChangeTonality(2); }
+int __3Arm(void){ return ChangeTonality(3); }
+int __4Arm(void){ return ChangeTonality(4); }
+int __5Arm(void){ return ChangeTonality(5); }
+int __6Arm(void){ return ChangeTonality(6); }
+int __7Arm(void){ return ChangeTonality(7); }
+int ___1Arm(void){ return ChangeTonality(-1); }
+int ___2Arm(void){ return ChangeTonality(-2); }
+int ___3Arm(void){ return ChangeTonality(-3); }
+int ___4Arm(void){ return ChangeTonality(-4); }
+int ___5Arm(void){ return ChangeTonality(-5); }
+int ___6Arm(void){ return ChangeTonality(-6); }
+int ___7Arm(void){ return ChangeTonality(-7); }
+
 Menu *Menu_Create(void)
 {
 	Menu *menu = NULL;
@@ -277,6 +309,24 @@ Menu *Menu_Create(void)
 	NodeArray_Add(menu->lst->next[1]->next, "Désélectionner", 1, LEAF, _Selection_Deselec);
 	NodeArray_Add(menu->lst->next[1]->next, "Diviser", 1, LEAF, _Selection_Divise);
 	NodeArray_Add(menu->lst->next[1]->next, "Régulariser", 1, LEAF, _Selection_Regularise);
+	NodeArray_Add(menu->lst->next[1]->next, "Armures", 0, NODE, NULL);
+	NodeArray_Add(menu->lst->next[1]->next->next[4]->next, "DoM / Lam", 1, LEAF, __0Arm);
+	NodeArray_Add(menu->lst->next[1]->next->next[4]->next, "Dièses", 0, NODE, NULL);
+	NodeArray_Add(menu->lst->next[1]->next->next[4]->next, "Bémols", 0, NODE, NULL);
+	NodeArray_Add(menu->lst->next[1]->next->next[4]->next->next[1]->next, "Sol Majeur / Mi mineur", 1, LEAF, __1Arm);
+	NodeArray_Add(menu->lst->next[1]->next->next[4]->next->next[1]->next, "Ré Majeur / Si mineur", 1, LEAF, __2Arm);
+	NodeArray_Add(menu->lst->next[1]->next->next[4]->next->next[1]->next, "La Majeur / Fa# mineur", 1, LEAF, __3Arm);
+	NodeArray_Add(menu->lst->next[1]->next->next[4]->next->next[1]->next, "Mi Majeur / Do# mineur", 1, LEAF, __4Arm);
+	NodeArray_Add(menu->lst->next[1]->next->next[4]->next->next[1]->next, "Si Majeur / Sol# mineur", 1, LEAF, __5Arm);
+	NodeArray_Add(menu->lst->next[1]->next->next[4]->next->next[1]->next, "Fa# Majeur / Ré# mineur", 1, LEAF, __6Arm);
+	NodeArray_Add(menu->lst->next[1]->next->next[4]->next->next[1]->next, "Do# Majeur / La# mineur", 1, LEAF, __7Arm);
+	NodeArray_Add(menu->lst->next[1]->next->next[4]->next->next[2]->next, "Fa Majeur / Ré mineur", 1, LEAF, ___1Arm);
+	NodeArray_Add(menu->lst->next[1]->next->next[4]->next->next[2]->next, "Sib Majeur / Sol mineur", 1, LEAF, ___2Arm);
+	NodeArray_Add(menu->lst->next[1]->next->next[4]->next->next[2]->next, "Mib Majeur / Do mineur", 1, LEAF, ___3Arm);
+	NodeArray_Add(menu->lst->next[1]->next->next[4]->next->next[2]->next, "Lab Majeur / Fa majeur", 1, LEAF, ___4Arm);
+	NodeArray_Add(menu->lst->next[1]->next->next[4]->next->next[2]->next, "Réb Majeur / Sib mineur", 1, LEAF, ___5Arm);
+	NodeArray_Add(menu->lst->next[1]->next->next[4]->next->next[2]->next, "Solb Majeur / Mib mineur", 1, LEAF, ___6Arm);
+	NodeArray_Add(menu->lst->next[1]->next->next[4]->next->next[2]->next, "Dob Majeur / Lab mineur", 1, LEAF, ___7Arm);
 	NodeArray_Add(menu->lst, "Ajouter", 0, NODE, NULL);
 	NodeArray_Add(menu->lst->next[2]->next, "Mesure", 0, NODE, menu_no_action);
 	NodeArray_Add(menu->lst->next[2]->next->next[0]->next, "Avant la sélection", 1, LEAF, _Ajouter_Mesure_Before);
