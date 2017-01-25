@@ -52,7 +52,7 @@ int main(int argc, char *argv[])
 	else if(3 == argc && !strcmp(argv[1], "-abc"))
 	{
 		printf("begin ABC...\n");
-		new_score = ABC_ParseFile(argv[2]);
+		new_score = ABC_OpenABC(argv[2]);
 		printf("mid ABC...\n");
 		Score_AddEmpty(new_score);
 		printf("end ABC\n");

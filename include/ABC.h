@@ -7,7 +7,6 @@
 
 #include "Staff.h"
 
-extern Score *ABC_ParseFile(const char *path);
-
+extern Score *ABC_OpenABC(const char *path);
 
 #endif

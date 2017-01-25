@@ -335,7 +335,7 @@ int Dots_EvaluateYFromX(Dots *dt, int x)
 
 int Dots_GetYMin(Dots *dt)
 {
-	int min = 1000;
+	int min = 50000;
 	int i;
 	
 	if((NULL == dt) || (NULL == dt->tab) || (dt->n == 0))

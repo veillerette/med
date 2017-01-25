@@ -390,16 +390,13 @@ int Score_AddEmpty(Score *score)
 	score->lst[score->n] = Staff_Alloc(" ");
 	if(score->n > 0)
 	{
-		printf("1(\n");
+
 		Staff_Init(score->lst[score->n], score->lst[score->n-1]->steps[0]->num, score->lst[score->n-1]->steps[0]->den,  score->lst[score->n-1]->steps[0]->cle, score->lst[score->n-1]->steps[0]->sign);
-		printf("2( %d %p %p\n", score->lst[score->n]->n, score->lst[score->n], score->lst[score->n - 1]);
+
 		while(score->lst[score->n]->n < score->lst[score->n - 1]->n)
 		{
-			printf("boucle A\n");
 			Staff_AddEmptyStep(score->lst[score->n]);
-			printf("boucle end\n");
 		}
-		printf("3(\n");
 	}
 	score->n++;
 	return 1;
