@@ -62,7 +62,7 @@ int File_WriteAllNotes(FILE *f, Step *step)
 	
 	note = step->notes;
 	fwrite(&n, sizeof(int), 1, f);
-	printf("%d notes à écrires\n", n);
+
 	while(note != NULL)
 	{
 		File_WriteNote(f, note->note);
@@ -83,8 +83,6 @@ int File_ReadAllNotes(FILE *f, ToNote **notes)
 		return 0;
 
 	fread(&n, sizeof(int), 1, f);
-
-	printf("%d notes à lire\n", n);
 	
 	for(i = 0; i < n; i++)
 	{
@@ -96,9 +94,9 @@ int File_ReadAllNotes(FILE *f, ToNote **notes)
 		
 		temp->note = (Note *)malloc(sizeof(Note));
 		memtest(temp->note);
-		printf("18 %p %p\n", temp, temp->note);
+
 		File_ReadNote(f, &(temp->note));
-		printf("22 %p\n", notes);
+
 		*notes = temp;
 		notes = &((*notes)->next);
 
@@ -120,13 +118,12 @@ int File_ReadStep(FILE *f, Step **step)
 {
 	if((NULL == f) || (NULL == step))
 		return 0;
-	printf("11\n");	
+
 	*step = (Step *)malloc(sizeof(Step));
 	memtest(*step);
-	printf("12\n");
+
 	fread(*step, sizeof(Step), 1, f);
 	
-	printf("13\n");
 	return File_ReadAllNotes(f, &((*step)->notes));
 }
 
@@ -238,7 +235,6 @@ int File_OpenScore(const char *path, Score **dest)
 	fclose(f);
 	return 1;
 }
-
 
 
 

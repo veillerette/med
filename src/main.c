@@ -37,7 +37,7 @@ int main(int argc, char *argv[])
 	menu = Menu_Create();
 	new_score = Score_Alloc();
 	Score_Init(new_score);
-	/*
+	
 	if(argc==1)
 	{
 	
@@ -57,9 +57,10 @@ int main(int argc, char *argv[])
 		Score_AddEmpty(new_score);
 		printf("end ABC\n");
 	}
-	*/
+	/*
 	File_OpenScore("magic_score", &new_score);
-
+	*/
+	
 	Audio_Init(AudioConfig_Init());
 	Audio_AssignateScore(new_score);
 	Audio_GoToStep(0);
@@ -221,8 +222,8 @@ int main(int argc, char *argv[])
 		
 	}
 	
-	File_SaveScore("magic_score", new_score);
-	
+	/*File_SaveScore("magic_score", new_score);
+	*/
 	if(new_score != NULL)
 		Score_Free(&new_score);
 
