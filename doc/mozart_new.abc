@@ -1,29 +1,15 @@
 X:7959
 T:Ballet
-C:WolfgangAmadeusMozart
-V:1Program10
-V:2Program10bass
+C:Wolfgang Amadeus Mozart
 M:3/4
 L:1/8
-Q:1/4=90
+Q:1/4=90 
 K:F
-V:1
-cf2a/g/g/f/e/f/|cg2b/a/a/g/^f/g/|aa/=f/bb/g/c'/a/g/f/|ee/c/ff/d/g/e/d/c/|
-V:2
-F,CF,CF,C|E,CE,CE,C|F,CF,CF,C|C,CD,CE,B,|
 
-V:1
-cf2a/g/g/f/e/f/|cg2b/a/a/g/^f/g/|aa/=f/bb/g/c'f|a/g/f/e/e2f2|
-V:2
-F,CF,CF,C|E,CE,CE,C|F,CG,CA,D,|B,,B,C,2F,2|
 
-V:1
-|g3/a/4b/4c'fg/f/e/f/|a/g/g/f/f/e/e/d/ec|g3/a/4b/4c'fg/f/e/f/|f4ez|
-V:2
-|B,2CzD2|C2z2z2|B,2CzD,2|C,CC,CC,/C/_B,/G,/|
 
-V:1
-cf2a/g/g/f/e/f/|cg2b/a/a/g/^f/g/|aa/=f/bb/g/c'f|a/g/f/e/e2f2|
-V:2
-F,CF,CF,C|E,CE,CE,C|F,CG,CA,D,|B,,B,C,2F,2|
 
+V:0
+cf2a/g/g/f/e/f/|cg2b/a/a/g/^f/g/|aa/=f/bb/g/c'/a/g/f/|ee/c/ff/d/g/e/d/c/|cf2a/g/g/f/e/f/|cg2b/a/a/g/^f/g/|aa/=f/bb/g/c'f|a/g/f/e/e2f2|g3/a/4b/4c'fg/f/e/f/|a/g/g/f/f/e/e/d/ec|g3/a/4b/4c'fg/f/e/f/|f4ez|cf2a/g/g/f/e/f/|cg2b/a/a/g/^f/g/|aa/=f/bb/g/c'f|a/g/f/e/e2f2|
+V:1
+F,CF,CF,C|E,CE,CE,C|F,CF,CF,C|C,CD,CE,B,|F,CF,CF,C|E,CE,CE,C|F,CG,CA,D,|B,,B,C,2F,2|B,2CzD2|C2z2z2|B,2CzD,2|C,CC,CC,/C/_B,/G,/|F,CF,CF,C|E,CE,CE,C|F,CG,CA,D,|B,,B,C,2F,2|

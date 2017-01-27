@@ -285,6 +285,10 @@ char *ABC_TransformLine(const char *line, int isHeader)
 			case '-':
 			case '+':
 			case '*':
+			case '(':
+			case ')':
+			case '{':
+			case '}':
 				break;
 			case '"':
 				do
