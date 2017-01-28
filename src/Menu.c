@@ -264,6 +264,22 @@ int _Add_New_Staff(void)
 	return FORCE_SCOREMAJ;
 }
 
+int Menu_OpenFile(void)
+{
+	char *path = NULL;
+	if((NULL == main_events) || (NULL == main_events->score))
+		return FORCE_MAJ;
+	
+	path = Explorer_FindPath(300, 200, Window->width-600, Window->height-400, Window->screen);
+	
+	if(path != NULL)
+	{
+		Score_Free(&main_events->score);
+		File_OpenScore(path, &(main_events->score));
+	}
+	return FORCE_SCOREMAJ;
+}
+
 int ChangeTonality(signed char new)
 {
 	int i,j;
@@ -301,7 +317,7 @@ Menu *Menu_Create(void)
 	Menu *menu = NULL;
 	menu = Menu_Alloc();
 	NodeArray_Add(menu->lst, "Fichier", 0, NODE, NULL);
-	NodeArray_Add(menu->lst->next[0]->next, "Nouveau", 0, LEAF, menu_no_action);
+	NodeArray_Add(menu->lst->next[0]->next, "Nouveau", 0, LEAF, Menu_OpenFile);
 	NodeArray_Add(menu->lst->next[0]->next, "Ouvrir", 0, LEAF, menu_no_action);
 	NodeArray_Add(menu->lst->next[0]->next, "Quitter", 0, LEAF, _Fichier_Quit);
 	NodeArray_Add(menu->lst, "Sélection", 0, NODE, NULL);

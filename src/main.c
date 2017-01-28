@@ -11,7 +11,7 @@
 #include "../include/Audio.h"
 #include "../include/File.h"
 
-
+#ifndef DEBUG
 int main(int argc, char *argv[])
 {
 	SDL_Event event;
@@ -245,3 +245,4 @@ int main(int argc, char *argv[])
 	printf("end progam\n");
 	exit(EXIT_SUCCESS);
 }
+#endif

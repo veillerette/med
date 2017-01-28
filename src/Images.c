@@ -19,6 +19,15 @@ Color SetColor(int r, int g, int b)
 	return SetColorA(r, g, b, 255);
 }
 
+SDL_Color SDLColor_Set(int r, int g, int b)
+{
+	SDL_Color color;
+	color.r = r;
+	color.g = g;
+	color.b = b;
+	return color;
+}
+
 SDL_Rect *SDL_SetRect(int x, int y, int w, int h)
 {
 	SDL_Rect *temp = (SDL_Rect *)malloc(sizeof(SDL_Rect));
@@ -30,6 +39,16 @@ SDL_Rect *SDL_SetRect(int x, int y, int w, int h)
 	temp->h = h;
 	
 	return temp;
+}
+
+SDL_Rect SDL_SetLocalRect(int x, int y, int w, int h)
+{
+	SDL_Rect rect;
+	rect.x = x;
+	rect.y = y;
+	rect.w = w;
+	rect.h = h;
+	return rect;
 }
 
 SDL_Surface *SDL_CreateSurface(int w, int h)

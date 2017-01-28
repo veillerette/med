@@ -8,6 +8,7 @@
 #include "Window.h"
 #include "Events.h"
 #include "Audio.h"
+#include "Explorer.h"
 
 #define MENU_FONT "media/Garamond.ttf"
 #define MENU_SIZETEXT 18

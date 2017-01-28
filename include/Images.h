@@ -77,6 +77,8 @@ Color SetColorA(int r, int g, int b, int a);
 
 Color SetColor(int r, int g, int b);
 
+SDL_Color SDLColor_Set(int r, int g, int b);
+
 SDL_Surface *SDL_CreateSurface(int w, int h);
 
 int Draw_Border(SDL_Surface *surf, int size);
@@ -92,6 +94,8 @@ SDL_Surface *SDL_CreateWhiteKeySurface(int w, int h);
 int Images_DrawRotNote(SDL_Surface *surf, int x, int y, SDL_Surface *dest);
 
 SDL_Rect *SDL_SetRect(int x, int y, int w, int h);
+
+SDL_Rect SDL_SetLocalRect(int x, int y, int w, int h);
 
 int PowerOfBezier(SDL_Surface *dest, const int *x, const int *y, int n, Color color);
 

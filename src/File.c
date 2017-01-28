@@ -1,5 +1,15 @@
 #include "../include/File.h"
 
+int File_isExt(const char *name, const char *ext)
+{
+	int n = strlen(name), n2 = strlen(ext);
+	int i;
+	for(i = n2; i > 0; i++)
+		if(name[n-1-i] != ext[n2-1-i])
+			return 0;
+	return 1;
+}
+
 char *File_GetExt(const char *name)
 {
 	int i;
@@ -237,47 +247,179 @@ int File_OpenScore(const char *path, Score **dest)
 }
 
 
+/*********************************
+	EXPLORER FUNCTIONS
+**********************************/
 
-/*
-int main()
+Entry *Entry_Alloc(const char *name, Entry_Type type, int size)
 {
-	Step *step = NULL;
-	FILE *f = NULL;
+	Entry *temp = (Entry *)malloc(sizeof(Entry));
+	memtest(temp);
+	
+	temp->name = (char *)malloc(sizeof(char) * (strlen(name) + 1));
+	memtest(temp->name);
+	strcpy(temp->name, name);
+	
+	temp->type = type;
+	temp->size = size;
+	
+	return temp;
+}
+
+void Entry_Free(Entry **entry)
+{
+	if(*entry != NULL)
+	{
+		if((*entry)->name != NULL)
+			free((*entry)->name);
+		
+		free(*entry);
+		*entry = NULL;
+	}
+}
+
+Directory *Directory_Alloc(const char *name)
+{
+	Directory *temp = (Directory *)malloc(sizeof(Directory));
+	memtest(temp);
+	
+	temp->name = (char *)malloc(sizeof(char) * (strlen(name) + 1));
+	memtest(temp->name);
+	strcpy(temp->name, name);
+	
+	temp->tab = (Entry **)malloc(sizeof(Entry *) * 10);
+	memtest(temp->tab);
+	temp->n = 0;
+	temp->m = 10;
+	
+	return temp;
+}
+
+void Directory_Free(Directory **dir)
+{
+	if(*dir != NULL)
+	{
+		int i;
+		for(i = 0; i < (*dir)->n; i++)
+			Entry_Free(&((*dir)->tab[i]));
+		
+		if((*dir)->name != NULL)
+			free((*dir)->name);
+		
+		free(*dir);
+		*dir = NULL;
+	}
+}
+
+int Directory_Add(Directory *dir, Entry *entry)
+{
+	if((NULL == dir) || (NULL == entry))
+		return 0;
+	
+	if(dir->n == dir->m)
+	{
+		dir->tab = realloc(dir->tab, sizeof(Entry *) * dir->m * 2);
+		memtest(dir->tab);
+		
+		dir->m *= 2;
+	}
+	
+	dir->tab[dir->n] = entry;
+	dir->n++;
+	
+	return 1;
+}
+
+int Directory_Change(Directory **dir, const char *newName)
+{
+	if(dir != NULL)
+	{
+		Directory_Free(dir);
+		*dir = Directory_Create(newName);
+	}
+	return 1;
+}
+
+int File_Sort(const struct dirent **a, const struct dirent **b)
+{
+	const struct dirent *var = *a;
+	const struct dirent *var2 = *b;
+	
+	if(var->d_type == var2->d_type)
+		return alphasort(a, b);
+		
+	if(var->d_type == DT_DIR)
+		return -1;
+		
+	return 1;
+}
+
+int File_Filter(const struct dirent *dir)
+{
+	if((NULL == dir))
+		return 0;
+		
+	if(dir->d_name[0] == '.')
+		return 0;
+		
+	if(dir->d_type == DT_DIR)
+		return 1;
+		
+	return 1;
+}
+
+
+
+Directory *Directory_Create(const char *path)
+{
+	Directory *dir = NULL;
+	struct dirent **namelist;
+	int n,i;
+	Entry_Type type;
+	if((NULL == path))
+		return NULL;
+
+	dir = Directory_Alloc(path);
+	n = scandir(path, &namelist, File_Filter, File_Sort);
+	
+	for(i = 0; i < n; i++)
+	{
+		switch(namelist[i]->d_type)
+		{
+			case DT_DIR:
+				type = _DIR;
+				break;
+			case DT_REG:
+				type = _FILE;
+				break;
+			default:
+				continue;
+		}
+		Directory_Add(dir, Entry_Alloc(namelist[i]->d_name, type, 0));
+	}
+	
+	return dir;
+}
+
+void Directory_Debug(Directory *dir)
+{
 	int i;
-	Score *score = NULL;
-	score = Score_Alloc();
-	Score_Init(score);
-	Staff_Init(score->lst[0], 4, NOIRE, CLE_SOL, 0);
-	Score_AddEmpty(score);
-	for(i = 0; i < 10; i++)
-		Score_AddEmptyStep(score);
-	Staff_ChangeArmure(score->lst[0], 0, 2);
-	Staff_ChangeArmure(score->lst[1], 0, 2);
-	Staff_AddNote(score->lst[0], 0, 0, 120, NOTE_DEFAULT, CROCHE);
-	
-	Staff_AddNote(score->lst[0], 0, 1, 120, NOTE_DEFAULT, CROCHE);
-	Staff_AddNote(score->lst[0], 0, 2, 120, NOTE_DEFAULT, NOIRE);
-	
-	printf("begin 1\n");
-	f = fopen("testW.med", "wb");
-	File_WriteScore(f, score);
-	fclose(f);
-	
-	score = NULL;
-	
-	printf("begin 2\n");
-	f = fopen("testW.med", "rb");
-	File_ReadScore(f, &score);
-	fclose(f);
-	
-	printf("begin 3\n");
-	f = fopen("testO.med", "wb");
-	File_WriteScore(f, score);
-	fclose(f);
-	return 0;
-}*/
-
-
+	Entry *e = NULL;
+	for(i = 0; i < dir->n; i++)
+	{
+		e = *(dir->tab + i);
+		switch(e->type)
+		{
+			case _FILE:
+				printf("File ");
+				break;
+			case _DIR:
+				printf("Dir ");
+				break;
+		}
+		printf("%s %d\n", e->name, e->size);
+	}
+}
 
 
 

@@ -73,11 +73,6 @@ int Moteur_WriteParagraph(int x, int y, int max_w, char *text, int size, int esp
 		text[i] = sauv;
 		if(w >= max_w)
 		{
-			do
-			{
-				i--;
-			}
-			while(i > 0 && text[i] != ' ');
 			
 			if(i <= 0)
 				return 0;
