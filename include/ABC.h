@@ -11,15 +11,15 @@
 	   DEV FUNCTIONS
 **********************************/
 
-static int ABC_ScanHead(FILE *f, char *field, char *text);
+int ABC_ScanHead(FILE *f, char *field, char *text);
 
-static void ABC_replaceSlash(char *str);
+void ABC_replaceSlash(char *str);
 
-static int ABC_FindKeyFromStr(char *text);
+int ABC_FindKeyFromStr(char *text);
 
-static int ABC_isNote(char note);
+int ABC_isNote(char note);
 
-static int ABC_ParseHeader(Score *score, FILE *f);
+int ABC_ParseHeader(Score *score, FILE *f);
 
 int nextcar(FILE *f);
 

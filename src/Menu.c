@@ -272,11 +272,19 @@ int Menu_OpenFile(void)
 	
 	path = Explorer_FindPath(300, 200, Window->width-600, Window->height-400, Window->screen);
 	
+	printf("A\n");
 	if(path != NULL)
 	{
-		Score_Free(&main_events->score);
-		File_OpenScore(path, &(main_events->score));
+		printf("B\n");
+		Score_Free(&(main_events->score));
+		main_events->score = NULL;
+		printf("openning %s\n", path);
+		if(File_isExt(path, ".abc"))
+			main_events->score = ABC_OpenABC(path);
+		else if(File_isExt(path, ".med"))
+			File_OpenScore(path, &(main_events->score));
 	}
+	printf("D\n");
 	return FORCE_SCOREMAJ;
 }
 

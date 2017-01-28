@@ -51,6 +51,31 @@ void Explorer_Free(Explorer **e)
 	}
 }
 
+char *Str_Concat(int n, ...)
+{
+	va_list va;
+	int i;
+	int len = 0;
+	char *res = NULL;
+	
+	va_start(va, n);
+	for(i = 0; i < n; i++)
+		len += strlen(va_arg(va, const char *));
+	
+	res = (char *)calloc(len + 1, sizeof(char));
+	memtest(res);
+	va_end(va);
+	
+	va_start(va, n);
+	for(i = 0; i < n; i++)
+	{
+		strcat(res, va_arg(va, const char *));
+	}
+	
+	va_end(va);
+	return res;
+}
+
 char *Str_Copy(const char *str)
 {
 	char *res = NULL;
@@ -146,22 +171,27 @@ void Explorer_Header1(Explorer *e)
 
 void Explorer_Header2(Explorer *e)
 {
-	int color = 223;
+	Color color = SetColor(200, 200, 200);
+	Color text = SetColor(40, 40, 40);
+	
 	boxRGBA(e->dst, e->base.x, e->base.y + e->header1, 
 		e->base.x + e->base.w, e->base.y + e->header1 + e->header2,
 		240, 240, 240, 255);
 	
 	if(e->hover == -2)
-		color = 210;
+	{
+		color = SetColor(0, 150, 220);
+		text = SetColor(230, 230, 230);
+	}
 	
 	e->dad = SDL_SetLocalRect(e->base.x+20, e->base.y + e->header1 + 5, 100, (e->header2-10));
 	
 	roundedBoxRGBA(e->dst, e->base.x+20, e->base.y + e->header1 + 5,
 		e->base.x + 20 + 100, e->base.y + e->header1 + 5 + (e->header2-10),
-		3, color, color, color, 255);
+		3, color.r, color.g, color.b, 255);
 	
 	Moteur_WriteText(e->dad.x + e->dad.w / 2, e->dad.y + e->dad.h/2,
-		"Parent", 22, EXPLORER_FONT, SDLColor_Set(130, 130, 130), 
+		"Parent", 22, EXPLORER_FONT, SDLColor_Set(text.r, text.g, text.b), 
 		TEXT_BLENDED, TEXT_CENTER, e->dst);
 	
 	Moteur_WriteText(e->base.x + e->base.w / 2, e->base.y+e->header1+e->header2/2,
@@ -176,25 +206,28 @@ void Explorer_Header2(Explorer *e)
 
 void Explorer_Header3(Explorer *e)
 {
-	int color = 200;
+	Color color = SetColor(200, 200, 200);
+	Color text = SetColor(40, 40, 40);
 	boxRGBA(e->dst, e->base.x, e->base.y + e->base.h - e->header3, 
 		e->base.x + e->base.w, e->base.y + e->base.h,
 		220, 220, 220, 255);
 	
 	
 	if(e->hover == -1)
-		color = 180;
-	
+	{
+		color = SetColor(0, 150, 220);
+		text = SetColor(230, 230, 230);
+	}
 	e->valid = SDL_SetLocalRect(e->base.x+e->base.w - 115, e->base.y+e->base.h-e->header3+8,
 		100, (e->header3-16));
 	
 	roundedBoxRGBA(e->dst, e->base.x+e->base.w - 115, e->base.y+e->base.h-e->header3+8,
 		e->base.x+e->base.w - 115 + 100, e->base.y+e->base.h-e->header3+8+(e->header3-16),
-		9, color, color, color, 255);
+		9, color.r, color.g, color.b, 255);
 		
 	Moteur_WriteText(e->base.x+e->base.w - 115+50, 
 		e->base.y+e->base.h-e->header3+8+(e->header3-16)/2,
-		"Valider", 22, EXPLORER_FONT, SDLColor_Set(90, 90, 90), 
+		"Valider", 22, EXPLORER_FONT, SDLColor_Set(text.r, text.g, text.b), 
 		TEXT_BLENDED, TEXT_CENTER, e->dst);
 		
 }
@@ -209,25 +242,28 @@ void Explorer_Body(Explorer *e)
 	int h = e->base.h - e->header1 - e->header2 - e->header3 - 40;
 	int n_elem = w / (size_block + 30);
 	int i;
-	int color;
-	char buf[100] = "";
+	Color color;
+	
+	char buf[200] = "";
 	int j;
 	
 	boxRGBA(e->dst, base_x-15, base_y-20, base_x+w+15, base_y+h+20, 255, 255, 255, 255);
-	boxRGBA(e->dst, e->base.x, e->base.y, e->base.x+1, e->base.y+e->base.h, 220, 220, 220, 255);
-	boxRGBA(e->dst, e->base.x+e->base.w, e->base.y, e->base.x+e->base.w+1, e->base.y+e->base.h, 220, 220, 220, 255);
+	boxRGBA(e->dst, e->base.x-1, e->base.y-1, e->base.x+e->base.w+1, e->base.y+1, 0, 186, 255, 255);
+	boxRGBA(e->dst, e->base.x-1, e->base.y, e->base.x+1, e->base.y+e->base.h, 0, 186, 255, 255);
+	boxRGBA(e->dst, e->base.x-1, e->base.y+e->base.h, e->base.x+e->base.w+2, e->base.y+e->base.h+2, 0, 186, 255, 255);
+	boxRGBA(e->dst, e->base.x+e->base.w, e->base.y, e->base.x+e->base.w+2, e->base.y+e->base.h, 0, 186, 255, 255);
 
 	for(i = e->line * n_elem; i < e->dir->n; i++)
 	{
-		color = 210;
+		color = SetColor(220, 220, 220);
 		if(e->dir->tab[i]->type == _DIR)
-			color = 180;
+			color = SetColor(190, 190, 190);
 		
 		if(e->hover == i+1)
-			color *= 0.9;
+			color = SetColor(color.r, color.g, 255);
 		if(e->select == i+1)
-			color *= 0.8;
-		roundedBoxRGBA(e->dst, x, y, x+size_block, y+size_block-30, 8, color, color, color, 255);
+			color = SetColor(0, 160, 240);
+		roundedBoxRGBA(e->dst, x, y, x+size_block, y+size_block-30, 8, color.r, color.g, color.b, 255);
 		
 		if(strlen(e->dir->tab[i]->name) > 28)
 		{
@@ -236,7 +272,7 @@ void Explorer_Body(Explorer *e)
 			buf[j] = 0;
 			sprintf(buf, "%s...", buf);
 			Moteur_WriteParagraph(x+size_block/2+1, y+size_block-15, size_block-10,
-					buf, 18, 0, 
+					buf, 17, 0, 
 					EXPLORER_FONT, SDLColor_Set(80, 80, 80),
 					TEXT_BLENDED,TEXT_CENTER, 
 					e->dst);
@@ -356,6 +392,7 @@ int Explorer_PollEvent(Explorer *e, SDL_Event event)
 				{
 					if(e->select > 0)
 					{
+						
 						return GET_STR;
 					}
 					e->select = -1;
@@ -475,7 +512,7 @@ char *Explorer_FindPath(int x, int y, int w, int h, SDL_Surface *dest)
 				SDL_Flip(dest);
 				break;
 			case GET_STR:
-				str = Str_Copy(e->dir->tab[e->select-1]->name);
+				str = Str_Concat(3, e->dir->name, "/", e->dir->tab[e->select-1]->name);
 				c = 0;
 				break;
 				

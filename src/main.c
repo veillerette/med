@@ -42,19 +42,17 @@ int main(int argc, char *argv[])
 	{
 	
 		Staff_Init(new_score->lst[0], 4, NOIRE, CLE_SOL, 0);
-		Score_AddEmpty(new_score);
+		Staff_ChangeArmure(new_score->lst[0], 0, 0);
+
 		for(i = 0; i < 10; i++)
 			Score_AddEmptyStep(new_score);
-		Staff_ChangeArmure(new_score->lst[0], 0, 0);
-		Staff_ChangeArmure(new_score->lst[1], 0, 0);
 		
 	}
 	else if(3 == argc && !strcmp(argv[1], "-abc"))
 	{
 		printf("begin ABC...\n");
 		new_score = ABC_OpenABC(argv[2]);
-		printf("mid ABC...\n");
-		Score_AddEmpty(new_score);
+
 		printf("end ABC\n");
 	}
 	/*
@@ -76,7 +74,7 @@ int main(int argc, char *argv[])
 	EventData_SetBase(main_events, Window->pos_body);
 	EventData_SetZoom(main_events, r);
 	
-	Score_Print(new_score, SDL_SetRect(100, 450, 0, 0));
+	Score_Print(main_events->score, SDL_SetRect(100, 450, 0, 0));
 	
 	EventData_Console(main_events);
 	
@@ -144,7 +142,7 @@ int main(int argc, char *argv[])
 				continue;
 			case FORCE_SCOREMAJ:
 				EventData_Flush(main_events);
-				Score_Print(new_score, SDL_SetRect(100, 450, 0, 0));
+				Score_Print(main_events->score, SDL_SetRect(100, 450, 0, 0));
 				Window_ApplyZoom(r);
 			case FORCE_MAJ:
 				Window_DrawBody();
@@ -179,7 +177,7 @@ int main(int argc, char *argv[])
 				break;
 			case FORCE_MAJ:
 				EventData_Flush(main_events);
-				Score_Print(new_score, SDL_SetRect(100, 450, 0, 0));
+				Score_Print(main_events->score, SDL_SetRect(100, 450, 0, 0));
 				EventData_Console(main_events);
 				Window_ApplyZoom(r);
 				Window_DrawBody();
@@ -202,7 +200,7 @@ int main(int argc, char *argv[])
 				continue;
 			case FORCE_MAJ:
 				EventData_Flush(main_events);
-				Score_Print(new_score, SDL_SetRect(100, 450, 0, 0));
+				Score_Print(main_events->score, SDL_SetRect(100, 450, 0, 0));
 				EventData_Console(main_events);
 				Window_ApplyZoom(r);
 				Window_DrawBody();
@@ -224,8 +222,8 @@ int main(int argc, char *argv[])
 	
 	/*File_SaveScore("magic_score", new_score);
 	*/
-	if(new_score != NULL)
-		Score_Free(&new_score);
+	if(main_events->score != NULL)
+		Score_Free(&main_events->score);
 
 	
 	if(0 && 2 == argc && !strcmp(argv[1], "-parser"))

@@ -18,7 +18,7 @@ char *ABC_Keys[] = {
 	"Gb","Ebm",
 	"Cb","Abm"};   	/* -7 */
 	
-static int ABC_ScanHead(FILE *f, char *field, char *text)
+int ABC_ScanHead(FILE *f, char *field, char *text)
 {
 	char *str = malloc(sizeof(char) * 100);
 	int n,temp;
@@ -39,7 +39,7 @@ static int ABC_ScanHead(FILE *f, char *field, char *text)
 	return 1;
 }
 
-static void ABC_replaceSlash(char *str)
+void ABC_replaceSlash(char *str)
 {
 	unsigned int i;
 	for(i = 0; i < strlen(str); i++)
@@ -49,7 +49,7 @@ static void ABC_replaceSlash(char *str)
 		}
 }
 
-static int ABC_FindKeyFromStr(char *text)
+int ABC_FindKeyFromStr(char *text)
 {
 	int i;
 	if(NULL == text)
@@ -64,7 +64,7 @@ static int ABC_FindKeyFromStr(char *text)
 	return -40;
 }
 
-static int ABC_isNote(char note)
+int ABC_isNote(char note)
 {
 	if(note>='A' && note<='G')
 		return 1;
@@ -75,7 +75,7 @@ static int ABC_isNote(char note)
 	return 0;
 }
 
-static int ABC_ParseHeader(Score *score, FILE *f)
+int ABC_ParseHeader(Score *score, FILE *f)
 {
 	char field, text[100];
 	int num = -1, den = -1, sign = -42;
@@ -481,7 +481,6 @@ extern Score *ABC_ParseFile(const char *path)
 	Note_Flags flags = NOTE_DEFAULT;
 	int id_score = 0;
 	Note_Flags flags_next = NOTE_DEFAULT;
-	int rest = 0;
 	
 	if(NULL == path)
 		return NULL;

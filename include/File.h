@@ -1,8 +1,13 @@
 #ifndef __HEAD_FILE__
 #define __HEAD_FILE__
 
+#ifndef _GNU_SOURCE
+#define _GNU_SOURCE
+#endif
+
 #include "Staff.h"
 #include <dirent.h>
+
 #include <string.h>
 
 typedef enum
@@ -80,6 +85,9 @@ int File_ReadScore(FILE *f, Score **score);
 /*********************************
 	  FILE FUNCTIONS
 **********************************/
+
+int File_isExt(const char *name, const char *ext);
+
 int File_OpenScore(const char *path, Score **dest);
 
 int File_SaveScore(const char *path, Score *score);

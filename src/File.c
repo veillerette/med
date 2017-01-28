@@ -4,7 +4,7 @@ int File_isExt(const char *name, const char *ext)
 {
 	int n = strlen(name), n2 = strlen(ext);
 	int i;
-	for(i = n2; i > 0; i++)
+	for(i = 0; i < n2; i++)
 		if(name[n-1-i] != ext[n2-1-i])
 			return 0;
 	return 1;
@@ -361,11 +361,17 @@ int File_Filter(const struct dirent *dir)
 		
 	if(dir->d_name[0] == '.')
 		return 0;
-		
+	
+	if(File_isExt(dir->d_name, "abc"))
+		return 1;
+	
+	if(File_isExt(dir->d_name, "med"))
+		return 1;
+	
 	if(dir->d_type == DT_DIR)
 		return 1;
 		
-	return 1;
+	return 0;
 }
 
 
@@ -382,6 +388,12 @@ Directory *Directory_Create(const char *path)
 	dir = Directory_Alloc(path);
 	n = scandir(path, &namelist, File_Filter, File_Sort);
 	
+	if(n == -1)
+	{
+		perror("scandir");
+		exit(1);
+	}
+	
 	for(i = 0; i < n; i++)
 	{
 		switch(namelist[i]->d_type)
@@ -396,6 +408,15 @@ Directory *Directory_Create(const char *path)
 				continue;
 		}
 		Directory_Add(dir, Entry_Alloc(namelist[i]->d_name, type, 0));
+	}
+	
+	if(n > 0)
+	{
+		for(i = 0; i < n; i++)
+		{
+			free(*(namelist + i));
+		}
+		free(namelist);
 	}
 	
 	return dir;

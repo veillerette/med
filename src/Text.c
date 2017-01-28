@@ -93,6 +93,9 @@ int Moteur_WriteParagraph(int x, int y, int max_w, char *text, int size, int esp
 	}
 	Moteur_WriteText(x, y+count*(h - 3 + esp), text, size, path_font, color, 
 							graphic, align, dest);
+	
+	TTF_CloseFont(font);
+	
 	return 1;
 	
 }
