@@ -1506,5 +1506,130 @@ int Window_LittleEvent(SDL_Event event, double *r, int *c, int *mouse,
 	return 0;
 }
 
+int Window_InteractInfo(const char *path)
+{
+	int h = Window->height, w = Window->width;
+	SDL_Rect box = SDL_SetLocalRect(w/2-200, h/2-100, 400, 200);
+	SDL_Rect valid = SDL_SetLocalRect(box.x+box.w/2-50, box.y+box.h-50, 100, 40);
+	
+	int rounded = 5;
+	int header1 = 30;
+	int c = 1;
+	int x,y;
+	SDL_Color body = {40, 40, 40, 0};
+	SDL_Color text = {90, 90, 90, 0};
+	SDL_Color text_hover = {230, 230, 230, 0};
+	int isValid=0;
+	int refresh = 1;
+	
+	SDL_Event event;
+	
+	SDL_Flip(Window->screen);
+	while(c)
+	{
+		if(refresh)
+		{
+			
+			roundedBoxRGBA(Window->screen, box.x-2, box.y-2, 
+					box.x+box.w+2, box.y+box.h+2, rounded, 50, 220, 255, 255);
+				
+			roundedBoxRGBA(Window->screen, box.x-1, box.y-1, 
+					box.x+box.w+1, box.y+box.h+1, rounded, 0, 165, 255, 255);
+				
+			roundedBoxRGBA(Window->screen, box.x, box.y, 
+					box.x+box.w, box.y+box.h, rounded, 240, 240, 240, 255);
+				
+			boxRGBA(Window->screen, box.x, box.y + header1, 
+					box.x+box.w, box.y+box.h-20, 255, 255, 255, 255);
+				
+			roundedBoxRGBA(Window->screen, box.x, box.y+box.h-20, 
+					box.x+box.w, box.y+box.h, rounded, 255, 255, 255, 255);
+	
+			if(isValid)
+			{
+				roundedBoxRGBA(Window->screen, valid.x, valid.y, 
+						valid.x+valid.w, valid.y+valid.h, rounded, 30, 165, 255, 255);
+				Moteur_WriteText(valid.x+valid.w/2, valid.y+valid.h/2, "Ok", 26,
+					FONT_INTERFACE_LIGHT, text_hover,
+					TEXT_BLENDED, TEXT_CENTER,
+					Window->screen);
+			}
+			else
+			{
+				roundedBoxRGBA(Window->screen, valid.x, valid.y, 
+						valid.x+valid.w, valid.y+valid.h, rounded, 240, 240, 240, 255);
+				Moteur_WriteText(valid.x+valid.w/2, valid.y+valid.h/2, "Ok", 26,
+					FONT_INTERFACE_LIGHT,text,
+					TEXT_BLENDED, TEXT_CENTER,
+					Window->screen);
+			}
+				
+			
+	
+			Moteur_WriteText(box.x + box.w/2, box.y+header1/2, "Information", header1-5,
+					FONT_INTERFACE, text,
+					TEXT_BLENDED, TEXT_CENTER,
+					Window->screen);
+	
+			Moteur_WriteParagraph(box.x+box.w/2, box.y+10+(box.h-header1-50)/2, box.w-60, path,
+					23, 5, FONT_INTERFACE_LIGHT, body, 
+					TEXT_BLENDED, TEXT_CENTER,
+					Window->screen);
+			SDL_Flip(Window->screen);
+			refresh = 0;
+		}
+		SDL_PollEvent(&event);
+		switch(event.type)
+		{
+			case SDL_QUIT:
+				c = 0;
+				return QUIT;
+				break;
+					
+			case SDL_MOUSEMOTION:
+				x = event.motion.x;
+				y = event.motion.y;
+				
+				if(PixelInRect(x, y, valid))
+				{
+					if(!isValid)
+					{
+						isValid = 1;
+						refresh = 1;
+					}
+				}
+				else
+				{
+					if(isValid)
+					{
+						isValid = 0;
+						refresh = 1;
+					}
+				}
+				break;
+				
+			case SDL_MOUSEBUTTONDOWN:
+				x = event.button.x;
+				y = event.button.y;
+				
+				if(PixelInRect(x, y, valid))
+				{
+					return FORCE_MAJ;
+				}
+				break;
+				
+			case SDL_KEYUP:
+				return FORCE_MAJ;
+		}
+		SDL_Delay(2);
+	}
+	return 1;
+}
+
+
+
+
+
+
 
 

@@ -1,5 +1,17 @@
 #include "../include/Text.h"
 
+
+
+char *Str_Copy(const char *str)
+{
+	char *res = NULL;
+	res = (char *)malloc(sizeof(char) * (strlen(str) + 1));
+	memtest(res);
+	
+	strcpy(res, str);
+	return res;
+}
+
 int Moteur_WriteText(int x, int y, const char *text, int size, 
 				const char *path_font, SDL_Color color, 
 				Text_Style graphic, Text_Align align, 
@@ -48,7 +60,7 @@ int Moteur_WriteText(int x, int y, const char *text, int size,
 }
 
 
-int Moteur_WriteParagraph(int x, int y, int max_w, char *text, int size, int esp,
+int Moteur_WriteParagraph(int x, int y, int max_w, const char *text_paragraph, int size, int esp,
 				const char *path_font, SDL_Color color, 
 				Text_Style graphic, Text_Align align, 
 				SDL_Surface *dest)
@@ -57,10 +69,15 @@ int Moteur_WriteParagraph(int x, int y, int max_w, char *text, int size, int esp
 	int w,h;
 	char sauv = '\0';
 	int count = 0;
+	char *text = NULL;
 	TTF_Font *font = NULL;
+	
 	font = TTF_OpenFont(path_font, size);
+	
 	if(NULL == font)
 		return 0;
+	
+	text = Str_Copy(text_paragraph);
 		
 	while((unsigned int)i < strlen(text))
 	{
@@ -85,7 +102,7 @@ int Moteur_WriteParagraph(int x, int y, int max_w, char *text, int size, int esp
 				dest);
 			
 			count++;
-			text[i] = ' ';
+			text[i] = sauv;
 			text += (i + 1);
 			i = 0;
 		}
@@ -95,7 +112,8 @@ int Moteur_WriteParagraph(int x, int y, int max_w, char *text, int size, int esp
 							graphic, align, dest);
 	
 	TTF_CloseFont(font);
+	free(text);
 	
-	return 1;
+	return count+1;
 	
 }

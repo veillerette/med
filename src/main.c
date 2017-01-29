@@ -43,9 +43,11 @@ int main(int argc, char *argv[])
 	
 		Staff_Init(new_score->lst[0], 4, NOIRE, CLE_SOL, 0);
 		Staff_ChangeArmure(new_score->lst[0], 0, 0);
-
 		for(i = 0; i < 10; i++)
 			Score_AddEmptyStep(new_score);
+		Score_AddEmpty(new_score);
+		
+		
 		
 	}
 	else if(3 == argc && !strcmp(argv[1], "-abc"))
@@ -222,9 +224,6 @@ int main(int argc, char *argv[])
 	
 	/*File_SaveScore("magic_score", new_score);
 	*/
-	if(main_events->score != NULL)
-		Score_Free(&main_events->score);
-
 	
 	if(0 && 2 == argc && !strcmp(argv[1], "-parser"))
 	
@@ -234,7 +233,9 @@ int main(int argc, char *argv[])
 		Console_Parser();
 	}
 	Audio_Pause();
-	/*Audio_Quit();*/
+	Audio_Quit();
+	if(main_events->score != NULL)
+		Score_Free(&main_events->score);
 	EventData_Free(&main_events);
 	Graphics_Quit();
 	Menu_Free(&menu);

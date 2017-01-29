@@ -52,8 +52,6 @@ Explorer *Explorer_Create(int x_base, int y_base, int w, int h,
 
 void Explorer_Free(Explorer **e);
 
-char *Str_Copy(const char *str);
-
 char *Str_TopFolder(const char *path);
 
 char *Str_GoInSub(const char *path, const char *sub);

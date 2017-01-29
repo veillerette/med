@@ -17,16 +17,19 @@
 #include "Text.h"
 #include "Audio.h"
 
-#define ESP_BODY 100
-#define BASE_BODY_X (Window->pos_pal->x + Window->pos_pal->w)
-#define BASE_BODY_Y (Window->pos_menu->y + Window->pos_menu->h)
-#define ABS(A) (((A)<0)?-(A):(A))
-#define TestOK(); if(!Window_OK())return 0;
-#define SIZE_BODY (Window->body[0]->w + ESP_BODY)
-#define NPAGE (*(Window->body + nbody))
-#define MAX_A_QUAVER 0.2
+#define ESP_BODY 		100
+#define BASE_BODY_X 		(Window->pos_pal->x + Window->pos_pal->w)
+#define BASE_BODY_Y 		(Window->pos_menu->y + Window->pos_menu->h)
+#define ABS(A) 			(((A)<0)?-(A):(A))
+#define TestOK(); 		if(!Window_OK())return 0;
+#define SIZE_BODY 		(Window->body[0]->w + ESP_BODY)
+#define NPAGE 			(*(Window->body + nbody))
+#define MAX_A_QUAVER 		0.2
 
-#define FONT_MESURE "media/Hack-Regular.ttf"
+#define FONT_MESURE 		"media/Hack-Regular.ttf"
+
+#define FONT_INTERFACE  	"media/Garamond.ttf"
+#define FONT_INTERFACE_LIGHT  	"media/Garamond-light.ttf"
 
 typedef enum {
 	STATE_ALLOC,
@@ -114,6 +117,9 @@ int Window_LittleEvent(SDL_Event event, double *r, int *c, int *mouse,
 					int *m);
 					
 int Window_TestBox(SDL_Surface *dest, SDL_Rect *pos, int zoom);
+
+int Window_InteractInfo(const char *path);
+
 
 extern WindowData *Window;
 

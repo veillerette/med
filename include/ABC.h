@@ -33,7 +33,7 @@ int ABC_MultiSimplify(char *buf);
 
 char *ABC_TransformLine(const char *line, int isHeader);
 
-int ABC_AppendStr(char **dest, const char *source);
+int ABC_AppendStr(char **dest, char *source);
 
 int File_SimplifyABC(const char *destPath, const char *sourcePath);
 

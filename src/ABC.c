@@ -199,12 +199,16 @@ int ABC_IsAnHeader(const char *line)
 	if(n < 3)
 		return 0;
 	
-	if(line[0] < 'A' || line[0] > 'Z')
+	
+	if((line[0] < 'A' || line[0] > 'Z') && (line[0] < 'a' && line[0] > 'z'))
 		return 0;
 	
 	if(line[1] != ':')
 		return 0;
 	
+	if(line[0] == '|')
+		return 0;
+		
 	return 1;
 }
 
@@ -280,8 +284,6 @@ char *ABC_TransformLine(const char *line, int isHeader)
 		c = *(line + i);
 		switch(c)
 		{
-			
-			
 			case '-':
 			case '+':
 			case '*':
@@ -289,6 +291,8 @@ char *ABC_TransformLine(const char *line, int isHeader)
 			case ')':
 			case '{':
 			case '}':
+			case ']':
+			case '\\':
 				break;
 			case '"':
 				do
@@ -300,8 +304,6 @@ char *ABC_TransformLine(const char *line, int isHeader)
 			case '%':
 				if(i != 0)
 				{
-					*(new + j) = '\n';
-					j++;
 					i = n;
 				}
 				break;
@@ -328,7 +330,17 @@ char *ABC_TransformLine(const char *line, int isHeader)
 				i_multi = 0;
 				
 				break;
-				
+			
+			case '|':
+				if(i == 0)
+					break;
+				else
+				{
+					*(new + j) = *(line + i);
+					j++;
+				}
+				break;
+			
 			case ':':
 			case ' ':
 				if(!isHeader)
@@ -349,31 +361,65 @@ char *ABC_TransformLine(const char *line, int isHeader)
 	return new;
 }
 
-int ABC_AppendStr(char **dest, const char *source)
+char *ABC_SepLess(char *str)
+{
+	char *res = NULL;
+	int n;
+	int i,j = 0;
+	n = strlen(str);
+	
+	res = (char *)malloc(sizeof(char) * (n+1));
+	
+	for(i = 0; i < n; i++)
+	{
+		if(str[i] != '|' && str[i] != '\n')
+		{
+			res[j] = str[i];
+			j++;
+		}
+		else if(str[i] != '\n')
+		{
+			if(i > 0 && i < n-2)
+			{
+				res[j] = str[i];
+				j++;
+			}
+		}
+	}
+	
+	res[j] = 0;
+	return res;
+}
+
+int ABC_AppendStr(char **dest, char *source)
 {
 	int n,n2;
-	
+	char *res = NULL;
 	if((NULL == source))
 		return 0;
 	
 	
-	n = strlen(source)-1;
-
+	printf("a\n");
+	res = ABC_SepLess(source);
+	n = strlen(res);
+	if(n == 0)
+		return 0;
+	printf("b\n");
 	if(NULL == *dest)
 	{
-		*dest = (char *)malloc(sizeof(char) * (n + 1));
+		*dest = (char *)malloc(sizeof(char) * (n + 2));
 		memtest(*dest);
 		n2 = 0;
+		sprintf(*dest, "%s|", res);
 	}
 	else
 	{
 		n2 = strlen(*dest);
-		*dest = realloc(*dest, sizeof(char) * (n2 + n + 1));
+		*dest = realloc(*dest, sizeof(char) * (n2 + n + 3));
 		memtest(*dest);
+		sprintf(*dest, "%s%s|", *dest, res);
 	}
-	
-	strcpy((*dest)+n2, source);
-	(*dest)[n2+n]=0;
+	printf("c %s\n", *dest);
 	return 1;
 }
 
@@ -384,7 +430,6 @@ int File_SimplifyABC(const char *destPath, const char *sourcePath)
 	char **buf_line = NULL;
 	char *next = NULL;
 	int i;
-	
 	
 	if((NULL == destPath) || (NULL == sourcePath))
 		return 0;
@@ -442,8 +487,7 @@ int File_SimplifyABC(const char *destPath, const char *sourcePath)
 			
 			if(temp != NULL)
 			{
-				fputs(temp, dest);
-				free(temp);
+				ABC_AppendStr(&(buf_line[0]), temp);
 			}
 		}
 		
@@ -519,15 +563,30 @@ extern Score *ABC_ParseFile(const char *path)
 		switch(car)
 		{
 			case '^':
-				flags_next |= NOTE_SHARP;
+				if(note_id == 0)
+					flags |= NOTE_SHARP;
+				else
+					flags_next |= NOTE_SHARP;
 				break;
 			case '_':
-				flags_next |= NOTE_FLAT;
+				if(note_id == 0)
+					flags |= NOTE_FLAT;
+				else
+					flags_next |= NOTE_FLAT;
 				break;
 			case '=':
-				flags_next |= NOTE_NATURAL;
-				flags_next &= ~NOTE_SHARP;
-				flags_next &= ~NOTE_FLAT;
+				if(note_id == 0)
+				{
+					flags |= NOTE_NATURAL;
+					flags &= ~NOTE_SHARP;
+					flags &= ~NOTE_FLAT;
+				}
+				else
+				{
+					flags_next |= NOTE_NATURAL;
+					flags_next &= ~NOTE_SHARP;
+					flags_next &= ~NOTE_FLAT;
+				}
 				break;
 			default:
 				break;
@@ -606,11 +665,19 @@ extern Score *ABC_ParseFile(const char *path)
 extern Score *ABC_OpenABC(const char *path)
 {
 	char buf[100] = "";
+	char rm[120] = "";
+	Score *res;
 	if((NULL == path))
 		return NULL;
 	sprintf(buf, "%s.tmp", path);
 	File_SimplifyABC(buf, path);
-	return ABC_ParseFile(buf);
+	
+	res = ABC_ParseFile(buf);
+	
+	sprintf(rm, "rm -f %s", buf);
+	system(rm);
+	
+	return res;
 }
 
 /*

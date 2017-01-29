@@ -375,7 +375,7 @@ int Score_Init(Score *score)
 		return 0;
 	if(score->n != 0)
 		return 0;
-	score->lst[score->n] = Staff_Alloc(" ");
+	score->lst[0] = Staff_Alloc(" ");
 	score->n++;
 	return 1;
 }
@@ -385,13 +385,16 @@ int Score_AddEmpty(Score *score)
 	
 	if(NULL == score)
 		return 0;
-	score->lst = (Staff **)realloc(score->lst, score->n+1);
+	score->lst = (Staff **)realloc(score->lst, sizeof(Staff *) * (score->n+1));
 	memtest(score->lst);
 	score->lst[score->n] = Staff_Alloc(" ");
+	
 	if(score->n > 0)
 	{
 
-		Staff_Init(score->lst[score->n], score->lst[score->n-1]->steps[0]->num, score->lst[score->n-1]->steps[0]->den,  score->lst[score->n-1]->steps[0]->cle, score->lst[score->n-1]->steps[0]->sign);
+		Staff_Init(score->lst[score->n], score->lst[score->n-1]->steps[0]->num, 
+			score->lst[score->n-1]->steps[0]->den,  score->lst[score->n-1]->steps[0]->cle,
+			score->lst[score->n-1]->steps[0]->sign);
 
 		while(score->lst[score->n]->n < score->lst[score->n - 1]->n)
 		{

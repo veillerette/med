@@ -272,19 +272,18 @@ int Menu_OpenFile(void)
 	
 	path = Explorer_FindPath(300, 200, Window->width-600, Window->height-400, Window->screen);
 	
-	printf("A\n");
 	if(path != NULL)
 	{
-		printf("B\n");
 		Score_Free(&(main_events->score));
 		main_events->score = NULL;
-		printf("openning %s\n", path);
 		if(File_isExt(path, ".abc"))
 			main_events->score = ABC_OpenABC(path);
 		else if(File_isExt(path, ".med"))
 			File_OpenScore(path, &(main_events->score));
+		
+		Audio_AssignateScore(main_events->score);
+		Audio_GoToStep(0);
 	}
-	printf("D\n");
 	return FORCE_SCOREMAJ;
 }
 
@@ -325,8 +324,8 @@ Menu *Menu_Create(void)
 	Menu *menu = NULL;
 	menu = Menu_Alloc();
 	NodeArray_Add(menu->lst, "Fichier", 0, NODE, NULL);
-	NodeArray_Add(menu->lst->next[0]->next, "Nouveau", 0, LEAF, Menu_OpenFile);
-	NodeArray_Add(menu->lst->next[0]->next, "Ouvrir", 0, LEAF, menu_no_action);
+	NodeArray_Add(menu->lst->next[0]->next, "Nouveau", 0, LEAF, menu_no_action);
+	NodeArray_Add(menu->lst->next[0]->next, "Ouvrir", 0, LEAF, Menu_OpenFile);
 	NodeArray_Add(menu->lst->next[0]->next, "Quitter", 0, LEAF, _Fichier_Quit);
 	NodeArray_Add(menu->lst, "Sélection", 0, NODE, NULL);
 	NodeArray_Add(menu->lst->next[1]->next, "Supprimer", 1, LEAF, _Selection_Delete);
@@ -570,7 +569,11 @@ Menu_Node *FindNodeByZone(Menu *menu, int clic_x, int clic_y)
 	}
 	return NULL;
 }
-
+int Menu_NoSelect(void)
+{
+	return Window_InteractInfo("Aucune sélection active");
+}
+/*
 int Menu_NoSelect(void)
 {
 	SDL_Color color = {255, 255, 255, 0};
@@ -605,12 +608,14 @@ int Menu_NoSelect(void)
 		}
 	}
 	return FORCE_SCOREMAJ;
-}
+}*/
 
 int Menu_PollMouse(Menu *menu, SDL_Event event)
 {
 	Menu_Node *mn = NULL;
 	int sauv;
+	int x = 0, y = 0;
+	
 	switch(event.type)
 	{
 		case SDL_QUIT:
@@ -626,13 +631,16 @@ int Menu_PollMouse(Menu *menu, SDL_Event event)
 			menu->hover = mn;
 			return FORCE_MAJ;
 		case SDL_MOUSEBUTTONDOWN:
-			if(PixelInRect(event.button.x, event.button.y, menu->mode))
-			{
-				main_events->mode = 1-main_events->mode;
-				return FORCE_MAJ;
-			}
-			
 			mn = FindNodeByZone(menu, event.button.x, event.button.y);
+			
+			if(NULL == mn)
+			{
+				if(PixelInRect(event.button.x, event.button.y, menu->mode))
+				{
+					main_events->mode = 1-main_events->mode;
+					return FORCE_MAJ;
+				}
+			}	
 			
 			if(mn == NULL && ((sauv = ToolBar_PollMouse(menu, event)) != NONE))
 				return sauv;
@@ -640,6 +648,10 @@ int Menu_PollMouse(Menu *menu, SDL_Event event)
 			if(mn != NULL && mn->type == LEAF)
 			{
 				menu->select = NULL;
+				Window_DrawBody();
+				Window_Print();
+				Menu_Aff(menu, &x, &y);
+				SDL_Flip(Window->screen);
 				if(!mn->need_select || (mn->need_select && main_events->select != NULL))
 					return mn->f();
 				else

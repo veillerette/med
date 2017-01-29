@@ -76,16 +76,6 @@ char *Str_Concat(int n, ...)
 	return res;
 }
 
-char *Str_Copy(const char *str)
-{
-	char *res = NULL;
-	res = (char *)malloc(sizeof(char) * (strlen(str) + 1));
-	memtest(res);
-	
-	strcpy(res, str);
-	return res;
-}
-
 char *Str_TopFolder(const char *path)
 {
 	int i;
@@ -368,7 +358,6 @@ int Explorer_PollEvent(Explorer *e, SDL_Event event)
 							e->last.button.x == x && 
 							e->last.button.y == y)
 						{
-							printf("change directory !\n");
 							Explorer_ChangeDirectory(e, i);
 							e->last = event;
 							return FORCE_MAJ;
@@ -392,8 +381,10 @@ int Explorer_PollEvent(Explorer *e, SDL_Event event)
 				{
 					if(e->select > 0)
 					{
-						
-						return GET_STR;
+						if(e->dir->tab[e->select - 1]->type == _FILE)
+							return GET_STR;
+						else
+							return FORCE_MAJ;
 					}
 					e->select = -1;
 					e->last = event;

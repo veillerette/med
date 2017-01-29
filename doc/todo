@@ -7,7 +7,8 @@
 [OK]- Toolbar (Dieze, Bémol, DoubleDieze, DoubleBémol)
 [OK]- Toolbar (Modification durée note à la volée et altérations)
 [OK]- Gestion de plusieurs pages
-- Volume dans la toolbar
+- Changer Volume dans la toolbar
+- Changer Tempo dans la toolbar
 [OK]- Armures -> Step
 [50%]- Changer l'armure grâce au menu
 - Supprimer doubles affichages Dieze/Bémol dans une mesure
@@ -17,15 +18,19 @@
 <<< Bugs >>>
 - Résoudre bugs note pointée (modification temps réel à la sélection, affichage -> prendre en compte le bon space)
 [OK]- Correction bug croches bizarres (dans le mozart notamment) ????
-- Bug à l'ajout de 4/5ème portée ????
+- Bug à l'ajout de 4/5ème portée
 - Bugs à l'alignement dièzes/bémols !
+- Valgrind et Score_AddEmpty()
+- Score_Free d'un ABC (résolu ??)
+- Ouverture fichier ABC bizarres
 
 <<< Majors >>>
 - Multi-Sélections
 [OK]- Exportation fichier perso
 [OK]- Importation fichier perso
 [OK]- Sauvegarde/Ouverture Fichier
-[60%]- Explorateur de fichier du disque
+[OK]- Explorateur de fichier du disque
+- Explorateur pour sauvegarde
 - Menu configuration audio ondes
 [OK]- Import/Export fichier partition
 - Export audio (Wave SDL ?)
