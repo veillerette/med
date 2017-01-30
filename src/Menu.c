@@ -260,7 +260,17 @@ int _Add_New_Staff(void)
 {
 	if((NULL == main_events) || (NULL == main_events->score))
 		return FORCE_MAJ;
-	Score_AddEmpty(main_events->score);
+	switch(Score_AddEmpty(main_events->score))
+	{
+		case -1:
+			Window_InteractInfo("Nombre maximal de portées atteint", 255, 100, 50);
+			break;
+		case 1:
+			Audio_AssignateScore(main_events->score);
+			break;
+		default:
+			break;
+	}
 	return FORCE_SCOREMAJ;
 }
 
@@ -571,7 +581,7 @@ Menu_Node *FindNodeByZone(Menu *menu, int clic_x, int clic_y)
 }
 int Menu_NoSelect(void)
 {
-	return Window_InteractInfo("Aucune sélection active");
+	return Window_InteractInfo("Aucune sélection active", 255, 100, 50);
 }
 /*
 int Menu_NoSelect(void)

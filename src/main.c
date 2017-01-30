@@ -232,13 +232,19 @@ int main(int argc, char *argv[])
 		Graphics_LoadAll();
 		Console_Parser();
 	}
+	fprintf(stderr, "a");
 	Audio_Pause();
 	Audio_Quit();
+	fprintf(stderr, "b");
 	if(main_events->score != NULL)
 		Score_Free(&main_events->score);
+	fprintf(stderr, "c");
 	EventData_Free(&main_events);
+	fprintf(stderr, "d");
 	Graphics_Quit();
+	fprintf(stderr, "e");
 	Menu_Free(&menu);
+	fprintf(stderr, "f");
 	Window_Quit();
 	
 	printf("end progam\n");

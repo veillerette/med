@@ -546,8 +546,10 @@ int Step_AddNote(Step *step, int id, char note, Note_Flags flags,
 		return -1;
 	cur = &(step->notes);
 
-	Step_CorrectFlags(step, id, note, &flags);
-
+	if(!(flags & NOTE_NATURAL))
+		Step_CorrectFlags(step, id, note, &flags);
+	else
+		flags = NOTE_NATURAL;
 	while(id > 0)
 	{
 		if(NULL == (*cur)->next)
@@ -801,6 +803,52 @@ Note *Step_GetNote(Step *step, int id_note)
 	return NULL;
 }
 
+int Step_DurationBefore(Step *step, int id_note)
+{
+	ToNote *notes = NULL;
+	int total = 0;
+	if(NULL == step || id_note < 0)
+		return 0;
+	
+	notes = step->notes;
+	while(notes != NULL)
+	{
+		if(id_note == 0)
+			return total;
+		id_note--;
+		total += 64 / notes->note->duration;
+		notes = notes->next;
+	}
+	
+	return total;
+}
+
+ToNote *Step_GetToNoteAfterDuration(Step *step, int duration)
+{
+	ToNote *notes = NULL;
+	if(NULL == step)
+		return 0;
+	
+	notes = step->notes;
+	while(notes != NULL)
+	{
+		if(duration == 0)
+			return notes;
+		duration -= 64 / notes->note->duration;
+		notes = notes->next;
+	}
+	
+	return NULL;
+}
+
+Note *Step_GetNoteAfterDuration(Step *step, int duration)
+{
+	ToNote *notes = NULL;
+	notes = Step_GetToNoteAfterDuration(step, duration);
+	if(notes != NULL)
+		return notes->note;
+	return NULL;
+}
 
 
 

@@ -126,10 +126,15 @@ void Window_Quit(void)
 		if(Window->pos_body != NULL)
 			SDL_FreeRect(&(Window->pos_body));
 		
+		fprintf(stderr, "g");
 			
 		WindowData_Free(&Window);
+		
+		fprintf(stderr, "h");
 		TTF_Quit();
+		fprintf(stderr, "i");
 		SDL_Quit();
+		fprintf(stderr, "j");
 	}
 }
 
@@ -548,19 +553,14 @@ Note_Duration Window_GetNeperianSum(Note_Duration realMin, Note_Duration duratio
 	return (64/duration) / (64/realMin);
 }
 
-int Window_GetSumStep(Step *step, int idNote, Note_Duration dur)
+int Window_GetSumStep(Step *step, int durbefore, int dur)
 {
 	int n_alt = 0;
 	ToNote *note = NULL;
 	if(NULL == step)
 		return 0;
-	note = step->notes;
-
-	while(idNote != 0 && note != NULL)
-	{
-		note = note->next;
-		idNote--;
-	}
+	
+	note = Step_GetToNoteAfterDuration(step, durbefore);
 	
 	dur = 64/dur;
 	
@@ -570,12 +570,16 @@ int Window_GetSumStep(Step *step, int idNote, Note_Duration dur)
 	{
 		if(note->note->flags & NOTE_SHARP)
 			n_alt += HEAD_W;
+			
 		else if(note->note->flags & NOTE_FLAT)
 			n_alt += HEAD_W*3.0/4;
+			
 		else if(note->note->flags & NOTE_DOUBLESHARP)
 			n_alt += HEAD_W;
+			
 		else if(note->note->flags & NOTE_DOUBLEFLAT)
 			n_alt += HEAD_W*3.0/2;
+			
 		dur -= 64/note->note->duration;
 		note = note->next;
 
@@ -602,16 +606,18 @@ Note *Step_GetNextNote(Step *step, int id)
 	return note->note;
 }
 
-int Window_GetSumAlt(Score *score, int idStep, int idNote, Note_Duration dur)
+int Window_GetSumAlt(Score *score, int idStep, int durbefore, int dur)
 {
 	int i;
 	int altMax = 0;
 	int temp;
-	if((NULL == score) || (idStep < 0) || (idStep >= score->lst[0]->n) || (idNote < 0))
+	
+	if((NULL == score) || (idStep < 0) || (idStep >= score->lst[0]->n))
 		return 0;
+		
 	for(i = 0; i < score->n; i++)
 	{
-		temp = Window_GetSumStep(score->lst[i]->steps[idStep], idNote, dur);
+		temp = Window_GetSumStep(score->lst[i]->steps[idStep], durbefore, dur);
 		if(temp > altMax)
 			altMax = temp;
 	}
@@ -636,7 +642,7 @@ int Window_GetSpaceNote(Score *score, int idStep, Step *step, Note *note, int id
 	
 	res = (Window_GetNeperianSum(realMin, note->duration)) * NOTE_SPACE;
 	
-	res += (temp= Window_GetSumAlt(score, idStep, idNote, note->duration));
+	res += (temp= Window_GetSumAlt(score, idStep, Step_DurationBefore(step, idNote), note->duration));
 	
 	if(note->flags & NOTE_SHARP)
 		res -= HEAD_W;
@@ -1506,7 +1512,7 @@ int Window_LittleEvent(SDL_Event event, double *r, int *c, int *mouse,
 	return 0;
 }
 
-int Window_InteractInfo(const char *path)
+int Window_InteractInfo(const char *path, int r, int g, int b)
 {
 	int h = Window->height, w = Window->width;
 	SDL_Rect box = SDL_SetLocalRect(w/2-200, h/2-100, 400, 200);
@@ -1531,10 +1537,10 @@ int Window_InteractInfo(const char *path)
 		{
 			
 			roundedBoxRGBA(Window->screen, box.x-2, box.y-2, 
-					box.x+box.w+2, box.y+box.h+2, rounded, 50, 220, 255, 255);
+					box.x+box.w+2, box.y+box.h+2, rounded, (r+50)%255, (g+65)%255, (b+50)%255, 255);
 				
 			roundedBoxRGBA(Window->screen, box.x-1, box.y-1, 
-					box.x+box.w+1, box.y+box.h+1, rounded, 0, 165, 255, 255);
+					box.x+box.w+1, box.y+box.h+1, rounded, r, g, b, 255);
 				
 			roundedBoxRGBA(Window->screen, box.x, box.y, 
 					box.x+box.w, box.y+box.h, rounded, 240, 240, 240, 255);

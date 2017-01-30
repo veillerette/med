@@ -467,7 +467,7 @@ int Audio_PlayStep(Step *step, Channel *chan)
 		}
 		
 		begin = SDL_GetTicks();
-		while(SDL_GetTicks() - begin < ((700-50) * ((64.0 / note->note->duration) / 16.0)))
+		while(SDL_GetTicks() - begin < ((500-50) * ((64.0 / note->note->duration) / 16.0)))
 			SDL_Delay(1);
 			
 		Channel_Disable(chan);
@@ -604,12 +604,14 @@ void Audio_Play(void)
 
 void Audio_Pause(void)
 {
-	main_audio->playing = 0;
-	SDL_PauseAudio(1);
-	colorprintf(GREEN, "Pausing Audio !\n");
-	main_audio->x = 0;
-	Audio_KillThreads();
-	colorprintf(BLUE, "Exiting on pressing 'S'\n");
+	if(main_audio->playing)
+	{
+		main_audio->playing = 0;
+		SDL_PauseAudio(1);
+		colorprintf(GREEN, "Pausing Audio !\n");
+		main_audio->x = 0;
+		Audio_KillThreads();
+	}
 }
 
 					

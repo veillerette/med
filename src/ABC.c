@@ -54,6 +54,7 @@ int ABC_FindKeyFromStr(char *text)
 	int i;
 	if(NULL == text)
 		return 0;
+	printf("key = %d %d\n", text[0], text[1]);
 	for(i = -7; i <= 7; i++)
 	{
 		if(!strcmp(ABC_Keys[2*(i+7)], text))
@@ -70,7 +71,7 @@ int ABC_isNote(char note)
 		return 1;
 	if(note>='a' && note <='g')
 		return 1;
-	if(note == 'z')
+	if(note == 'z' || note == 'x')
 		return 1;
 	return 0;
 }
@@ -159,7 +160,8 @@ int nextcar(FILE *f)
 char *File_GetLine(FILE *f)
 {
 	char *buf = NULL;
-	int i = 0, c = 5, j = 0;
+	int i = 0, c = 5, j = 0, k = 0;
+	int temp;
 	
 	if((NULL == f))
 		return NULL;
@@ -180,9 +182,16 @@ char *File_GetLine(FILE *f)
 	fseek(f, -i , SEEK_CUR);
 	
 	for(j = 0; j < i; j++)
-		*(buf + j) = fgetc(f);
+	{
+		temp = fgetc(f);
+		if(temp != '\r')
+		{
+			*(buf + k) = temp;
+			k++;
+		}
+	}
 	
-	*(buf + j) = '\0';
+	*(buf + k) = '\0';
 
 	return buf;
 }
@@ -293,6 +302,9 @@ char *ABC_TransformLine(const char *line, int isHeader)
 			case '}':
 			case ']':
 			case '\\':
+			case '>':
+			case '<':
+			case '\r':
 				break;
 			case '"':
 				do
@@ -372,12 +384,12 @@ char *ABC_SepLess(char *str)
 	
 	for(i = 0; i < n; i++)
 	{
-		if(str[i] != '|' && str[i] != '\n')
+		if(str[i] != '|' && str[i] != '\n' && str[i] != '\r')
 		{
 			res[j] = str[i];
 			j++;
 		}
-		else if(str[i] != '\n')
+		else if(str[i] != '\n' && str[i] != '\r')
 		{
 			if(i > 0 && i < n-2)
 			{
@@ -399,12 +411,10 @@ int ABC_AppendStr(char **dest, char *source)
 		return 0;
 	
 	
-	printf("a\n");
 	res = ABC_SepLess(source);
 	n = strlen(res);
 	if(n == 0)
 		return 0;
-	printf("b\n");
 	if(NULL == *dest)
 	{
 		*dest = (char *)malloc(sizeof(char) * (n + 2));
@@ -419,7 +429,16 @@ int ABC_AppendStr(char **dest, char *source)
 		memtest(*dest);
 		sprintf(*dest, "%s%s|", *dest, res);
 	}
-	printf("c %s\n", *dest);
+	return 1;
+}
+
+int RemoveLineBreak(char *str)
+{
+	int i;
+	int n = strlen(str);
+	for(i = n-1; i>0; i--)
+		if(str[i] == '\n')
+			str[i] = 0;
 	return 1;
 }
 
@@ -446,22 +465,27 @@ int File_SimplifyABC(const char *destPath, const char *sourcePath)
 	do
 	{		
 		buf = File_GetLine(source);
-	
+
 		if(NULL == buf)
 			break;
-		
+		printf("buf = \"%s\"\n", buf);
 		if(ABC_IsAnHeader(buf))
 		{
+			printf("isAnHeader\n");
 			if(ABC_IsAGoodHeader(buf))
 			{
+				printf("isAGoodHeader\n");
 				next = File_GetLine(source);
 				if(!ABC_IsAnHeader(next) && buf[0] == 'V')
 				{
+					printf("isV\n");
 					char *temp = ABC_TransformLine(next, 0);
 					
 					if(temp != NULL)
+					{
+						RemoveLineBreak(temp);
 						ABC_AppendStr(&(buf_line[(buf[2]-'0')-1]), temp);
-					
+					}
 
 				}
 				else if(buf[0] != 'V')
@@ -471,6 +495,7 @@ int File_SimplifyABC(const char *destPath, const char *sourcePath)
 				
 					if(temp != NULL)
 					{
+						printf("header= %s\n", temp);
 						fputs(temp, dest);	
 						free(temp);
 					}
@@ -525,6 +550,7 @@ extern Score *ABC_ParseFile(const char *path)
 	Note_Flags flags = NOTE_DEFAULT;
 	int id_score = 0;
 	Note_Flags flags_next = NOTE_DEFAULT;
+	char number[3] = "";
 	
 	if(NULL == path)
 		return NULL;
@@ -598,13 +624,14 @@ extern Score *ABC_ParseFile(const char *path)
 				note[i] = (char)h+'0';
 				if(id_score == 0 && step_id+1 == score->lst[id_score]->n)
 					Score_AddEmptyStep(score);
-				printf("add a note staff=%d step=%d/%d\n", id_score, step_id, score->lst[id_score]->n);
 				Staff_AddNote(score->lst[id_score], step_id, note_id, 
 						ConvertStringToID(note), flags, duration);
-				if(note[0] == 'z')
+				if(note[0] == 'z' || note[0] == 'x')
 					Staff_ChangeRestStatus(score->lst[id_score], step_id, note_id, 1);
 				flags = flags_next;
 				flags_next = NOTE_DEFAULT;
+				if(car == '|')
+					flags = NOTE_DEFAULT;
 				if(duration != base_l)
 					duration = base_l;
 				note_id++;
@@ -637,7 +664,19 @@ extern Score *ABC_ParseFile(const char *path)
 			if(car == '0')
 				duration = RONDE;
 			else
-				duration = duration / (car - '0');
+			{
+				if(nextcar(f) >= '1' && nextcar(f) <= '9')
+				{
+					number[0] = car;
+					number[1] = fgetc(f);
+					number[2] = 0;
+					printf("number = %s\n", number);
+					duration = duration / atoi(number);
+					printf("dur = %d\n", duration);
+				}
+				else
+					duration = duration / (car - '0');
+			}
 		}
 		else if(car == '\'')
 			h++;
@@ -675,8 +714,8 @@ extern Score *ABC_OpenABC(const char *path)
 	res = ABC_ParseFile(buf);
 	
 	sprintf(rm, "rm -f %s", buf);
-	system(rm);
-	
+	/*system(rm);
+	*/
 	return res;
 }
 

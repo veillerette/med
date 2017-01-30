@@ -221,7 +221,7 @@ int Dots_Init(Dots **dt)
 	
 	if(NULL == (*dt)->tab)
 	{
-		(*dt)->tab = (Point **)malloc(sizeof(Point *) * 4);
+		(*dt)->tab = (Point **)malloc(sizeof(Point *) * 8);
 		memtest((*dt)->tab);
 		
 		(*dt)->n = 0;

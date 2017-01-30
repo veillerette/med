@@ -385,6 +385,8 @@ int Score_AddEmpty(Score *score)
 	
 	if(NULL == score)
 		return 0;
+	if(10 == score->n) /* max printable */
+		return -1;
 	score->lst = (Staff **)realloc(score->lst, sizeof(Staff *) * (score->n+1));
 	memtest(score->lst);
 	score->lst[score->n] = Staff_Alloc(" ");

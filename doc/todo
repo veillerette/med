@@ -18,11 +18,11 @@
 <<< Bugs >>>
 - Résoudre bugs note pointée (modification temps réel à la sélection, affichage -> prendre en compte le bon space)
 [OK]- Correction bug croches bizarres (dans le mozart notamment) ????
-- Bug à l'ajout de 4/5ème portée
-- Bugs à l'alignement dièzes/bémols !
-- Valgrind et Score_AddEmpty()
-- Score_Free d'un ABC (résolu ??)
-- Ouverture fichier ABC bizarres
+[OK]- Bug à l'ajout de 4/5ème portée
+[90%]- Bugs à l'alignement dièzes/bémols !
+[OK]- Valgrind et Score_AddEmpty()
+[OK]- Score_Free d'un ABC
+[70%]- Ouverture fichier ABC bizarres
 
 <<< Majors >>>
 - Multi-Sélections

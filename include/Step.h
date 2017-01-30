@@ -137,6 +137,14 @@ Note_Duration Step_GetMinDuration(Step *step);
 Note *Step_GetNote(Step *step, int id_note);
 
 int Step_VerifArmFlags(Step *step);
+
+int Step_DurationBefore(Step *step, int id_note);
+
+ToNote *Step_GetToNoteAfterDuration(Step *step, int duration);
+
+Note *Step_GetNoteAfterDuration(Step *step, int duration);
+
+
 #endif
 
 
