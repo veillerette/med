@@ -730,6 +730,23 @@ int ToolBar_PollMouse(Menu *menu, SDL_Event event)
 			x = event.motion.x;
 			y = event.motion.y;
 			
+			if(x >= 866 && x <= 906 && y >= 39 && y <= 69)
+			{
+				if(!main_events->tools.hover_tempo)
+				{
+					main_events->tools.hover_tempo = 1;
+					return FORCE_MAJ;
+				}	
+			}
+			else
+			{
+				if(main_events->tools.hover_tempo)
+				{
+					main_events->tools.hover_tempo = 0;
+					return FORCE_MAJ;
+				}
+			}
+			
 			if(x >= playingX && x <= playingX+40 && y >= dy-20 && y <= dy+20)
 			{
 				if(!main_events->tools.hover_button1)
@@ -743,13 +760,28 @@ int ToolBar_PollMouse(Menu *menu, SDL_Event event)
 				main_events->tools.hover_button1 = 0;
 				return FORCE_MAJ;
 			}
+			
 			break;
 		case SDL_MOUSEBUTTONDOWN:
 			x = event.button.x;
 			y = event.button.y;
+			
+			if(x >= 866 && x <= 906 && y >= 39 && y <= 69)
+			{
+				switch(event.button.button)
+				{
+					case SDL_BUTTON_WHEELDOWN:
+						Audio_SetTempo(Audio_GetTempo()-1);
+						return FORCE_MAJ;
+					case SDL_BUTTON_WHEELUP:
+						Audio_SetTempo(Audio_GetTempo()+1);
+						return FORCE_MAJ;
+				}
+			}
+			
 			if(y<dy-20 || y > dy+20)
 				return NONE;
-				
+			
 			if(x >= playingX && x <= playingX+40 && y >= dy-20 && y <= dy+20)
 			{
 				if(Audio_isPlaying())
@@ -948,6 +980,10 @@ void Toolbar_PrintNote(Menu *menu)
 	SDL_Rect pos;
 	int n, t;
 	int y = (Window->pos_menu->h - menu->height)/2 + menu->height;
+	char buf[5] = "";
+	SDL_Color text = {70, 90, 110, 255};
+	SDL_Color back = {105, 125, 145, 255};
+	SDL_Color temp;
 	
 	pos.y = y;
 	for(i = 0; i < 7; i++)
@@ -1087,6 +1123,41 @@ void Toolbar_PrintNote(Menu *menu)
 		boxRGBA(Window->screen, pos.x+10, pos.y+7, pos.x+10+4, pos.y+33, 200, 200, 200, 255);
 		boxRGBA(Window->screen, pos.x+30-4, pos.y+7, pos.x+30, pos.y+33, 200, 200, 200, 255);
 	}
+	
+	pos.x += 20;
+	
+	pos.y += 20;
+	pos.x += 40;
+	pos.y -= 23;
+	roundedBoxRGBA(Window->screen, pos.x, pos.y, pos.x+1, pos.y+46, 7, 90, 100, 110, 255);
+	pos.x += 20;
+	pos.y += 20;
+	
+	pos.y += 12;
+	BlitCenter(LittleImages->Note_headBlack, NULL, Window->screen, &pos);
+	pos.y -= 12;
+	BlitCenter(LittleImages->Note_Black, NULL, Window->screen, &pos);
+	
+	pos.x += 16;
+	boxRGBA(Window->screen, pos.x, pos.y+3, pos.x+10, pos.y+4, 119, 135, 153, 255);
+	boxRGBA(Window->screen, pos.x, pos.y+8, pos.x+10, pos.y+9, 119, 135, 153, 255);
+	
+	sprintf(buf, "%d", Audio_GetTempo());
+	
+	if(main_events->tools.hover_tempo)
+	{
+		temp = text;
+		text = back;
+		back = temp;
+	}
+	
+	boxRGBA(Window->screen, pos.x+20, pos.y-10, pos.x+60, pos.y+20, back.r, back.g, back.b, 255);
+	
+	Moteur_WriteText(pos.x+41, pos.y+5, buf, 28, 
+				MENU_FONT, text, 
+				TEXT_BLENDED, TEXT_CENTER, 
+				Window->screen);
+	
 }
 
 

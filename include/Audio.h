@@ -61,6 +61,8 @@ struct AudioConfig
 	
 	SDL_Thread **threads;
 	int need_refresh;
+	
+	int tempo;
 };
 
 
@@ -126,6 +128,7 @@ void Channel_ChangeOctave(Channel *chan, double freq);
 
 int *Integer_Alloc(int n);
 
+int Tempo_GetMsTempo(void);
 
 /*****************************************************
 		WAVE FUNCTIONS
@@ -168,6 +171,10 @@ int Audio_isInit(void);
 void Audio_Play(void);
 
 void Audio_Pause(void);
+
+void Audio_SetTempo(int newTempo);
+
+int Audio_GetTempo(void);
 
 /*****************************************************
 ******************************************************/

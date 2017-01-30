@@ -199,6 +199,7 @@ AudioConfig *AudioConfig_DevInit(int askFreq, Uint16 format, Uint8 channels, Uin
 	ac->playing = 0;
 	ac->threads = NULL;
 	ac->need_refresh = 0;
+	ac->tempo = 120;
 	Mixer_Init(&(ac->mixer));
 	
 	spec.freq = askFreq;
@@ -403,6 +404,15 @@ int *Integer_Alloc(int n)
 	return temp;
 }
 
+int Tempo_GetMsTempo(void)
+{
+	if(main_audio != NULL)
+	{
+		return (int)(60.0 / main_audio->tempo * 1000);
+	}
+	return 0;
+}
+
 /*****************************************************
 		WAVE FUNCTIONS
 ******************************************************/
@@ -467,12 +477,12 @@ int Audio_PlayStep(Step *step, Channel *chan)
 		}
 		
 		begin = SDL_GetTicks();
-		while(SDL_GetTicks() - begin < ((500-50) * ((64.0 / note->note->duration) / 16.0)))
+		while(SDL_GetTicks() - begin < ((Tempo_GetMsTempo()-30) * ((64.0 / note->note->duration) / 16.0)))
 			SDL_Delay(1);
 			
 		Channel_Disable(chan);
 		begin = SDL_GetTicks();
-		while(SDL_GetTicks() - begin < 50 * ((64.0 / note->note->duration) / 16.0))
+		while(SDL_GetTicks() - begin < 30 * ((64.0 / note->note->duration) / 16.0))
 			SDL_Delay(1);
 		
 		note = note->next;
@@ -613,6 +623,23 @@ void Audio_Pause(void)
 		Audio_KillThreads();
 	}
 }
+
+void Audio_SetTempo(int newTempo)
+{
+	if(main_audio != NULL)
+	{
+		if(newTempo > 5 && newTempo < 250)
+			main_audio->tempo = newTempo;
+	}
+}
+
+int Audio_GetTempo(void)
+{
+	if(main_audio != NULL)
+		return main_audio->tempo;
+	return 0;
+}
+
 
 					
 

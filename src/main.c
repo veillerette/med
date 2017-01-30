@@ -64,6 +64,7 @@ int main(int argc, char *argv[])
 	Audio_Init(AudioConfig_Init());
 	Audio_AssignateScore(new_score);
 	Audio_GoToStep(0);
+	Audio_SetTempo(125);
 	
 	info = SDL_GetVideoInfo();
 	Window_CreateWindow(info->current_w, info->current_h, title);

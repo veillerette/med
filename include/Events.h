@@ -75,6 +75,7 @@ struct Toolbar
 	char		hover_button1;
 	char		hover_button2;
 	char		hover_button3;
+	char		hover_tempo;
 	Note_Duration 	duration;
 };
 
