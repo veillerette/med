@@ -50,21 +50,20 @@ int main(int argc, char *argv[])
 		
 		
 	}
-	else if(3 == argc && !strcmp(argv[1], "-abc"))
+	else if(3 == argc && !strcmp(argv[1], "-abc") && File_isExt(argv[2], ".abc"))
 	{
-		printf("begin ABC...\n");
 		new_score = ABC_OpenABC(argv[2]);
-
-		printf("end ABC\n");
 	}
-	/*
-	File_OpenScore("magic_score", &new_score);
-	*/
+	else if(2 == argc && File_isExt(argv[1], ".med"))
+	{
+		File_OpenScore(argv[1], &new_score);
+	}
+
 	
 	Audio_Init(AudioConfig_Init());
 	Audio_AssignateScore(new_score);
 	Audio_GoToStep(0);
-	Audio_SetTempo(125);
+	Audio_SetTempo(120);
 	
 	info = SDL_GetVideoInfo();
 	Window_CreateWindow(info->current_w, info->current_h, title);

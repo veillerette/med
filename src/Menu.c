@@ -1151,7 +1151,7 @@ void Toolbar_PrintNote(Menu *menu)
 		back = temp;
 	}
 	
-	boxRGBA(Window->screen, pos.x+20, pos.y-10, pos.x+60, pos.y+20, back.r, back.g, back.b, 255);
+	roundedBoxRGBA(Window->screen, pos.x+20, pos.y-10, pos.x+60, pos.y+20, 5, back.r, back.g, back.b, 255);
 	
 	Moteur_WriteText(pos.x+41, pos.y+5, buf, 28, 
 				MENU_FONT, text, 

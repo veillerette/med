@@ -628,7 +628,7 @@ void Audio_SetTempo(int newTempo)
 {
 	if(main_audio != NULL)
 	{
-		if(newTempo > 5 && newTempo < 250)
+		if(newTempo > 30 && newTempo < 250)
 			main_audio->tempo = newTempo;
 	}
 }
