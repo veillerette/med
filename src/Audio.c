@@ -9,25 +9,7 @@ AudioConfig *main_audio = NULL;
 ******************************************************/
 
 
-ScoreStaff *ScoreStaff_Alloc(Score *score, int id_staff)
-{
-	ScoreStaff *temp = (ScoreStaff *)malloc(sizeof(ScoreStaff));
-	memtest(temp);
-	
-	temp->score = score;
-	temp->id_staff = id_staff;
-	
-	return temp;
-}
 
-void ScoreStaff_Free(ScoreStaff **ss)
-{
-	if(*ss != NULL)
-	{
-		free(*ss);
-		*ss = NULL;
-	}
-}
 
 Wave *Wave_Alloc(double (*f)(int,double, int), double freq, int volume)
 {
