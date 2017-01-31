@@ -517,7 +517,7 @@ int Window_TestBox(SDL_Surface *dest, SDL_Rect *pos, int zoom)
 				else if(((area->type == EVENT_ADDNOTE && main_events->mode == MODE_ADD &&
 						 (area == main_events->hover || area == main_events->select) )
 					||
-					(area->type != EVENT_ADDNOTE && main_events->mode == MODE_EDIT)
+					(area->type != EVENT_ADDNOTE && main_events->mode == MODE_EDIT && main_events->select == area)
 					))
 				{
 					switch(area->type)

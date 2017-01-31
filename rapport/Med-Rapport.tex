@@ -324,14 +324,52 @@ V\string:chiffre & Numéro de voix de la prochaine ligne (maximum 10) \\ \hline
 Voici en vrac, dans un ordre non particulier, une liste de bugs, de comportements non souhaités ou de fonctionnalités non mis en place :\\
 \begin{itemize}
  \item Problème d'importation des fichiers ABC écrits sous Windows/Mac avec le retour à la ligne \textbf{\textbackslash r\textbackslash n} ou \textbf{\textbackslash r}. \\
- \item ... Bla ... Bla
+ \item [...]
 \end{itemize}
 
 \chapter{Manuel d'utilisation}
 \section{Interface générale}
+L'interface se décompose en trois parties :\\
+\begin{itemize}
+ \item \textbf{Le menu} : Au clic de la souris pour ouvrir les sous-menus, on peut Créer, Ouvrir ou Sauvegarder une partition dans un fichier, ou encore effectuer des actions sur la partie. Certaines actions
+ demandent à ce qu'un élément soit sélectionné (Mesure, Note)  \\
+ \item \textbf{La barre de toolbar} : Situé juste en dessous du menu, elle permet de choisir le mode : A pour \"Ajout\", E pour \"Edition\"; de régler la durée des notes, les altérations, le tempo et est
+ également composé d'un bouton Play/Pause pour jouer la partition en cours \\
+ \item \textbf{Le corps} : Il permet de visualiser la partition. On peut la déplacer (Clic / Move), de zoomer/dézoomer, de sélectionner un élement, d'ajouter des notes, de supprimer des élements, etc.\\
+\end{itemize}
 
+\subsection{Le mode Ajout}
+Le mode \textbf{Ajout} est activé si la lettre \textbf{A} est affichée dans la barre de Toolbar toute à gauche.\\
+Ce mode permet l'ajout de notes sur la partition. Une fois ce mode activé, des zones bleutées apparaissent sur la partition au survol de la souris. Lors du clic dans une de ces zones, la note est rajouté
+au bon emplacement et à la hauteur du clic. On peut configurer les caractéristiques de la note ajoutée au préalable en sélectionnant sa durée, son altération dans la Toolbar. \\
+Il est également possible de déplacer la partition, de zoomer.\\
+
+\subsection{Le mode Edition}
+Le mode \textbf{Edition} est activé si la lettre \textbf{E} est affichée dans la barre de Toolbar toute à gauche.\\
+Il permet de sélectionner un élément : une fois sélectionné, un rectangle légèrement transparent rouge indique de la bonne séléction d'une note, et un rectangle bleu indique de la sélection d'une mesure.\\
+Une fois un élément séléctionné on peut en fonction de son type : \\
+
+Pour une mesure : \\
+\begin{itemize}
+ \item Supprimer la mesure avec Selection->Supprimer ou SUPPR\\
+ \item Régulariser la mesure (fusionner les silences quand cela est possible) avec Selection->Régulariser.\\
+ \item Ajout des mesures avant ou après avec Ajouter->Mesures\\
+ \item Changer l'armure avec Selection->Armures\\
+\end{itemize}
+\vskip 0.2in
+Pour une note/silence : \\
+\begin{itemize}
+ \item Supprimer la note avec Selection->Supprimer ou SUPPR (La transforme en silence de même durée)\\
+ \item Diviser un silence en deux parties égale avec Selection->Diviser ou la touche d\\
+ \item Changer la durée de la note avec la Toolbar\\
+\end{itemize}
+\vskip 0.2in
 
 \section{Explorateur de fichier}
+Un explorateur de fichiers du disque est disponible. On peut notamment le retrouver lors de l'ouverture d'un fichier (Fichier->Ouvrir), ou lors de la sauvegarde (Fichier->Export en MED).\\
+Seul les dossiers, les fichiers .med et les fichiers .abc sont affichés étant donné que seuls ces fichiers sont supportés par le programme.\\
+Pour ouvrir un dossier, il suffit de double-clic dessus, pour sélectionner un fichier, un simple clic suffit et le colorise en bleu.\\
+Le bouton \textit{Parent} permet de monter d'un répertoire tantdis que le bouton \textbf{Valider} valide le choix du fichier ou ne fait rien si aucun fichier n'est sélectionné.\\
 \section{Configuration Audio}
 
 \chapter{Bilan}
