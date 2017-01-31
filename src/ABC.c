@@ -719,11 +719,118 @@ extern Score *ABC_OpenABC(const char *path)
 	return res;
 }
 
-/*
-int main(int argc, char *argv[])
+int ABC_WriteStep(FILE *f, Step *step, Note_Duration base_l)
 {
-	File_SimplifyABC(argv[1], argv[2]);
-	argc = argc;
-	return 0;
+	ToNote *notes = NULL;
+	Note_Duration real = 0;
+	char names[] = "ccddeffggaab";
+	
+	if((NULL == f) || (NULL == step->notes))
+		return 0;
+	
+	notes = step->notes;
+	
+	while(notes != NULL)
+	{
+		if(notes->note->flags & NOTE_SHARP)
+			fprintf(f, "^");
+		if(notes->note->flags & NOTE_FLAT)
+			fprintf(f, "_");
+		if(notes->note->flags & NOTE_NATURAL)
+			fprintf(f, "=");
+		
+		if(notes->note->rest)
+			fprintf(f, "z");
+		else
+		{
+			int oct,id;
+			oct = notes->note->note / 12 - 1;
+			id = notes->note->note % 12;
+			if(oct == 5)
+				fprintf(f, "%c", names[id]);
+			else if(oct == 4)
+				fprintf(f, "%c", names[id]-'a'+'A');
+			else if(oct == 3)
+				fprintf(f, "%c,", names[id]-'a'+'A');
+			else if(oct == 6)
+				fprintf(f, "%c'", names[id]);
+			
+		}
+		if((Note_Duration)Note_RealDuration(notes->note, step) > 64/base_l)
+		{
+			real = Note_RealDuration(notes->note, step) / (64 / base_l);
+			fprintf(f, "%d", real);
+		}
+		else if((Note_Duration)Note_RealDuration(notes->note, step) < 64/base_l)
+		{
+			real = (64 / base_l) / Note_RealDuration(notes->note, step);
+			fprintf(f, "/");
+			if(real != 2)
+				fprintf(f, "%d", real);
+		}
+		
+		notes = notes->next;
+	}
+	fprintf(f, "|");
+	
+	return 1;
 }
-*/
+
+int ABC_WriteHeaderScore(FILE *f, Score *score, Note_Duration basel)
+{
+	Step *step = NULL;
+	char *tone[] = {"Cb", "Gb", "Db", "Ab", "Eb", "Bb", "F", "C", 
+			"G", "D", "A", "E", "B", "F#", "C#"};
+	if((NULL == f) || (NULL == score))
+		return 0;
+	
+	step = score->lst[0]->steps[0];
+	if(NULL == step)
+		return 0;
+	
+	fprintf(f, "X:%d\n", 4242);
+	fprintf(f, "M:%d/%d\n", step->num, step->den);
+	fprintf(f, "L:1/%d\n", basel);
+	fprintf(f, "Q:1/4=%d\n", 120);
+	fprintf(f, "K:%s\n", tone[step->sign+7]);
+	
+	return 1;
+}
+
+int ABC_WriteDevScore(FILE *f, Score *score)
+{
+	int i,j;
+	if((NULL == f) || (NULL == score))
+		return 0;
+	
+	ABC_WriteHeaderScore(f, score, CROCHE);
+	
+	for(i = 0; i < score->n; i++)
+	{
+		fprintf(f, "V:%d\n", i+1);
+		
+		for(j = 0; j < score->lst[i]->n; j++)
+			ABC_WriteStep(f, score->lst[i]->steps[j], CROCHE);
+		fprintf(f,  "\n");
+	}
+	
+	return 1;
+}
+
+int ABC_WriteScore(const char *path, Score *score)
+{
+	FILE *f = NULL;
+	
+	if((NULL == path) || (NULL == score))
+		return 0;
+	
+	f = fopen(path, "w");
+	
+	if(NULL == f)
+		return 0;
+	
+	ABC_WriteDevScore(f, score);
+	
+	fclose(f);
+	return 1;
+}

@@ -191,7 +191,6 @@ int _Selection_Delete(void)
 			Step_ChangeRestStatus(main_events->select->step, main_events->select->id_note, 1);	
 			return FORCE_SCOREMAJ;
 		case OBJECT_STEP:
-			printf("begin delete step\n");
 			Score_DeleteStep(main_events->score, main_events->select->id_step);
 			return FORCE_SCOREMAJ;
 		default:
@@ -297,6 +296,56 @@ int Menu_OpenFile(void)
 	return FORCE_SCOREMAJ;
 }
 
+int Menu_SauvFileMED(void)
+{
+	char *path = NULL;
+	if((NULL == main_events) || (NULL == main_events->score))
+		return FORCE_MAJ;
+	
+	path = Explorer_FindPath(200, 200, Window->width-400, Window->height-400, Window->screen);
+	
+	if(path != NULL)
+	{
+		switch(File_SaveScore(path, main_events->score))
+		{
+			case 1:
+				Window_InteractInfo("Fichier MED sauvegardé avec succès", 
+								50, 240, 50);
+				break;
+			default:
+				Window_InteractInfo("Erreur lors de l'exportation", 
+								255, 100, 50);
+				break;
+		}
+	}
+	return FORCE_MAJ;
+}
+
+int Menu_SauvFileABC(void)
+{
+	char *path = NULL;
+	if((NULL == main_events) || (NULL == main_events->score))
+		return FORCE_MAJ;
+	
+	path = Explorer_FindPath(200, 200, Window->width-400, Window->height-400, Window->screen);
+	
+	if(path != NULL)
+	{
+		switch(ABC_WriteScore(path, main_events->score))
+		{
+			case 1:
+				Window_InteractInfo("Fichier ABC sauvegardé avec succès", 
+								50, 240, 50);
+				break;
+			default:
+				Window_InteractInfo("Erreur lors de l'exportation", 
+								255, 100, 50);
+				break;
+		}
+	}
+	return FORCE_MAJ;
+}
+
 int ChangeTonality(signed char new)
 {
 	int i,j;
@@ -336,6 +385,8 @@ Menu *Menu_Create(void)
 	NodeArray_Add(menu->lst, "Fichier", 0, NODE, NULL);
 	NodeArray_Add(menu->lst->next[0]->next, "Nouveau", 0, LEAF, menu_no_action);
 	NodeArray_Add(menu->lst->next[0]->next, "Ouvrir", 0, LEAF, Menu_OpenFile);
+	NodeArray_Add(menu->lst->next[0]->next, "Export en MED", 0, LEAF, Menu_SauvFileMED);
+	NodeArray_Add(menu->lst->next[0]->next, "Export en ABC", 0, LEAF, Menu_SauvFileABC);
 	NodeArray_Add(menu->lst->next[0]->next, "Quitter", 0, LEAF, _Fichier_Quit);
 	NodeArray_Add(menu->lst, "Sélection", 0, NODE, NULL);
 	NodeArray_Add(menu->lst->next[1]->next, "Supprimer", 1, LEAF, _Selection_Delete);

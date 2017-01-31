@@ -14,6 +14,7 @@
 - Supprimer doubles affichages Dieze/Bémol dans une mesure
 - Ajout de plusieurs mesures en fin (scroll souris)
 - Clé de fa
+- Sauvegarde dans MED du tempo
 
 <<< Bugs >>>
 - Résoudre bugs note pointée (modification temps réel à la sélection, affichage -> prendre en compte le bon space)
@@ -30,13 +31,11 @@
 [OK]- Importation fichier perso
 [OK]- Sauvegarde/Ouverture Fichier
 [OK]- Explorateur de fichier du disque
-- Explorateur pour sauvegarde
+[50%]- Explorateur pour sauvegarde (Manque création fichier)
 - Menu configuration audio ondes
 [OK]- Import/Export fichier partition
-- Export audio (Wave SDL ?)
-
+[OK]- Export fichier ABC
 
 <<< Facultatif >>>
-- Mettre en place les Signs (Titre, auteur)
-[60%]- Importation fichiers ABC
+[80%]- Importation fichiers ABC
 

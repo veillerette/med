@@ -39,11 +39,20 @@ int File_SimplifyABC(const char *destPath, const char *sourcePath);
 
 extern Score *ABC_ParseFile(const char *path);
 
+int ABC_WriteStep(FILE *f, Step *step, Note_Duration base_l);
+
+int ABC_WriteHeaderScore(FILE *f, Score *score, Note_Duration basel);
+
+int ABC_WriteDevScore(FILE *f, Score *score);
+
+
 
 /*********************************
 	  MAIN FUNCTIONS
 **********************************/
 
 extern Score *ABC_OpenABC(const char *path);
+
+int ABC_WriteScore(const char *path, Score *score);
 
 #endif
