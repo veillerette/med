@@ -1,5 +1,6 @@
 #include "../include/ABC.h"
 
+char abc_error[50] = "";
 
 char *ABC_Keys[] = {
 	"C#","A#m",	/* 7 */
@@ -106,20 +107,29 @@ int ABC_ParseHeader(Score *score, FILE *f)
 				text[num/10+1] = '/';
 				den = atoi(text + num/10 + 2);
 				if(num < 1 || num > 20 || den < 1 || den > 64)
-					colorprintf(RED, "M:%s is not a good mesure\n", text);
+				{
+					sprintf(abc_error, "M:%s n'est pas une mesure adéquate", text);
+					return 0;
+				}
 				break;
 				
 			case 'K': /* Key */
 				sign = ABC_FindKeyFromStr(text);
 				if(-40 == sign)
-					colorprintf(RED, "K:%s is not a good key\n", text);
+				{
+					sprintf(abc_error, "K:%s n'est pas une tonalité reconnue", text);
+					return 0;
+				}
 				break;
 			case 'L': /* Basic note length */
 				if(strlen(text) < 3 || strlen(text) > 6)
 					break;
 				lenght = atoi(text+2);
 				if(lenght < 1 || lenght > 64)
-					colorprintf(RED, "L:%s is not a good lenght\n", text);
+				{
+					sprintf(abc_error,  "L:%s est invalide\n", text);
+					return 0;
+				}
 				break;
 			case 'V':
 				fseek(f, -4, SEEK_CUR);
@@ -130,13 +140,15 @@ int ABC_ParseHeader(Score *score, FILE *f)
 		}
 	}
 	if(sign == -40 || (lenght < -1 || lenght > 64))
-		return 0;
-	if((num == -1) || (den == -1) || (sign == -42))
 	{
-		colorprintf(RED, "Mesure times and/or key not specified\n");
+		sprintf(abc_error, "Erreur dans l'en-tête du fichier ABC : %s", abc_error);
 		return 0;
 	}
-	printf("Init with %d %d %d %d\n", num, den, CLE_SOL, sign);
+	if((num == -1) || (den == -1) || (sign == -42))
+	{
+		sprintf(abc_error, "Erreur dans l'en-tête du fichier ABC : %s", abc_error);
+		return 0;
+	}
 	Staff_Init(score->lst[0], num, den, CLE_SOL, sign);
 	while(fgetc(f) != '\n')
 		fseek(f, -2, SEEK_CUR);	
@@ -468,17 +480,14 @@ int File_SimplifyABC(const char *destPath, const char *sourcePath)
 
 		if(NULL == buf)
 			break;
-		printf("buf = \"%s\"\n", buf);
+			
 		if(ABC_IsAnHeader(buf))
 		{
-			printf("isAnHeader\n");
 			if(ABC_IsAGoodHeader(buf))
 			{
-				printf("isAGoodHeader\n");
 				next = File_GetLine(source);
 				if(!ABC_IsAnHeader(next) && buf[0] == 'V')
 				{
-					printf("isV\n");
 					char *temp = ABC_TransformLine(next, 0);
 					
 					if(temp != NULL)
@@ -495,7 +504,6 @@ int File_SimplifyABC(const char *destPath, const char *sourcePath)
 				
 					if(temp != NULL)
 					{
-						printf("header= %s\n", temp);
 						fputs(temp, dest);	
 						free(temp);
 					}
@@ -551,20 +559,24 @@ extern Score *ABC_ParseFile(const char *path)
 	int id_score = 0;
 	Note_Flags flags_next = NOTE_DEFAULT;
 	char number[3] = "";
+	int line = 1;
 	
 	if(NULL == path)
 		return NULL;
 	
 	f = fopen(path, "r");
 	if(NULL == f)
+	{
+		sprintf(abc_error, "Impossible d'ouvrir le fichier");
 		return NULL;
+	}
+	
 	score = Score_Alloc();
 	Score_Init(score);
 	
 	if(0 == (base_l = ABC_ParseHeader(score, f)))
 	{
-		colorprintf(RED, "---- Resume : Please correct errors ----\n");
-		exit(EXIT_FAILURE);
+		return NULL;
 	}
 	
 	duration = base_l;
@@ -572,6 +584,9 @@ extern Score *ABC_ParseFile(const char *path)
 	do
 	{
 		car = fgetc(f);
+		printf("%c", car);
+		if(car == '\n')
+			line++;
 		if(car == EOF)
 			continue;
 		if(car == 'V')
@@ -582,7 +597,6 @@ extern Score *ABC_ParseFile(const char *path)
 			if(id_score == score->n && id_score != 0)
 				Score_AddEmpty(score);
 			fgetc(f);
-			printf("change id_score to %d\n", id_score);
 			step_id = 0;
 			continue;
 		}
@@ -624,16 +638,30 @@ extern Score *ABC_ParseFile(const char *path)
 				note[i] = (char)h+'0';
 				if(id_score == 0 && step_id+1 == score->lst[id_score]->n)
 					Score_AddEmptyStep(score);
+				
+				if(note_id < 0 || duration == 0 || id_score < 0 || id_score > score->n
+				  || step_id < 0 || step_id > score->lst[id_score]->n || (ConvertStringToID(note) < 5 && !(note[0] == 'z' || note[0] == 'x')))
+				{
+					
+					printf("(step)%d (note_id)%d (note)%d (flags)%d (duration)%d\n", step_id, note_id, ConvertStringToID(note), flags, duration);
+					sprintf(abc_error, "Erreur dans le format du fichier (ligne %d)", line);
+					return NULL;
+				}
 				Staff_AddNote(score->lst[id_score], step_id, note_id, 
 						ConvertStringToID(note), flags, duration);
+
 				if(note[0] == 'z' || note[0] == 'x')
 					Staff_ChangeRestStatus(score->lst[id_score], step_id, note_id, 1);
+					
 				flags = flags_next;
 				flags_next = NOTE_DEFAULT;
+				
 				if(car == '|')
 					flags = NOTE_DEFAULT;
+					
 				if(duration != base_l)
 					duration = base_l;
+					
 				note_id++;
 				i = 0;
 			}
@@ -643,11 +671,13 @@ extern Score *ABC_ParseFile(const char *path)
 					h = 4;
 				else
 					h = 5;
+					
 				if(nextcar(f) == '\'')
 				{
 					fgetc(f);
 					h++;
 				}
+				
 				note[i] = car;
 				i++;
 			}
@@ -670,9 +700,8 @@ extern Score *ABC_ParseFile(const char *path)
 					number[0] = car;
 					number[1] = fgetc(f);
 					number[2] = 0;
-					printf("number = %s\n", number);
+					
 					duration = duration / atoi(number);
-					printf("dur = %d\n", duration);
 				}
 				else
 					duration = duration / (car - '0');
@@ -696,7 +725,7 @@ extern Score *ABC_ParseFile(const char *path)
 		
 	}
 	while(car != EOF);
-	
+	printf("H\n");
 	fclose(f);
 	return score;
 }
@@ -709,13 +738,18 @@ extern Score *ABC_OpenABC(const char *path)
 	if((NULL == path))
 		return NULL;
 	sprintf(buf, "%s.tmp", path);
-	File_SimplifyABC(buf, path);
+	if(!File_SimplifyABC(buf, path))
+	{
+		sprintf(rm, "rm -f %s", buf);
+		system(rm);
+		return NULL;
+	}
 	
 	res = ABC_ParseFile(buf);
 	
 	sprintf(rm, "rm -f %s", buf);
-	/*system(rm);
-	*/
+	system(rm);
+	
 	return res;
 }
 
@@ -800,25 +834,27 @@ int ABC_WriteHeaderScore(FILE *f, Score *score, Note_Duration basel)
 int ABC_WriteDevScore(FILE *f, Score *score)
 {
 	int i,j;
+	int r = 1;
 	if((NULL == f) || (NULL == score))
 		return 0;
 	
-	ABC_WriteHeaderScore(f, score, CROCHE);
+	r &= ABC_WriteHeaderScore(f, score, CROCHE);
 	
 	for(i = 0; i < score->n; i++)
 	{
 		fprintf(f, "V:%d\n", i+1);
 		
 		for(j = 0; j < score->lst[i]->n; j++)
-			ABC_WriteStep(f, score->lst[i]->steps[j], CROCHE);
+			r &= ABC_WriteStep(f, score->lst[i]->steps[j], CROCHE);
 		fprintf(f,  "\n");
 	}
 	
-	return 1;
+	return r;
 }
 
 int ABC_WriteScore(const char *path, Score *score)
 {
+	int r;
 	FILE *f = NULL;
 	
 	if((NULL == path) || (NULL == score))
@@ -829,8 +865,8 @@ int ABC_WriteScore(const char *path, Score *score)
 	if(NULL == f)
 		return 0;
 	
-	ABC_WriteDevScore(f, score);
+	r = ABC_WriteDevScore(f, score);
 	
 	fclose(f);
-	return 1;
+	return r;
 }

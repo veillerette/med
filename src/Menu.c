@@ -276,6 +276,9 @@ int _Add_New_Staff(void)
 int Menu_OpenFile(void)
 {
 	char *path = NULL;
+	char buf[100] = "";
+	Score *new_score = NULL;
+	
 	if((NULL == main_events) || (NULL == main_events->score))
 		return FORCE_MAJ;
 	
@@ -283,16 +286,29 @@ int Menu_OpenFile(void)
 	
 	if(path != NULL)
 	{
-		Score_Free(&(main_events->score));
-		main_events->score = NULL;
 		if(File_isExt(path, ".abc"))
-			main_events->score = ABC_OpenABC(path);
+			new_score = ABC_OpenABC(path);
 		else if(File_isExt(path, ".med"))
-			File_OpenScore(path, &(main_events->score));
+			File_OpenScore(path, &(new_score));
+		if(NULL == new_score)
+		{
+			sprintf(buf, "%s", abc_error);
+			Window_InteractInfo(buf, 255, 100, 50);
+			return FORCE_MAJ;
+		}
+		else
+		{
 		
-		Audio_AssignateScore(main_events->score);
-		Audio_GoToStep(0);
-	}
+			printf("a\n");
+			Score_Free(&(main_events->score));
+			main_events->score = new_score;
+			printf("b\n");
+		
+			Audio_AssignateScore(main_events->score);
+			printf("c\n");
+			Audio_GoToStep(0);
+		}
+}
 	return FORCE_SCOREMAJ;
 }
 

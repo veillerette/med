@@ -438,8 +438,10 @@ int Audio_PlayStep(Step *step, Channel *chan)
 		return 0;
 	if((NULL == chan))
 		return 0;
-	
+		
+	#ifndef DEBUG
 	printf("playing step on channel %p\n", chan);
+	#endif
 	
 	note = step->notes;
 	do

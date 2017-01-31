@@ -1551,6 +1551,7 @@ int Window_InteractInfo(const char *path, int r, int g, int b)
 			roundedBoxRGBA(Window->screen, box.x, box.y+box.h-20, 
 					box.x+box.w, box.y+box.h, rounded, 255, 255, 255, 255);
 	
+	
 			if(isValid)
 			{
 				roundedBoxRGBA(Window->screen, valid.x, valid.y, 

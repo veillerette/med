@@ -55,4 +55,7 @@ extern Score *ABC_OpenABC(const char *path);
 
 int ABC_WriteScore(const char *path, Score *score);
 
+
+extern char abc_error[50];
+
 #endif

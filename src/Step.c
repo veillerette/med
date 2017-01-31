@@ -456,7 +456,6 @@ int Step_CorrectFlags(Step *step, int id, char note, Note_Flags *flags)
 	int sauv_note = note;
 	ToNote *notes = step->notes;
 	note %= 12;
-	printf("note = %d\n", note);
 	
 	for(i = 0; i < 7; i++)
 	{
