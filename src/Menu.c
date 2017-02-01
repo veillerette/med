@@ -273,6 +273,40 @@ int _Add_New_Staff(void)
 	return FORCE_SCOREMAJ;
 }
 
+int Menu_New(void)
+{
+	Score *new_score = NULL;
+	int i;
+	
+	if((NULL == main_events) || (NULL == main_events->score))
+		return 0;
+	
+	new_score = Score_Alloc();
+	
+	if(NULL == new_score)
+		return 0;
+	
+	Score_Init(new_score);
+	Staff_Init(new_score->lst[0], 4, NOIRE, CLE_SOL, 0);
+	Staff_ChangeArmure(new_score->lst[0], 0, 0);
+	
+	for(i = 0; i < 10; i++)
+			Score_AddEmptyStep(new_score);
+	Score_AddEmpty(new_score);
+	
+	
+	Audio_Pause();
+	
+	
+	Score_Free(&(main_events->score));
+	main_events->score = new_score;
+	
+	Audio_AssignateScore(main_events->score);
+	Audio_GoToStep(0);
+	
+	return FORCE_SCOREMAJ;
+}
+
 int Menu_OpenFile(void)
 {
 	char *path = NULL;
@@ -305,7 +339,6 @@ int Menu_OpenFile(void)
 			printf("b\n");
 		
 			Audio_AssignateScore(main_events->score);
-			printf("c\n");
 			Audio_GoToStep(0);
 		}
 }
@@ -399,7 +432,7 @@ Menu *Menu_Create(void)
 	Menu *menu = NULL;
 	menu = Menu_Alloc();
 	NodeArray_Add(menu->lst, "Fichier", 0, NODE, NULL);
-	NodeArray_Add(menu->lst->next[0]->next, "Nouveau", 0, LEAF, menu_no_action);
+	NodeArray_Add(menu->lst->next[0]->next, "Nouveau", 0, LEAF, Menu_New);
 	NodeArray_Add(menu->lst->next[0]->next, "Ouvrir", 0, LEAF, Menu_OpenFile);
 	NodeArray_Add(menu->lst->next[0]->next, "Export en MED", 0, LEAF, Menu_SauvFileMED);
 	NodeArray_Add(menu->lst->next[0]->next, "Export en ABC", 0, LEAF, Menu_SauvFileABC);

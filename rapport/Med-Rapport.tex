@@ -17,6 +17,7 @@
 \usepackage{float}
 \usepackage{amsmath}
 \usepackage{amssymb}
+\usepackage{mdframed}
 
 \definecolor{mygray}{rgb}{0.5,0.5,0.5}
 \lstdefinestyle{CLangage}{
@@ -78,6 +79,8 @@ numbers=none,                    % where to put the line-numbers; possible value
 
 \begin{document}
 
+
+
 \title{\begin{Huge}Editeur musical avec lecture audio\end{Huge} \\
     \begin{normalsize}\textit{et génération analogique d'ondes sinusoidales et carrées}\end{normalsize}
     }
@@ -85,13 +88,45 @@ numbers=none,                    % where to put the line-numbers; possible value
 \date{Janvier 2017}
  
 \maketitle
-
+\addtocontents{toc}{\vspace*{-2\baselineskip}}
 \tableofcontents
 
-\addtocontents{toc}{\protect\enlargethispage{\baselineskip\baselineskip\baselineskip}}
 \chapter{Introduction}
 \section{Sujet initial}
-\section{Analyse des fonctionnalités} % midi -> dur d'implémentation, pour plus tard ?
+Le sujet de base était la réalisation d'un éditeur de partition générant ses propres sons.\\
+Le projet était à réaliser durant un semestre, c'est-à-dire d'Octobre 2016 à Janvier 2017. \\
+Voici l'intitulé exact du sujet :\\
+\begin{mdframed}[backgroundcolor=grey]
+ 
+
+
+\begin{quotation}
+Le but du projet est de réaliser un éditeur classique de partition
+musicale similaire à MuseScore, proposant les
+fonctionnalités basiques d'édition d'une partition musicale.\\
+On permettra à l'utilisateur d'éditer une partition musicale en le
+forçant à respecter les contraintes inhérentes (entre autre: l'empêcher
+de mettre trop de notes par rapport à la durée d'une mesure), en se
+focalisant dans un premier temps sur une seule voix. L'outil devra être
+capable de jouer la partition ainsi rédigée (sons générés par ordinateur
+- ondes sinusoidales par exemple).\\
+L'utilisateur devra en outre pouvoir "personnaliser" les fréquences de
+chaque note. Tout en gardant 12 divisions par octave, on pourrait par
+exemple, déterminer chaque "quantité de fréquences" à allouer à chaque
+division.
+\end{quotation}
+\end{mdframed}
+\vskip 0.3in
+
+Les modalités du projet étaient les suivantes :\\
+\begin{itemize}
+ \item Langage de programmation : C   \\
+ \item Utilisation de la librairie SDL \\
+ \item Aucune utilisation de code tiers \\
+\end{itemize}
+
+
+%\section{Analyse des fonctionnalités} % midi -> dur d'implémentation, pour plus tard ?
 
 \chapter{Développement} % Sources, Organisation dossiers, Bibliothèques, Histogramme ?
 \section{Sources}
@@ -109,8 +144,7 @@ Il est à noter que le programme n'utilise aucune image externe et génère de l
  \item \textbf{include/} : Fichiers headers du projet .h; chaque fichier est rattaché à un fichier source, et donc à un module.\\
  \item \textbf{doc/} : Quelques fichiers exemples .abc ou .med à charger dans l'application.\\
  \item \textbf{src/} : Fichiers sources du projet .c; chaque fichier correspond à un module. \\
- \item \textbf{Makefile} : Fichier Makefile permettant la compilation simple avec la commande \textit{make}\\
- \item \textbf{Rapport.pdf} : Ce même rapport. \\
+ \item \textbf{Makefile} : Fichier Makefile permettant la compilation avec la commande \textit{make}.\\
 \end{itemize}
 \section{Plateforme de suivi Git}
 Malgré le fait que le développement du programme ne soit effectué que par une personne, j'ai voulu tester l'utilisation du logiciel de gestion de version \textbf{git}
@@ -351,7 +385,7 @@ Une fois un élément séléctionné on peut en fonction de son type : \\
 
 Pour une mesure : \\
 \begin{itemize}
- \item Supprimer la mesure avec Selection->Supprimer ou SUPPR\\
+ \item Supprimer la mesure avec Selection->Supprimer ou SUPPR : Supprime toutes les mesures en parallèle sur les autres portées.\\
  \item Régulariser la mesure (fusionner les silences quand cela est possible) avec Selection->Régulariser.\\
  \item Ajout des mesures avant ou après avec Ajouter->Mesures\\
  \item Changer l'armure avec Selection->Armures\\
@@ -360,19 +394,29 @@ Pour une mesure : \\
 Pour une note/silence : \\
 \begin{itemize}
  \item Supprimer la note avec Selection->Supprimer ou SUPPR (La transforme en silence de même durée)\\
- \item Diviser un silence en deux parties égale avec Selection->Diviser ou la touche d\\
+ \item Diviser un silence en deux parties égales avec Selection->Diviser ou la touche d\\
  \item Changer la durée de la note avec la Toolbar\\
+ \item Rajouter / Enlever une altération avec la Toolbar \\
 \end{itemize}
 \vskip 0.2in
-
+\newpage
 \section{Explorateur de fichier}
-Un explorateur de fichiers du disque est disponible. On peut notamment le retrouver lors de l'ouverture d'un fichier (Fichier->Ouvrir), ou lors de la sauvegarde (Fichier->Export en MED).\\
+Un explorateur de fichiers du disque est disponible. On peut notamment le retrouver lors de l'ouverture d'un fichier (Fichier->Ouvrir), ou lors de la sauvegarde (Fichier->Export en MED).\\\\
 Seul les dossiers, les fichiers .med et les fichiers .abc sont affichés étant donné que seuls ces fichiers sont supportés par le programme.\\
-Pour ouvrir un dossier, il suffit de double-clic dessus, pour sélectionner un fichier, un simple clic suffit et le colorise en bleu.\\
-Le bouton \textit{Parent} permet de monter d'un répertoire tantdis que le bouton \textbf{Valider} valide le choix du fichier ou ne fait rien si aucun fichier n'est sélectionné.\\
-\section{Configuration Audio}
+Pour ouvrir un dossier, il suffit de double-clic dessus, pour sélectionner un fichier, un simple clic suffit et le colorise en bleu.\\ \\
+Le bouton \textit{Parent} permet de monter d'un répertoire tandis que le bouton \textbf{Valider} valide le choix du fichier ou ne fait rien si aucun fichier n'est sélectionné.\\
+Une fois un fichier valider, le programme détermine avec l'extension si c'est un fichier ABC ou MED et tente de l'ouvrir. Un message d'erreur s'affiche en cas d'échec.\\
 
-\chapter{Bilan}
-\section{Conclusion}
-\section{Perspectives} % Imporation/Export fichier MIDI, Compression format .med (Huffman...), 
+\chapter{Perspectives} % Imporation/Export fichier MIDI, Compression format .med (Huffman...), 
+Je compte bien évidemment continuer le développement du programme, qui n'est pour le moment qu'un prototype. Parmi les prochaines améliorations intéressantes qui pourraient avoir lieu :\\
+\begin{itemize}
+ \item Importation / Exportation des fichiers MIDI : Ces fonctionnalités, proposées en tant qu'améliorations à la base n'ont pas été intégrées notamment par manque de temps. En effet, la spécification MIDI
+ est complexe et il aurait été trop compliqué de mettre en place un système fiable dans les temps.\\
+ \item Amélioration du format MED avec une compression : Par exemple, un codage de Huffman et une compression RLE. En effet, ce format contient (généralement) beaucoup de motifs commun et la compression
+ pourrait être performante.\\
+ \item Utilisation du format Soundfont et de FluydSynth (libre) pour jouer des sons. A la base proposé en tant qu'améliorations, cette méthode ne permet pas de générer un son de fréquence libre mais permet
+ l'utilisation simple de sons d'un très grand réalisme.\\
+ \item Enfin, l'ajout des diverses fonctionnalités manquantes, par rapport à Musescore.\\
+\end{itemize}
+
 \end{document}
