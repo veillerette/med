@@ -326,6 +326,10 @@ int Explorer_PollEvent(Explorer *e, SDL_Event event)
 		case SDL_QUIT:
 			return QUIT;
 		
+		case SDL_KEYUP:
+				return QUIT;
+			break;
+		
 		case SDL_MOUSEBUTTONDOWN:
 			x = event.button.x;
 			y = event.button.y;
@@ -487,12 +491,6 @@ char *Explorer_FindPath(int x, int y, int w, int h, SDL_Surface *dest)
 	while(c)
 	{
 		SDL_WaitEvent(&event);
-		switch(event.type)
-		{
-			case SDL_QUIT:
-				c = 0;
-				break;
-		}
 		switch(Explorer_PollEvent(e, event))
 		{	
 			case FORCE_MAJ:
@@ -506,6 +504,8 @@ char *Explorer_FindPath(int x, int y, int w, int h, SDL_Surface *dest)
 				str = Str_Concat(3, e->dir->name, "/", e->dir->tab[e->select-1]->name);
 				c = 0;
 				break;
+			case QUIT:
+				return NULL;
 				
 			case NONE:
 				break;
