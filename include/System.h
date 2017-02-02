@@ -8,8 +8,8 @@
 #include <string.h>
 #include <math.h>
 
-#define SYS_VERSION 	0.1
-#define SYS_NAME	"med"
+#define SYS_VERSION 	0.5
+#define SYS_NAME	"MusicalEditor"
 
 #define log2(n) 	(log((n)) / log(2))
 #define memtest(ptr) 	(_mem((void*)ptr, #ptr, __FILE__, __LINE__))

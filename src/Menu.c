@@ -332,12 +332,10 @@ int Menu_OpenFile(void)
 		}
 		else
 		{
-		
-			printf("a\n");
+			Audio_Pause();
 			Score_Free(&(main_events->score));
 			main_events->score = new_score;
-			printf("b\n");
-		
+			
 			Audio_AssignateScore(main_events->score);
 			Audio_GoToStep(0);
 		}
