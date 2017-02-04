@@ -852,7 +852,7 @@ int ABC_WriteDevScore(FILE *f, Score *score)
 	return r;
 }
 
-int ABC_WriteScore(const char *path, Score *score)
+extern int ABC_WriteScore(const char *path, Score *score)
 {
 	int r;
 	FILE *f = NULL;

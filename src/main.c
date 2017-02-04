@@ -41,7 +41,7 @@ int main(int argc, char *argv[])
 	if(argc==1)
 	{
 	
-		Staff_Init(new_score->lst[0], 2, NOIRE, CLE_SOL, 0);
+		Staff_Init(new_score->lst[0], 4, NOIRE, CLE_SOL, 0);
 		Staff_ChangeArmure(new_score->lst[0], 0, 0);
 		for(i = 0; i < 10; i++)
 			Score_AddEmptyStep(new_score);
