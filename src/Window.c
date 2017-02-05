@@ -990,6 +990,7 @@ int Note_Print(Score *score, Staff *staff, Step *step, int id_step, int id_note,
 					else
 					{
 						int real_h0, real_h1, real_hsep;
+						
 						if(Window->quavers->totalheight/Window->quavers->n <= -45)
 						{
 							real_h0 = Window->quavers->tab[0]->y+2*QUEUE + 14 + HEAD_H;
@@ -1000,8 +1001,11 @@ int Note_Print(Score *score, Staff *staff, Step *step, int id_step, int id_note,
 							real_h0 = Window->quavers->tab[0]->y;
 							real_h1 = Window->quavers->tab[Window->quavers->n - 1]->y;
 						}
-						if(((Dots_CalcCoef(Window->quavers) < -MAX_A_QUAVER || Dots_CalcCoef(Window->quavers) > MAX_A_QUAVER) && !Dots_isLinear(Window->quavers)) 
-								|| Dots_Length(Window->quavers) == 2)
+						
+						if(((Dots_CalcCoef(Window->quavers) < -MAX_A_QUAVER
+						|| Dots_CalcCoef(Window->quavers) > MAX_A_QUAVER) && !Dots_isLinear(Window->quavers)) 
+						|| Dots_Length(Window->quavers) == 2)
+						
 						{
 							if(Window->quavers->totalheight/Window->quavers->n <= -45)
 							{

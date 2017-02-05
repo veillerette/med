@@ -288,6 +288,7 @@ Score *Score_Alloc(void)
 	temp->n = 0;
 	temp->data = 0;
 	temp->signs = NULL;
+	temp->tempo = 120;
 	
 	return temp;
 }
@@ -462,6 +463,14 @@ int Score_ChangeArmure(Score *score, int i, signed char new)
 	for(j = 0; j < score->n; j++)
 		Staff_ChangeArmure(score->lst[j], i, new);
 	return 1;
+}
+
+void Score_SetTempo(Score *score, int tempo)
+{
+	if(score != NULL)
+	{
+		score->tempo = tempo;
+	}
 }
 
 

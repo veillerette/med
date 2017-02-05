@@ -84,8 +84,6 @@ struct AudioConfig
 					
 	SDL_Thread **threads;		/*!< Les différents threads des voix */
 	int need_refresh;		/*!< Demande de rafraichissement de l'écran */
-	
-	int tempo;			/*!< Tempo en battements par minute */
 };
 
 

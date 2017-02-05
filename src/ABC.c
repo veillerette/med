@@ -87,7 +87,6 @@ int ABC_ParseHeader(Score *score, FILE *f)
 		return 0;
 	while(ABC_ScanHead(f, &field, text) && c)
 	{
-		printf("%c %s \n", field, text);
 		switch(field)
 		{
 		
@@ -129,6 +128,38 @@ int ABC_ParseHeader(Score *score, FILE *f)
 				{
 					sprintf(abc_error,  "L:%s est invalide\n", text);
 					return 0;
+				}
+				break;
+			case 'Q':
+				{
+					unsigned int n = strlen(text);
+					if(n >= 6)
+					{
+						int base, dest;
+						unsigned int k;
+						for(k = 0; k < n; k++)
+						{
+							if(text[k] == '=')
+							{
+								text[k] = 0;
+								break;
+							}
+						}
+						printf("k = %d\n", k);
+						if(k == n)
+							break;
+						base = atoi(text + 2);
+						printf("base = %d\n", base);
+						if(base < 2 || base > 16)
+							break;
+						dest = atoi(text + k + 1);
+						printf("dest = %d\n", dest);
+						if(dest < 20 || dest > 300)
+							break;
+						dest = dest * 1.0 * (4/base);
+						printf("Set Tempo to %d\n", dest);
+						Score_SetTempo(score, dest);
+					}
 				}
 				break;
 			case 'V':
@@ -584,7 +615,7 @@ extern Score *ABC_ParseFile(const char *path)
 	do
 	{
 		car = fgetc(f);
-		printf("%c", car);
+/*		printf("%c", car);*/
 		if(car == '\n')
 			line++;
 		if(car == EOF)
@@ -632,12 +663,10 @@ extern Score *ABC_ParseFile(const char *path)
 				  || step_id < 0 || step_id > score->lst[id_score]->n || (ConvertStringToID(note) < 5 && !(note[0] == 'z' || note[0] == 'x')))
 				{
 					
-					printf("(step)%d (note_id)%d (note)%d (flags)%d (duration)%d\n", step_id, note_id, ConvertStringToID(note), flags, duration);
+/*					printf("(step)%d (note_id)%d (note)%d (flags)%d (duration)%d\n", step_id, note_id, ConvertStringToID(note), flags, duration);*/
 					sprintf(abc_error, "Erreur dans le format du fichier (ligne %d)", line);
 					return NULL;
 				}
-
-					printf("ajout de \"%s\" (step)%d (note_id)%d (note)%d (flags)%d (duration)%d\n", note, step_id, note_id, ConvertStringToID(note), flags, duration);
 
 				Staff_AddNote(score->lst[id_score], step_id, note_id, 
 						ConvertStringToID(note), flags, duration);

@@ -42,6 +42,7 @@ struct Score
 	Staff **lst;
 	int n;
 	
+	int tempo;
 	int data;
 	Sign *signs;
 };
@@ -108,4 +109,7 @@ int Score_DeleteStep(Score *score, int i);
 int Score_ChangeArmure(Score *score, int i, signed char new);
 
 int Staff_ChangeCle(Staff *staff, int step_id, Cle new);
+
+void Score_SetTempo(Score *score, int tempo);
+
 #endif

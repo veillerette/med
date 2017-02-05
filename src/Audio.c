@@ -181,7 +181,6 @@ AudioConfig *AudioConfig_DevInit(int askFreq, Uint16 format, Uint8 channels, Uin
 	ac->playing = 0;
 	ac->threads = NULL;
 	ac->need_refresh = 0;
-	ac->tempo = 120;
 	Mixer_Init(&(ac->mixer));
 	
 	spec.freq = askFreq;
@@ -390,7 +389,7 @@ int Tempo_GetMsTempo(void)
 {
 	if(main_audio != NULL)
 	{
-		return (int)(60.0 / main_audio->tempo * 1000);
+		return (int)(60.0 / main_audio->score->tempo * 1000);
 	}
 	return 0;
 }
@@ -613,14 +612,14 @@ void Audio_SetTempo(int newTempo)
 	if(main_audio != NULL)
 	{
 		if(newTempo > 30 && newTempo < 250)
-			main_audio->tempo = newTempo;
+			main_audio->score->tempo = newTempo;
 	}
 }
 
 int Audio_GetTempo(void)
 {
 	if(main_audio != NULL)
-		return main_audio->tempo;
+		return main_audio->score->tempo;
 	return 0;
 }
 
