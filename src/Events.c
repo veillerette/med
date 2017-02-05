@@ -281,11 +281,18 @@ char MouseToNote(Area *area, int y)
 	int goal;
 	int res = 91;
 	int tab[] = {2, 1, 2, 2, 1, 2, 2};
+	
+	if(area->staff->steps[area->id_step]->cle == CLE_FA)
+		z += HEAD_H*6;
+	
 	y+=HEAD_H*0.25;
 	res -= ((int)((z)/(HEAD_H*3.5)))*12;
 	goal = ((int)((z)/((int)(HEAD_H*0.5))))%7;
 	for(i = 0; i < goal; i++)
 		res -= tab[i%7];
+	
+	printf("return res=%d\n", res);
+	
 	return res;
 }
 

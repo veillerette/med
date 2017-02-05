@@ -596,6 +596,8 @@ extern Score *ABC_ParseFile(const char *path)
 			id_score = (fgetc(f) - '0');
 			if(id_score == score->n && id_score != 0)
 				Score_AddEmpty(score);
+			
+			Staff_ChangeCle(score->lst[1], 0, CLE_FA);
 			fgetc(f);
 			step_id = 0;
 			continue;

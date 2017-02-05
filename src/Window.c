@@ -710,6 +710,9 @@ int Note_Print(Score *score, Staff *staff, Step *step, int id_step, int id_note,
 			}
 		}
 		
+		if(step->cle == CLE_FA)
+			note_y -= HEAD_H * 6;
+		
 		base_pos->y += note_y;
 	}
 	adding.w = real_space;
@@ -1342,7 +1345,7 @@ int Score_Print(Score *score, SDL_Rect *base_pos)
 {
 	int i = 0, j = 0, k = 0;
 	signed char sauv = 0;
-	Cle sauv_cle = CLE_SOL;
+	Cle sauv_cle[10] = {0};
 	int sauv_x, sauv_y;
 	int num = -1, den = -1;
 	int nbody = 0;
@@ -1388,10 +1391,10 @@ int Score_Print(Score *score, SDL_Rect *base_pos)
 			sauv2_y = base_pos->y;
 			goal.x = sauv2_x;
 			goal.y = sauv2_y;
-			if(0 == i || (*(staff->steps + i))->cle != sauv_cle)
+			if(0 == i || (*(staff->steps + i))->cle != sauv_cle[k])
 			{
 				Cle_Print(*(staff->steps + i), base_pos, NPAGE);
-				sauv_cle = (*(staff->steps + i))->cle;
+				sauv_cle[k] = (*(staff->steps + i))->cle;
 			}
 			if(0 == i || (*(staff->steps + i))->sign != sauv)
 			{

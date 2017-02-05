@@ -106,4 +106,6 @@ int Score_AddEmptyStep(Score *score);
 int Score_DeleteStep(Score *score, int i);
 
 int Score_ChangeArmure(Score *score, int i, signed char new);
+
+int Staff_ChangeCle(Staff *staff, int step_id, Cle new);
 #endif

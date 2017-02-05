@@ -58,7 +58,9 @@ typedef enum {
  */
 typedef enum {
 	CLE_SOL 	= 1,	/*!< Clé de Sol Seconde */
-	CLE_FA 		= 2	/*!< Clé de Fa Quatrième */
+	CLE_FA 		= 2,	/*!< Clé de Fa Quatrième */
+	CLE_UT3,
+	CLE_UT4
 	} Cle;
 
 /**

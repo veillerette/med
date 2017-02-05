@@ -46,6 +46,7 @@ int main(int argc, char *argv[])
 		for(i = 0; i < 10; i++)
 			Score_AddEmptyStep(new_score);
 		Score_AddEmpty(new_score);
+		Staff_ChangeCle(new_score->lst[1], 0, CLE_FA);
 		
 		
 		

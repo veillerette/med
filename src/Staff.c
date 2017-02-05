@@ -224,6 +224,19 @@ int Staff_ChangeArmure(Staff *staff, int step_id, signed char new)
 	return 1;
 }
 
+
+int Staff_ChangeCle(Staff *staff, int step_id, Cle new)
+{
+	int j;
+	if((NULL == staff) || (NULL == staff->steps) || (0 == staff->n) || (step_id < 0))
+		return 0;
+	
+	for(j = step_id; j < staff->n; j++)
+		staff->steps[j]->cle = new;
+	
+	return 1;
+}
+
 Sign *Sign_Alloc(Sign_Type type, Uint value, Uint time, char *text)
 {
 	Sign *temp = (Sign *)malloc(sizeof(Sign));
@@ -450,5 +463,6 @@ int Score_ChangeArmure(Score *score, int i, signed char new)
 		Staff_ChangeArmure(score->lst[j], i, new);
 	return 1;
 }
+
 
 
