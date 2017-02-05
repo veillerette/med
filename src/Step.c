@@ -488,6 +488,8 @@ int Step_CorrectFlags(Step *step, int id, char note, Note_Flags *flags)
 				new = NOTE_DOUBLEFLAT;
 			if(notes->note->flags & NOTE_DOUBLESHARP)
 				new = NOTE_DOUBLESHARP;
+			if(notes->note->flags & NOTE_NATURAL)
+				new = NOTE_DEFAULT;
 				
 		}
 		notes = notes->next;
@@ -549,6 +551,7 @@ int Step_AddNote(Step *step, int id, char note, Note_Flags flags,
 		Step_CorrectFlags(step, id, note, &flags);
 	else
 		flags = NOTE_NATURAL;
+		
 	while(id > 0)
 	{
 		if(NULL == (*cur)->next)

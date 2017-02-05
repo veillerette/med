@@ -512,6 +512,17 @@ SDL_Surface *CreateCleSol(int size_w, int size_h)
 	return surf;
 }
 
+SDL_Surface *CreateCleFa(int size_w, int size_h)
+{
+	SDL_Surface *surf = NULL;
+	
+	surf = SDL_CreateWhiteKeySurface(size_w * 2, size_h * 3.5);
+	memtest(surf);
+	
+	Draw_Border(surf, 2);
+	return surf;
+}
+
 SDL_Surface *CreateDoubleFlat(int size_w, int size_h)
 {
 	SDL_Surface *surf = NULL;
@@ -567,6 +578,7 @@ Graphics *Graphics_Alloc(void)
 	temp->note1_center = NULL;
 	
 	temp->Cle_Sol = NULL;
+	temp->Cle_Fa = NULL;
 	
 	return temp;
 }
@@ -622,6 +634,9 @@ void Graphics_Free(Graphics **graphics)
 		
 		if((*graphics)->Cle_Sol != NULL)
 			SDL_FreeSurface((*graphics)->Cle_Sol);
+		
+		if((*graphics)->Cle_Fa != NULL)
+			SDL_FreeSurface((*graphics)->Cle_Fa);
 		
 		free(*graphics);
 		*graphics = NULL;
@@ -705,6 +720,10 @@ int Graphics_Load(Graphics **data)
 	
 	(*data)->Cle_Sol = ConvertDisplayFormat(CreateCleSol(HEAD_W, HEAD_H));
 	if(NULL == (*data)->Cle_Sol)
+		r = 0;
+	
+	(*data)->Cle_Fa = ConvertDisplayFormat(CreateCleFa(HEAD_W, HEAD_H));
+	if(NULL == (*data)->Cle_Fa)
 		r = 0;
 	
 	if(r)

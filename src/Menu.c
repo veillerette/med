@@ -393,13 +393,41 @@ int Menu_SauvFileABC(void)
 	return FORCE_MAJ;
 }
 
+int ChangeCleToSol(void)
+{
+	if((NULL == main_events) || (NULL == main_events->score))
+		return FORCE_MAJ;
+	
+	if((NULL == main_events->select) || (main_events->select->type != OBJECT_STEP))
+		return FORCE_MAJ;
+	
+	Staff_ChangeCle(main_events->select->staff, 0, CLE_SOL);
+	
+	return FORCE_SCOREMAJ;
+}
+
+int ChangeCleToFa(void)
+{
+	if((NULL == main_events) || (NULL == main_events->score))
+		return FORCE_MAJ;
+	
+	if((NULL == main_events->select) || (main_events->select->type != OBJECT_STEP))
+		return FORCE_MAJ;
+	
+	Staff_ChangeCle(main_events->select->staff, 0, CLE_FA);
+	
+	return FORCE_SCOREMAJ;
+}
+
 int ChangeTonality(signed char new)
 {
 	int i,j;
 	if((NULL == main_events) || (NULL == main_events->score))
-		return 0;
+		return FORCE_MAJ;
+		
 	if((NULL == main_events->select) || (main_events->select->type != OBJECT_STEP))
-		return 0;
+		return FORCE_MAJ;
+		
 	for(i = 0; i < main_events->score->n; i++)
 	{
 		Staff_ChangeArmure(main_events->score->lst[i], main_events->select->id_step, new);
@@ -458,6 +486,9 @@ Menu *Menu_Create(void)
 	NodeArray_Add(menu->lst->next[1]->next->next[4]->next->next[2]->next, "Réb Majeur / Sib mineur", 1, LEAF, ___5Arm);
 	NodeArray_Add(menu->lst->next[1]->next->next[4]->next->next[2]->next, "Solb Majeur / Mib mineur", 1, LEAF, ___6Arm);
 	NodeArray_Add(menu->lst->next[1]->next->next[4]->next->next[2]->next, "Dob Majeur / Lab mineur", 1, LEAF, ___7Arm);
+	NodeArray_Add(menu->lst->next[1]->next, "Clés", 0, NODE, NULL);
+	NodeArray_Add(menu->lst->next[1]->next->next[5]->next, "Clé de Sol", 1, LEAF, ChangeCleToSol);
+	NodeArray_Add(menu->lst->next[1]->next->next[5]->next, "Clé de Fa", 1, LEAF, ChangeCleToFa);
 	NodeArray_Add(menu->lst, "Ajouter", 0, NODE, NULL);
 	NodeArray_Add(menu->lst->next[2]->next, "Mesure", 0, NODE, menu_no_action);
 	NodeArray_Add(menu->lst->next[2]->next->next[0]->next, "Avant la sélection", 1, LEAF, _Ajouter_Mesure_Before);
@@ -679,7 +710,7 @@ Menu_Node *FindNodeByZone(Menu *menu, int clic_x, int clic_y)
 }
 int Menu_NoSelect(void)
 {
-	return Window_InteractInfo("Aucune sélection active", 255, 100, 50);
+	return Window_InteractInfo("Veuillez sélectionner une mesure", 255, 100, 50);
 }
 /*
 int Menu_NoSelect(void)

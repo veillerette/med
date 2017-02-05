@@ -25,7 +25,7 @@ typedef struct Graphics Graphics;
 struct Graphics
 {
 	/* Têtes de Notes */
-	SDL_Surface *Note_headBlack; /* Noires */
+	SDL_Surface *Note_headBlack; /* Noires, Croches */
 	SDL_Surface *Note_headWhite; /* Blanche */
 	SDL_Surface *Note_headWhole; /* Ronde */
 	int rot_noteW;
@@ -36,10 +36,11 @@ struct Graphics
 	SDL_Surface *Note_Black;
 	SDL_Rect *note1_center;
 	
+	/* Croches */
 	SDL_Surface *Note_Crotchet;
 	SDL_Surface *Note_CrotchetInv;
 	
-	/* Rest */
+	/* Silences */
 	SDL_Surface *Rest_Long;
 	SDL_Rect *pos_Long;
 	
@@ -54,11 +55,14 @@ struct Graphics
 	
 	SDL_Surface *Rest_Breve;
 	
+	/* Diéses et Bémols */
 	SDL_Surface *Sharp;
 	SDL_Surface *Flat;
 	SDL_Surface *DoubleFlat;
 	
+	/* Clés */
 	SDL_Surface *Cle_Sol;
+	SDL_Surface *Cle_Fa;
 };
 
 

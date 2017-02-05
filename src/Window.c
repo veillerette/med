@@ -443,6 +443,8 @@ int Window_isNotePlaying(Note *note)
 
 int Window_TestBox(SDL_Surface *dest, SDL_Rect *pos, int zoom)
 {
+	int count = 0;
+	int must = main_events->score->n + (main_events->select != NULL);
 	Area *area;
 	int r=200,g=50,b=50,a=150;
 	if(NULL == dest)
@@ -451,6 +453,9 @@ int Window_TestBox(SDL_Surface *dest, SDL_Rect *pos, int zoom)
 	area= main_events->lst;
 	while(area != NULL)
 	{
+	
+		if(count == must)
+			return 1;
 	
 		if(((pos->x + (area->rect.x + SIZE_BODY*area->nbody)/zoom) >= main_events->base->x)  &&
 			((pos->y  + area->rect.y/zoom) >= main_events->base->y))
@@ -461,6 +466,7 @@ int Window_TestBox(SDL_Surface *dest, SDL_Rect *pos, int zoom)
 			if(main_events->select == area 
 			|| (area->type == OBJECT_NOTE && Window_isNotePlaying(Step_GetNote(area->step, area->id_note))))
 			{
+				count++;
 				r = 200;
 				g = 50;
 				b = 50;
@@ -943,7 +949,6 @@ int Note_Print(Score *score, Staff *staff, Step *step, int id_step, int id_note,
 				
 				next = Step_GetNextNote(step, id_note);
 				
-				printf("\n%d %d\n", Window->sum_duration, 64/step->den);
 				
 				if( ((Window->sum_duration % (64/step->den)) == 0 && (((step->den != 4 && step->den != 8)
 				|| (step->num != 4 && step->num != 6)
@@ -1152,6 +1157,11 @@ int Cle_Print(Step *step, SDL_Rect *base_pos, SDL_Surface *dest)
 			base_pos->y -= HEAD_H*2;
 			SDL_BlitSurface(Images->Cle_Sol, NULL, dest, base_pos);
 			base_pos->y += HEAD_H*2;
+			base_pos->x += Images->Cle_Sol->w;
+			break;
+		case CLE_FA:
+			base_pos->x += HEAD_H/4;
+			SDL_BlitSurface(Images->Cle_Fa, NULL, dest, base_pos);
 			base_pos->x += Images->Cle_Sol->w;
 			break;
 		default:

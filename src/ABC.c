@@ -605,25 +605,12 @@ extern Score *ABC_ParseFile(const char *path)
 		switch(car)
 		{
 			case '^':
-				if(note_id == 0)
-					flags |= NOTE_SHARP;
-				else
-					flags_next |= NOTE_SHARP;
+				flags_next |= NOTE_SHARP;
 				break;
 			case '_':
-				if(note_id == 0)
-					flags |= NOTE_FLAT;
-				else
-					flags_next |= NOTE_FLAT;
+				flags_next |= NOTE_FLAT;
 				break;
 			case '=':
-				if(note_id == 0)
-				{
-					flags |= NOTE_NATURAL;
-					flags &= ~NOTE_SHARP;
-					flags &= ~NOTE_FLAT;
-				}
-				else
 				{
 					flags_next |= NOTE_NATURAL;
 					flags_next &= ~NOTE_SHARP;
@@ -649,6 +636,9 @@ extern Score *ABC_ParseFile(const char *path)
 					sprintf(abc_error, "Erreur dans le format du fichier (ligne %d)", line);
 					return NULL;
 				}
+
+					printf("ajout de \"%s\" (step)%d (note_id)%d (note)%d (flags)%d (duration)%d\n", note, step_id, note_id, ConvertStringToID(note), flags, duration);
+
 				Staff_AddNote(score->lst[id_score], step_id, note_id, 
 						ConvertStringToID(note), flags, duration);
 
@@ -666,6 +656,11 @@ extern Score *ABC_ParseFile(const char *path)
 					
 				note_id++;
 				i = 0;
+			}
+			else
+			{
+				flags = flags_next;
+				flags_next = NOTE_DEFAULT;
 			}
 			if(car!='\n' && car != EOF && car != '|')
 			{
@@ -788,8 +783,12 @@ int ABC_WriteStep(FILE *f, Step *step, Note_Duration base_l)
 				fprintf(f, "%c", names[id]-'a'+'A');
 			else if(oct == 3)
 				fprintf(f, "%c,", names[id]-'a'+'A');
+			else if(oct == 2)
+				fprintf(f, "%c,,", names[id]-'a'+'A');
 			else if(oct == 6)
 				fprintf(f, "%c'", names[id]);
+			else if(oct == 7)
+				fprintf(f, "%c''", names[id]);
 			
 		}
 		if((Note_Duration)Note_RealDuration(notes->note, step) > 64/base_l)

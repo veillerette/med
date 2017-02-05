@@ -22,7 +22,7 @@ clean:
 	if [ -d "$(OBJ)" ]; then rm -f $(OBJ)*.o; rmdir $(OBJ); fi;	
 
 wc:
-	wc $(SRC)*.c $(INCL)*.h Makefile
+	@wc $(SRC)*.c $(INCL)*.h Makefile | sort -n
 
 push:
 	git add $(INCL)*.h $(SRC)*.c Makefile
@@ -31,3 +31,8 @@ push:
 
 pull:
 	git pull
+
+stats:
+	@echo -n "Number of files : " && ls -l include/ src/ | grep "\.h\|\.c" | wc -l;
+	@echo -n "Number of lines : " && wc -l $(SRC)*.c $(INCL)*.h Makefile | grep "total" | cut -d " " -f2;
+	@echo -n "Number of car : " && wc -c $(SRC)*.c $(INCL)*.h Makefile | grep "total" | cut -d " " -f1;

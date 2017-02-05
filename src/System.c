@@ -329,7 +329,7 @@ int Dots_EvaluateYFromX(Dots *dt, int x)
 	a = Dots_CalcCoef(dt);
 	x -= dt->tab[0]->x;
 	
-	printf("Y(%d) = %g (%g * %d + %d)\n", x, a * x + dt->tab[0]->y, a, x, dt->tab[0]->y);
+/*	printf("Y(%d) = %g (%g * %d + %d)\n", x, a * x + dt->tab[0]->y, a, x, dt->tab[0]->y);*/
 	return a * x + dt->tab[0]->y;
 }
 
