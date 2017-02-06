@@ -273,13 +273,357 @@ int _Add_New_Staff(void)
 	return FORCE_SCOREMAJ;
 }
 
+
+void ButtonRect(int x, int y, SDL_Rect rect, int *valid, int *refresh)
+{
+	if(PixelInRect(x, y, rect))
+	{
+		if(!(*valid))
+		{
+			*valid = 1;
+			*refresh = 1;
+		}
+	}
+	else
+	{
+		if(*valid)
+		{
+			*valid = 0;
+			*refresh = 1;
+		}
+	}
+}
+
+
+
+int Menu_ChooseNew(int *new_vox, Cle **new_cles, int *new_num, int *new_den)
+{
+	Cle cles[10] = {0};
+	int isCle[10] = {0};
+	SDL_Rect pos[10];
+	int nbr_vox = 1;
+	int num = 4, den = 4;
+	
+	int header1 = 30;
+	int r = 50, g = 50, b = 255;
+	int h = Window->height, w = Window->width;
+	SDL_Rect box = SDL_SetLocalRect(w/2-((w*0.55)/2), h/2-(h/4), w*0.55, h*0.5);
+	SDL_Rect valid = SDL_SetLocalRect(box.x+box.w/2-50, box.y+box.h-50, 100, 40);
+	SDL_Rect vox = SDL_SetLocalRect(box.x + 300, box.y+header1+50, 70, 40); 
+	SDL_Rect step1 = SDL_SetLocalRect(box.x+200, box.y+box.h-150, 70, 40);
+	SDL_Rect step2 = SDL_SetLocalRect(box.x+350, step1.y, step1.w, step1.h);
+	
+	
+	int rounded = 5;
+	int c = 1;
+	int x,y;
+	SDL_Color text = {90, 90, 90, 0};
+	int isValid=0;
+	int refresh = 1;
+	int isVox = 0;
+	int isStep1 = 0, isStep2 = 0;
+	char buf[10];
+	int i;
+	SDL_Rect cle_base;
+	SDL_Event event;
+	
+	SDL_Flip(Window->screen);
+	
+	for(i = 0; i < 10; i++)
+		cles[i] = CLE_SOL;
+	
+	while(c)
+	{
+		if(refresh)
+		{
+			
+			Window_InteractBackground(box, r, g, b, header1, isValid, valid);
+			
+			sprintf(buf, "%d", nbr_vox);
+			if(isVox)
+			{
+				roundedBoxRGBA(Window->screen, vox.x, vox.y, 
+						vox.x+vox.w, vox.y+vox.h, rounded, 180, 220, 255, 255);
+				Moteur_WriteText(vox.x+vox.w/2, vox.y+vox.h/2, buf, 40,
+					FONT_INTERFACE_LIGHT, text,
+					TEXT_BLENDED, TEXT_CENTER,
+					Window->screen);
+			}
+			else
+			{
+				roundedBoxRGBA(Window->screen, vox.x, vox.y, 
+						vox.x+vox.w, vox.y+vox.h, rounded, 240, 240, 240, 255);
+				Moteur_WriteText(vox.x+vox.w/2, vox.y+vox.h/2, buf, 40,
+					FONT_INTERFACE_LIGHT, text,
+					TEXT_BLENDED, TEXT_CENTER,
+					Window->screen);
+			}
+			
+			Moteur_WriteText((step1.x+step2.x)/2+step1.w/2, step1.y+step1.h/2, "/", 60,
+					FONT_INTERFACE_LIGHT, text,
+					TEXT_BLENDED, TEXT_CENTER,
+					Window->screen);
+			
+			sprintf(buf, "%d", num);
+			if(isStep1)
+			{
+				roundedBoxRGBA(Window->screen, step1.x, step1.y, 
+						step1.x+step1.w, step1.y+step1.h, rounded, 180, 220, 255, 255);
+				Moteur_WriteText(step1.x+step1.w/2, step1.y+step1.h/2, buf, 40,
+					FONT_INTERFACE_LIGHT, text,
+					TEXT_BLENDED, TEXT_CENTER,
+					Window->screen);
+			}
+			else
+			{
+				roundedBoxRGBA(Window->screen, step1.x, step1.y, 
+						step1.x+step1.w, step1.y+step1.h, rounded, 240, 240, 240, 255);
+				Moteur_WriteText(step1.x+step1.w/2, step1.y+step1.h/2, buf, 40,
+					FONT_INTERFACE_LIGHT, text,
+					TEXT_BLENDED, TEXT_CENTER,
+					Window->screen);
+			}
+			sprintf(buf, "%d", den);
+			if(isStep2)
+			{
+				roundedBoxRGBA(Window->screen, step2.x, step2.y, 
+						step2.x+step2.w, step2.y+step2.h, rounded, 180, 220, 255, 255);
+				Moteur_WriteText(step2.x+step2.w/2, step2.y+step2.h/2, buf, 40,
+					FONT_INTERFACE_LIGHT, text,
+					TEXT_BLENDED, TEXT_CENTER,
+					Window->screen);
+			}
+			else
+			{
+				roundedBoxRGBA(Window->screen, step2.x, step2.y, 
+						step2.x+step2.w, step2.y+step2.h, rounded, 240, 240, 240, 255);
+				Moteur_WriteText(step2.x+step2.w/2, step2.y+step2.h/2, buf, 40,
+					FONT_INTERFACE_LIGHT, text,
+					TEXT_BLENDED, TEXT_CENTER,
+					Window->screen);
+			}
+			
+			cle_base.x = box.x+120;
+			cle_base.y = box.y+header1+150;
+			for(i = 0; i < nbr_vox; i++)
+			{
+				if(isCle[i])
+				{
+					roundedBoxRGBA(Window->screen, cle_base.x, cle_base.y, 
+						cle_base.x+70, cle_base.y+40, rounded, 180, 220, 255, 255);	
+				}
+				else
+				{
+					roundedBoxRGBA(Window->screen, cle_base.x, cle_base.y, 
+						cle_base.x+70, cle_base.y+40, rounded, 240, 240, 240, 255);	
+				}
+				
+				pos[i].x = cle_base.x;
+				pos[i].y = cle_base.y;
+				pos[i].w = 70;
+				pos[i].h = 40;
+				
+				if(cles[i] == CLE_SOL)
+					sprintf(buf, "SOL");
+				else
+					sprintf(buf, "FA");
+				Moteur_WriteText(cle_base.x+35, cle_base.y+20, buf, 25,
+					FONT_INTERFACE_LIGHT, text,
+					TEXT_BLENDED, TEXT_CENTER,
+					Window->screen);
+				cle_base.x += 90;
+				if(cle_base.x+70 > box.x+box.w-80 || (i==4))
+				{
+					cle_base.x = box.x+120;
+					cle_base.y += 60;
+				}
+				
+			}
+			
+				
+			Moteur_WriteText(box.x + box.w/2, box.y+header1/2, "Nouvelle partition", header1-5,
+					FONT_INTERFACE, text,
+					TEXT_BLENDED, TEXT_CENTER,
+					Window->screen);
+
+			Moteur_WriteText(box.x + 20, box.y+header1+50, "Nombre de Voix : ", 30,
+					FONT_INTERFACE, text,
+					TEXT_BLENDED, TEXT_LEFT,
+					Window->screen);
+				
+			Moteur_WriteText(box.x + 20, box.y+header1+130, "Clés : ", 30,
+					FONT_INTERFACE, text,
+					TEXT_BLENDED, TEXT_LEFT,
+					Window->screen);
+			
+			Moteur_WriteText(box.x + 20, step1.y, "Mesure : ", 30,
+					FONT_INTERFACE, text,
+					TEXT_BLENDED, TEXT_LEFT,
+					Window->screen);
+
+			SDL_Flip(Window->screen);
+			refresh = 0;
+		}
+		SDL_PollEvent(&event);
+		switch(event.type)
+		{
+			case SDL_QUIT:
+				c = 0;
+				return QUIT;
+				break;
+					
+			case SDL_MOUSEMOTION:
+				x = event.motion.x;
+				y = event.motion.y;
+				
+
+				ButtonRect(x, y, valid, &isValid, &refresh);
+				ButtonRect(x, y, vox, &isVox, &refresh);
+				ButtonRect(x, y, step1, &isStep1, &refresh);
+				ButtonRect(x, y, step2, &isStep2, &refresh);
+				
+				for(i = 0; i < nbr_vox; i++)
+				{
+					if(PixelInRect(x, y, pos[i]))
+					{
+						if(!isCle[i])
+						{
+							isCle[i] = 1;
+							refresh = 1;
+						}
+					}
+					else
+					{
+						if(isCle[i])
+						{
+							isCle[i] = 0;
+							refresh = 1;
+						}
+					}
+				}
+				
+				break;
+				
+			case SDL_MOUSEBUTTONDOWN:
+				x = event.button.x;
+				y = event.button.y;
+				if(PixelInRect(x, y, vox))
+				{
+					switch(event.button.button)
+					{
+						case SDL_BUTTON_WHEELDOWN:
+							if(nbr_vox != 1)
+							{
+								nbr_vox--;
+								refresh = 1;
+							}
+							break;
+						case SDL_BUTTON_WHEELUP:
+							if(nbr_vox != 10)
+							{
+								nbr_vox++;
+								refresh = 1;
+							}
+					}
+				}
+				if(PixelInRect(x, y, step1))
+				{
+					switch(event.button.button)
+					{
+						case SDL_BUTTON_WHEELDOWN:
+							if(num != 2)
+							{
+								num--;
+								refresh = 1;
+							}
+							break;
+						case SDL_BUTTON_WHEELUP:
+							if(num != 5)
+							{
+								num++;
+								refresh = 1;
+							}
+					}
+				}
+				if(PixelInRect(x, y, step2))
+				{
+					switch(event.button.button)
+					{
+						case SDL_BUTTON_WHEELDOWN:
+							if(den != 2)
+							{
+								den/=2;
+								refresh = 1;
+							}
+							break;
+						case SDL_BUTTON_WHEELUP:
+							if(den != 8)
+							{
+								den *= 2;
+								refresh = 1;
+							}
+					}
+				}
+				for(i = 0; i < nbr_vox; i++)
+				{
+					if(PixelInRect(x, y, pos[i]))
+					{
+						switch(event.button.button)
+						{
+							case SDL_BUTTON_WHEELDOWN:
+							case SDL_BUTTON_WHEELUP:
+								cles[i] = 1 + (2 - cles[i]);
+								refresh = 1;
+								break;
+						}
+					}
+				}
+				if(PixelInRect(x, y, valid))
+				{
+					*new_num = num;
+					*new_den = den;
+					*new_vox = nbr_vox;
+					
+					*new_cles = (Cle *)malloc(sizeof(Cle) * nbr_vox);
+					memtest(*new_cles);
+					
+					for(i = 0; i < nbr_vox; i++)
+						(*new_cles)[i] = cles[i];
+					
+					return 1;
+				}
+				break;
+				
+			case SDL_KEYUP:
+				return 0;
+		}
+		SDL_Delay(2);
+	}
+	return 0;
+}
+
 int Menu_New(void)
 {
 	Score *new_score = NULL;
-	int i;
+	int i,j;
+	
+	
+	int num, den, nbr_vox;
+	Cle *cles;
 	
 	if((NULL == main_events) || (NULL == main_events->score))
 		return 0;
+	
+	
+	switch(Menu_ChooseNew(&nbr_vox, &cles, &num, &den))
+	{
+		case QUIT:
+			return QUIT;
+		case 0:
+			return FORCE_MAJ;
+		default: 
+			break;
+	}
 	
 	new_score = Score_Alloc();
 	
@@ -287,13 +631,16 @@ int Menu_New(void)
 		return 0;
 	
 	Score_Init(new_score);
-	Staff_Init(new_score->lst[0], 4, NOIRE, CLE_SOL, 0);
+	Staff_Init(new_score->lst[0], num, den, cles[0], 0);
 	Staff_ChangeArmure(new_score->lst[0], 0, 0);
-	
-	for(i = 0; i < 10; i++)
+	for(i = 0; i < 50; i++)
 			Score_AddEmptyStep(new_score);
-	Score_AddEmpty(new_score);
 	
+	for(j = 1; j < nbr_vox; j++)
+	{
+		Score_AddEmpty(new_score);
+		Staff_ChangeCle(new_score->lst[j], 0, cles[j]);
+	}
 	
 	Audio_Pause();
 	
@@ -306,6 +653,7 @@ int Menu_New(void)
 	
 	return FORCE_SCOREMAJ;
 }
+
 
 int Menu_OpenFile(void)
 {

@@ -118,6 +118,8 @@ int Window_LittleEvent(SDL_Event event, double *r, int *c, int *mouse,
 					
 int Window_TestBox(SDL_Surface *dest, SDL_Rect *pos, int zoom);
 
+void Window_InteractBackground(SDL_Rect box, int r, int g, int b, int header1, int isValid, SDL_Rect valid);
+
 int Window_InteractInfo(const char *path, int r, int g, int b);
 
 
