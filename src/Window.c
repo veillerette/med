@@ -454,7 +454,7 @@ int Window_TestBox(SDL_Surface *dest, SDL_Rect *pos, int zoom)
 	while(area != NULL)
 	{
 	
-		if(count == must)
+		if(Audio_isPlaying() && count == must)
 			return 1;
 	
 		if(((pos->x + (area->rect.x + SIZE_BODY*area->nbody)/zoom) >= main_events->base->x)  &&

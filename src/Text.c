@@ -71,14 +71,15 @@ int Moteur_WriteParagraph(int x, int y, int max_w, const char *text_paragraph, i
 	int count = 0;
 	char *text = NULL;
 	TTF_Font *font = NULL;
-	
+	char *sauv_text = NULL;
 	font = TTF_OpenFont(path_font, size);
 	
 	if(NULL == font)
 		return 0;
 	
 	text = Str_Copy(text_paragraph);
-		
+	sauv_text = text;
+	
 	while((unsigned int)i < strlen(text))
 	{
 
@@ -112,7 +113,7 @@ int Moteur_WriteParagraph(int x, int y, int max_w, const char *text_paragraph, i
 							graphic, align, dest);
 	
 	TTF_CloseFont(font);
-	free(text);
+	free(sauv_text);
 	
 	return count+1;
 	

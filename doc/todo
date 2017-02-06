@@ -10,11 +10,11 @@
 - Changer Volume dans la toolbar
 [OK]- Changer Tempo dans la toolbar
 [OK]- Armures -> Step
-[50%]- Changer l'armure grâce au menu
+[70%]- Changer l'armure grâce au menu
 - Supprimer doubles affichages Dieze/Bémol dans une mesure
 - Ajout de plusieurs mesures en fin (scroll souris)
-- Clé de fa
-- Sauvegarde dans MED du tempo
+[50%]- Clé de fa (Manque graphisme)
+[100%] Sauvegarde dans MED/ABC du tempo + Ouverture MED/ABC du Tempo
 
 <<< Bugs >>>
 - Résoudre bugs note pointée (modification temps réel à la sélection, affichage -> prendre en compte le bon space)
@@ -23,7 +23,7 @@
 [90%]- Bugs à l'alignement dièzes/bémols !
 [OK]- Valgrind et Score_AddEmpty()
 [OK]- Score_Free d'un ABC
-[70%]- Ouverture fichier ABC bizarres
+[85%]- Ouverture fichier ABC bizarres
 
 <<< Majors >>>
 - Multi-Sélections
@@ -33,9 +33,10 @@
 [OK]- Explorateur de fichier du disque
 [50%]- Explorateur pour sauvegarde (Manque création fichier)
 - Menu configuration audio ondes
+- Fenêtre Nouveau Fichier
 [OK]- Import/Export fichier partition
 [OK]- Export fichier ABC
 
 <<< Facultatif >>>
-[80%]- Importation fichiers ABC
+[85%]- Importation fichiers ABC
 
