@@ -294,6 +294,76 @@ void ButtonRect(int x, int y, SDL_Rect rect, int *valid, int *refresh)
 	}
 }
 
+int Menu_ConfigAudio(void)
+{
+	int header1 = 30;
+	int r = 50, g = 50, b = 255;
+	int h = Window->height, w = Window->width;
+	SDL_Rect box = SDL_SetLocalRect(w/2-((w*0.55)/2), h/2-(h/4), w*0.55, h*0.5);
+	SDL_Rect valid = SDL_SetLocalRect(box.x+box.w/2-50, box.y+box.h-50, 100, 40);
+	
+	
+	int rounded = 5;
+	int c = 1;
+	int x,y;
+	SDL_Color text = {90, 90, 90, 0};
+	int isValid=0;
+	int refresh = 1;
+	int isVox = 0;
+	int isStep1 = 0, isStep2 = 0;
+	char buf[10];
+	int i;
+	SDL_Event event;
+	
+	while(c)
+	{
+		if(refresh)
+		{
+			
+			Window_InteractBackground(box, r, g, b, header1, isValid, valid);
+			
+				
+			Moteur_WriteText(box.x + box.w/2, box.y+header1/2, "Configuration Audio", header1-5,
+					FONT_INTERFACE, text,
+					TEXT_BLENDED, TEXT_CENTER,
+					Window->screen);
+
+			SDL_Flip(Window->screen);
+			refresh = 0;
+		}
+		SDL_PollEvent(&event);
+		switch(event.type)
+		{
+			case SDL_QUIT:
+				c = 0;
+				return QUIT;
+				break;
+					
+			case SDL_MOUSEMOTION:
+				x = event.motion.x;
+				y = event.motion.y;
+				
+				ButtonRect(x, y, valid, &isValid, &refresh);
+				
+				break;
+				
+			case SDL_MOUSEBUTTONDOWN:
+				x = event.button.x;
+				y = event.button.y;
+
+				if(PixelInRect(x, y, valid))
+				{
+					return FORCE_MAJ;
+				}
+				break;
+				
+			case SDL_KEYUP:
+				return 0;
+		}
+		SDL_Delay(2);
+	}
+	return 0;
+}
 
 
 int Menu_ChooseNew(int *new_vox, Cle **new_cles, int *new_num, int *new_den)
@@ -810,6 +880,7 @@ Menu *Menu_Create(void)
 	NodeArray_Add(menu->lst->next[0]->next, "Ouvrir", 0, LEAF, Menu_OpenFile);
 	NodeArray_Add(menu->lst->next[0]->next, "Export en MED", 0, LEAF, Menu_SauvFileMED);
 	NodeArray_Add(menu->lst->next[0]->next, "Export en ABC", 0, LEAF, Menu_SauvFileABC);
+	NodeArray_Add(menu->lst->next[0]->next, "Configuration Audio", 0, LEAF, Menu_ConfigAudio);
 	NodeArray_Add(menu->lst->next[0]->next, "Quitter", 0, LEAF, _Fichier_Quit);
 	NodeArray_Add(menu->lst, "Sélection", 0, NODE, NULL);
 	NodeArray_Add(menu->lst->next[1]->next, "Supprimer", 1, LEAF, _Selection_Delete);

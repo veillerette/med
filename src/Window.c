@@ -1536,7 +1536,7 @@ void Window_InteractBackground(SDL_Rect box, int r, int g, int b, int header1, i
 {
 	SDL_Color text = {90, 90, 90, 0};
 	SDL_Color text_hover = {230, 230, 230, 0};
-	int rounded = 5;
+	int rounded = 10;
 	roundedBoxRGBA(Window->screen, box.x-2, box.y-2, 
 					box.x+box.w+2, box.y+box.h+2, rounded, (r+50)%255, (g+65)%255, (b+50)%255, 255);
 				
