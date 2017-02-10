@@ -7,14 +7,14 @@ char *Str_Copy(const char *str)
 	char *res = NULL;
 	res = (char *)malloc(sizeof(char) * (strlen(str) + 1));
 	memtest(res);
-	
+
 	strcpy(res, str);
 	return res;
 }
 
-int Moteur_WriteText(int x, int y, const char *text, int size, 
-				const char *path_font, SDL_Color color, 
-				Text_Style graphic, Text_Align align, 
+int Moteur_WriteText(int x, int y, const char *text, int size,
+				const char *path_font, SDL_Color color,
+				Text_Style graphic, Text_Align align,
 				SDL_Surface *dest)
 {
 	SDL_Surface *temp = NULL;
@@ -23,7 +23,7 @@ int Moteur_WriteText(int x, int y, const char *text, int size,
 	font = TTF_OpenFont(path_font, size);
 	if(NULL == font)
 		return 0;
-		
+
 	switch(graphic)
 	{
 		case TEXT_SOLID:
@@ -33,10 +33,10 @@ int Moteur_WriteText(int x, int y, const char *text, int size,
 			temp = TTF_RenderUTF8_Blended(font, text, color);
 			break;
 	}
-	
+
 	if(NULL == temp)
 		return 0;
-	
+
 	switch(align)
 	{
 		case TEXT_LEFT:
@@ -52,7 +52,7 @@ int Moteur_WriteText(int x, int y, const char *text, int size,
 			pos.y = y - temp->h;
 			break;
 	}
-	
+
 	SDL_BlitSurface(temp, NULL, dest, &pos);
 	TTF_CloseFont(font);
 	SDL_FreeSurface(temp);
@@ -61,8 +61,8 @@ int Moteur_WriteText(int x, int y, const char *text, int size,
 
 
 int Moteur_WriteParagraph(int x, int y, int max_w, const char *text_paragraph, int size, int esp,
-				const char *path_font, SDL_Color color, 
-				Text_Style graphic, Text_Align align, 
+				const char *path_font, SDL_Color color,
+				Text_Style graphic, Text_Align align,
 				SDL_Surface *dest)
 {
 	int i = 1;
@@ -91,17 +91,17 @@ int Moteur_WriteParagraph(int x, int y, int max_w, const char *text_paragraph, i
 		text[i] = sauv;
 		if(w >= max_w)
 		{
-			
+
 			if(i <= 0)
 				return 0;
-			
+
 			text[i] = '\0';
-			
-			Moteur_WriteText(x, y+count*(h - 3 + esp), text, size, 
-				 path_font, color, 
-				graphic, align, 
+
+			Moteur_WriteText(x, y+count*(h - 3 + esp), text, size,
+				 path_font, color,
+				graphic, align,
 				dest);
-			
+
 			count++;
 			text[i] = sauv;
 			text += (i + 1);
@@ -109,12 +109,18 @@ int Moteur_WriteParagraph(int x, int y, int max_w, const char *text_paragraph, i
 		}
 		i++;
 	}
-	Moteur_WriteText(x, y+count*(h - 3 + esp), text, size, path_font, color, 
+	Moteur_WriteText(x, y+count*(h - 3 + esp), text, size, path_font, color,
 							graphic, align, dest);
-	
+
 	TTF_CloseFont(font);
 	free(sauv_text);
-	
+
 	return count+1;
-	
+
+}
+
+int getSizeStr(char *str)
+{
+	int i = 0;
+	while(str++ != 0 && ++i);
 }
