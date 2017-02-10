@@ -515,9 +515,14 @@ SDL_Surface *CreateCleSol(int size_w, int size_h)
 SDL_Surface *CreateCleFa(int size_w, int size_h)
 {
 	SDL_Surface *surf = NULL;
-	
+	SDL_Color color = {50, 0, 50, 0};
 	surf = SDL_CreateWhiteKeySurface(size_w * 2, size_h * 3.5);
 	memtest(surf);
+	
+	Moteur_WriteText(size_w, size_h * 1.75, "FA", 70, 
+				"media/Garamond.ttf", color, 
+				TEXT_BLENDED, TEXT_CENTER, 
+				surf);
 	
 	Draw_Border(surf, 2);
 	return surf;

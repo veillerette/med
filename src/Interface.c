@@ -111,12 +111,13 @@ extern int Interface_Main(int argc, char *argv[])
 		
 		if(main_audio->need_refresh)
 		{
+			
+			main_audio->need_refresh = 0;
 			Window_DrawBody();
 			Window_Print();
 			Window_TestBox(Window->screen, Window->pos_body, r);
 			Menu_Aff(menu, &x, &y);
 			SDL_Flip(Window->screen);
-			main_audio->need_refresh = 0;
 		}
 		if(m)
 		{

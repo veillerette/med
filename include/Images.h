@@ -10,7 +10,22 @@
 #include <SDL/SDL_ttf.h>
 #include <SDL/SDL_rotozoom.h>
 
+
+
 #include "System.h"
+
+
+
+typedef struct Color Color;
+struct Color
+{
+	Uint r : 8;
+	Uint g : 8;
+	Uint b : 8;
+	Uint a : 8;
+};
+
+#include "Text.h"
 
 #define HEAD_W 45
 #define HEAD_H 30
@@ -65,15 +80,6 @@ struct Graphics
 	SDL_Surface *Cle_Fa;
 };
 
-
-typedef struct Color Color;
-struct Color
-{
-	Uint r : 8;
-	Uint g : 8;
-	Uint b : 8;
-	Uint a : 8;
-};
 
 
 

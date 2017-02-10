@@ -302,17 +302,11 @@ int Menu_ConfigAudio(void)
 	SDL_Rect box = SDL_SetLocalRect(w/2-((w*0.55)/2), h/2-(h/4), w*0.55, h*0.5);
 	SDL_Rect valid = SDL_SetLocalRect(box.x+box.w/2-50, box.y+box.h-50, 100, 40);
 	
-	
-	int rounded = 5;
 	int c = 1;
 	int x,y;
 	SDL_Color text = {90, 90, 90, 0};
 	int isValid=0;
 	int refresh = 1;
-	int isVox = 0;
-	int isStep1 = 0, isStep2 = 0;
-	char buf[10];
-	int i;
 	SDL_Event event;
 	
 	while(c)

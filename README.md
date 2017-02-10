@@ -160,8 +160,6 @@ MusicalEDitor est un éditeur de partition musicale simple écrit en C et utilis
 
 #### Novembre 2016
 
-
-
 * Affichage (Généré par SDL)
     * Liaisons
     * Articulations

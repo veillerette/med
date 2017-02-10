@@ -13,17 +13,22 @@
 [70%]- Changer l'armure grâce au menu
 - Supprimer doubles affichages Dieze/Bémol dans une mesure
 - Ajout de plusieurs mesures en fin (scroll souris)
-[50%]- Clé de fa (Manque graphisme)
+[50%]- Clé de fa (Manque graphismes)
 [100%] Sauvegarde dans MED/ABC du tempo + Ouverture MED/ABC du Tempo
+- Bécarre
+- Double-dièse
 
 <<< Bugs >>>
-- Résoudre bugs note pointée (modification temps réel à la sélection, affichage -> prendre en compte le bon space)
+- Note pointée (modification temps réel à la sélection, affichage -> prendre en compte le bon space)
+- Problèmes mesures 5/4, 4/2, 5/2
 [OK]- Correction bug croches bizarres (dans le mozart notamment) ????
 [OK]- Bug à l'ajout de 4/5ème portée
 [90%]- Bugs à l'alignement dièzes/bémols !
-[OK]- Valgrind et Score_AddEmpty()
+[OK]- valgrind et Score_AddEmpty()
 [OK]- Score_Free d'un ABC
 [85%]- Ouverture fichier ABC bizarres
+-Croches parfois trop proches des têtes (uniquement vers le bas)
+[OK]- Freeze curseur de lecture / Petites latences de suivi
 
 <<< Majors >>>
 - Multi-Sélections
@@ -31,12 +36,15 @@
 [OK]- Importation fichier perso
 [OK]- Sauvegarde/Ouverture Fichier
 [OK]- Explorateur de fichier du disque
-[50%]- Explorateur pour sauvegarde (Manque création fichier)
+[70%]- Explorateur pour sauvegarde (Manque création nouveau fichier)
 - Menu configuration audio ondes
 [80%]- Fenêtre Nouveau Fichier
 [OK]- Import/Export fichier partition
 [OK]- Export fichier ABC
 
-<<< Facultatif >>>
-[85%]- Importation fichiers ABC
+<<< Améliorations possibles >>>
+[90%]- Importation fichiers ABC
+- Export WAV
+- Patch MIDI
+- Remplissage de chaque ligne de portée au maximum
 

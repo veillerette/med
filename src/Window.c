@@ -443,8 +443,8 @@ int Window_isNotePlaying(Note *note)
 
 int Window_TestBox(SDL_Surface *dest, SDL_Rect *pos, int zoom)
 {
-	int count = 0;
-	int must = main_events->score->n + (main_events->select != NULL);
+/*	int count = 0;*/
+/*	int must = main_events->score->n + (main_events->select != NULL);*/
 	Area *area;
 	int r=200,g=50,b=50,a=150;
 	if(NULL == dest)
@@ -454,8 +454,8 @@ int Window_TestBox(SDL_Surface *dest, SDL_Rect *pos, int zoom)
 	while(area != NULL)
 	{
 	
-		if(Audio_isPlaying() && count == must)
-			return 1;
+/*		if(Audio_isPlaying() && count == must)*/
+/*			return 1;*/
 	
 		if(((pos->x + (area->rect.x + SIZE_BODY*area->nbody)/zoom) >= main_events->base->x)  &&
 			((pos->y  + area->rect.y/zoom) >= main_events->base->y))
@@ -463,13 +463,19 @@ int Window_TestBox(SDL_Surface *dest, SDL_Rect *pos, int zoom)
 			a = 150;
 
 
-			if(main_events->select == area 
-			|| (area->type == OBJECT_NOTE && Window_isNotePlaying(Step_GetNote(area->step, area->id_note))))
+			if(main_events->select == area)
 			{
-				count++;
+
 				r = 200;
 				g = 50;
 				b = 50;
+			}
+			else if((area->type == OBJECT_NOTE && Window_isNotePlaying(Step_GetNote(area->step, area->id_note))))
+			{
+/*				count++;*/
+				r = 130;
+				g = 130;
+				b = 210;
 			}
 			else
 			{

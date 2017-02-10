@@ -1,5 +1,5 @@
 CC=colorgcc
-CFLAGS=-ansi -Wall -Wextra -O2
+CFLAGS=-ansi -Wall -Wextra -O3
 CLIBS=-lm -lSDL -lSDL_gfx -lSDL_ttf -lreadline
 EXE=prog
 OBJ=obj/
