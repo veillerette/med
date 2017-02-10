@@ -1,5 +1,7 @@
 #include "../include/Interface.h"
+#include <time.h>
 
+clock_t a,b,c,d,e,f,g;
 
 static void Interface_Quit(Menu **menu)
 {
@@ -36,27 +38,27 @@ extern int Interface_Main(int argc, char *argv[])
 	char title[100] = "";
 	Score *score = NULL;
 	int i;
-	
+
 	sprintf(title, "%s %g - Victor Veillerette", SYS_NAME, SYS_VERSION);
-		
-	
+
+
 	Window_Init();
 	menu = Menu_Create();
 	score = Score_Alloc();
 	Score_Init(score);
-	
+
 	if(argc==1)
 	{
-	
+
 		Staff_Init(score->lst[0], 4, NOIRE, CLE_SOL, 0);
 		Staff_ChangeArmure(score->lst[0], 0, 0);
 		for(i = 0; i < 10; i++)
 			Score_AddEmptyStep(score);
 		Score_AddEmpty(score);
 		Staff_ChangeCle(score->lst[1], 0, CLE_FA);
-		
-		
-		
+
+
+
 	}
 	else if(3 == argc && !strcmp(argv[1], "-abc") && File_isExt(argv[2], ".abc"))
 	{
@@ -67,51 +69,51 @@ extern int Interface_Main(int argc, char *argv[])
 		File_OpenScore(argv[1], &score);
 	}
 
-	
+
 	Audio_Init(AudioConfig_Init());
 	Audio_AssignateScore(score);
 	Audio_GoToStep(0);
 	Audio_SetTempo(120);
-	
+
 	info = SDL_GetVideoInfo();
 	Window_CreateWindow(info->current_w, info->current_h, title);
 	main_events = EventData_Alloc();
 
-	
+
 	MainEvents_AssociateScore(score);
 	Graphics_LoadAll();
-	
+
 	EventData_SetBase(main_events, Window->pos_body);
 	EventData_SetZoom(main_events, r);
-	
+
 	Score_Print(main_events->score, SDL_SetRect(100, 450, 0, 0));
-	
+
 	EventData_Console(main_events);
-	
+
 	Window_ApplyZoom(r);
-	
+
 	Window_DrawBody();
-	
+
 	Window_Print();
 	Window_TestBox(Window->screen, Window->pos_body, r);
 	Menu_Aff(menu, &x, &y);
 	Menu_Console(menu->lst, 0);
-	
-	
+
+
 	SDL_Flip(Window->screen);
-	
+
 	time = SDL_GetTicks();
 	sauv = time;
 	while(c)
 	{
 		ev = SDL_PollEvent(&event);
 		sauv = SDL_GetTicks();
-		Window_LittleEvent(event, &r, &c, &mouse, &clic_x, 
+		Window_LittleEvent(event, &r, &c, &mouse, &clic_x,
 						&clic_y, &tomaj, &m);
-		
+
 		if(main_audio->need_refresh)
 		{
-			
+
 			main_audio->need_refresh = 0;
 			Window_DrawBody();
 			Window_Print();
@@ -163,14 +165,14 @@ extern int Interface_Main(int argc, char *argv[])
 				SDL_Flip(Window->screen);
 
 				break;
-			
+
 			default:
 				break;
 		}
-		
+
 		if(menu->select != NULL)
 			continue;
-		
+
 		switch(Events_PollMouse(event))
 		{
 			case QUIT:
@@ -186,15 +188,24 @@ extern int Interface_Main(int argc, char *argv[])
 				SDL_Flip(Window->screen);
 				break;
 			case FORCE_MAJ:
+				a = clock();
 				EventData_Flush(main_events);
+				b = clock();
 				Score_Print(main_events->score, SDL_SetRect(100, 450, 0, 0));
+				c = clock();
 				Window_ApplyZoom(r);
+				d = clock();
 				Window_DrawBody();
+				e = clock();
 				Window_Print();
-				
-				main_events->hover = Events_GetAreaByPixelAndType((int)((event.button.x - main_events->base->x) * 1.0 * main_events->r), 
+				f = clock();
+
+				printf("flush = %ld, Score_Print = %ld, ApplyZoom = %ld, DrawBody = %ld, Window_Print = %ld\n",
+					b-a, c-b, d-c, e-d, f-e);
+
+				main_events->hover = Events_GetAreaByPixelAndType((int)((event.button.x - main_events->base->x) * 1.0 * main_events->r),
 					 (int)((event.button.y - main_events->base->y) * 1.0 * main_events->r), EVENT_ADDNOTE);
-				
+
 				Window_TestBox(Window->screen, Window->pos_body, r);
 				Menu_Aff(menu, &x, &y);
 				SDL_Flip(Window->screen);
@@ -221,16 +232,16 @@ extern int Interface_Main(int argc, char *argv[])
 			default:
 				break;
 		}
-		
+
 		if(SDL_GetTicks()-sauv < 10)
 		{
 			SDL_Delay(1);
 		}
-		
+
 	}
-	
+
 	Interface_Quit(&menu);
-	
+
 	printf("end progam\n");
 	exit(EXIT_SUCCESS);
 }

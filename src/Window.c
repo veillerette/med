@@ -327,20 +327,26 @@ int Window_ApplyZoomOnRect(SDL_Rect *rect, double zoom, double old)
 	return 1;
 }
 
+#include <time.h>
+
 int Window_ApplyZoom(double zoom)
 {
 	int i, fact;
 	TestOK();
 	
+	
+	
 	for(i = 0; i < Window->nb_body; i++)
 	{
+
 		if(Window->body_use[i] != NULL)
 			SDL_FreeSurface(Window->body_use[i]);
-		
+
 		if(zoom == 1)
 			Window->body_use[i] = SDL_DisplayFormat(Window->body[i]);
 		else 
 			Window->body_use[i] = shrinkSurface(Window->body[i], (int)zoom, (int)zoom);
+			
 		memtest(Window->body_use[i]);
 		
 	}

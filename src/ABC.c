@@ -5,20 +5,20 @@ char abc_error[50] = "";
 char *ABC_Keys[] = {
 	"C#","A#m",	/* 7 */
 	"F#","D#m",   	/* 6 */
-	"B","G#m",   
-	"E","C#m",   
-	"A","F#m",   
+	"B","G#m",
+	"E","C#m",
+	"A","F#m",
 	"D","Bm",
 	"G","Em",
 	"C","Am", 	/* 0 */
 	"F","Dm",
 	"Bb","Gm",
 	"Eb","Cm",   	/* -3 */
-	"Ab","Fm",  
+	"Ab","Fm",
 	"Db","Bbm",
 	"Gb","Ebm",
 	"Cb","Abm"};   	/* -7 */
-	
+
 int ABC_ScanHead(FILE *f, char *field, char *text)
 {
 	char *str = malloc(sizeof(char) * 100);
@@ -89,15 +89,15 @@ int ABC_ParseHeader(Score *score, FILE *f)
 	{
 		switch(field)
 		{
-		
+
 			case 'T': /* Title */
 				Score_AddSign(score, SIGN_TITLE, 0, 0, text);
 				break;
-				
+
 			case 'C': /* Composer */
 				Score_AddSign(score, SIGN_AUTHOR, 0, 0, text);
 				break;
-				
+
 			case 'M': /* Mesure */
 				if(strlen(text) < 3 || strlen(text) > 5)
 					break;
@@ -111,7 +111,7 @@ int ABC_ParseHeader(Score *score, FILE *f)
 					return 0;
 				}
 				break;
-				
+
 			case 'K': /* Key */
 				sign = ABC_FindKeyFromStr(text);
 				if(-40 == sign)
@@ -182,9 +182,9 @@ int ABC_ParseHeader(Score *score, FILE *f)
 	}
 	Staff_Init(score->lst[0], num, den, CLE_SOL, sign);
 	while(fgetc(f) != '\n')
-		fseek(f, -2, SEEK_CUR);	
+		fseek(f, -2, SEEK_CUR);
 	return lenght;
-	
+
 }
 
 int nextcar(FILE *f)
@@ -205,25 +205,25 @@ char *File_GetLine(FILE *f)
 	char *buf = NULL;
 	int i = 0, c = 5, j = 0, k = 0;
 	int temp;
-	
+
 	if((NULL == f))
 		return NULL;
-	
+
 	do
 	{
 		c = fgetc(f);
 		i++;
 	}
 	while(c != '\n' && c != EOF);
-	
+
 	if(i == 1 && c == EOF)
 		return NULL;
-	
+
 	buf = (char *)malloc(sizeof(char) * (i + 2));
 	memtest(buf);
-	
+
 	fseek(f, -i , SEEK_CUR);
-	
+
 	for(j = 0; j < i; j++)
 	{
 		temp = fgetc(f);
@@ -233,7 +233,7 @@ char *File_GetLine(FILE *f)
 			k++;
 		}
 	}
-	
+
 	*(buf + k) = '\0';
 
 	return buf;
@@ -242,25 +242,25 @@ char *File_GetLine(FILE *f)
 int ABC_IsAnHeader(const char *line)
 {
 	int n;
-	
+
 	if((NULL == line))
 		return 0;
-	
+
 	n = strlen(line);
-	
+
 	if(n < 3)
 		return 0;
-	
-	
+
+
 	if((line[0] < 'A' || line[0] > 'Z') && (line[0] < 'a' && line[0] > 'z'))
 		return 0;
-	
+
 	if(line[1] != ':')
 		return 0;
-	
+
 	if(line[0] == '|')
 		return 0;
-		
+
 	return 1;
 }
 
@@ -268,14 +268,14 @@ int ABC_IsAGoodHeader(const char *line)
 {
 	char good_letter[8] = "XTMLQVCK";
 	int i;
-	
+
 	if((NULL == line))
 		return 0;
-	
+
 	for(i = 0; i < 8; i++)
 		if(line[0] == good_letter[i])
 			return 1;
-	
+
 	return 0;
 }
 
@@ -283,12 +283,12 @@ int ABC_MultiSimplify(char *buf)
 {
 	int i;
 	int n;
-	
+
 	if((NULL == buf))
 		return 0;
-	
+
 	n = strlen(buf);
-	
+
 	for(i = 1; i < n; i++)
 	{
 		switch(buf[i])
@@ -321,15 +321,15 @@ char *ABC_TransformLine(const char *line, int isHeader)
 	char *new = NULL;
 	int i,j = 0, c, k;
 	int n;
-	
-	if((NULL == line))	
+
+	if((NULL == line))
 		return NULL;
-	
+
 	n = strlen(line);
 
 	new = (char *)malloc(sizeof(char) * (n + 1));
 	memtest(new);
-	
+
 	i = 0;
 	while(i < n)
 	{
@@ -371,10 +371,10 @@ char *ABC_TransformLine(const char *line, int isHeader)
 					i++;
 				}
 				while(line[i] != ']');
-				
+
 				bufmulti[i_multi] = 0;
 				ABC_MultiSimplify(bufmulti);
-				
+
 				k = 0;
 				while(bufmulti[k] != ']')
 				{
@@ -383,9 +383,9 @@ char *ABC_TransformLine(const char *line, int isHeader)
 					k++;
 				}
 				i_multi = 0;
-				
+
 				break;
-			
+
 			case '|':
 				if(i == 0)
 					break;
@@ -395,7 +395,7 @@ char *ABC_TransformLine(const char *line, int isHeader)
 					j++;
 				}
 				break;
-			
+
 			case ':':
 			case ' ':
 				if(!isHeader)
@@ -422,9 +422,9 @@ char *ABC_SepLess(char *str)
 	int n;
 	int i,j = 0;
 	n = strlen(str);
-	
+
 	res = (char *)malloc(sizeof(char) * (n+1));
-	
+
 	for(i = 0; i < n; i++)
 	{
 		if(str[i] != '|' && str[i] != '\n' && str[i] != '\r')
@@ -441,7 +441,7 @@ char *ABC_SepLess(char *str)
 			}
 		}
 	}
-	
+
 	res[j] = 0;
 	return res;
 }
@@ -452,8 +452,8 @@ int ABC_AppendStr(char **dest, char *source)
 	char *res = NULL;
 	if((NULL == source))
 		return 0;
-	
-	
+
+
 	res = ABC_SepLess(source);
 	n = strlen(res);
 	if(n == 0)
@@ -492,26 +492,26 @@ int File_SimplifyABC(const char *destPath, const char *sourcePath)
 	char **buf_line = NULL;
 	char *next = NULL;
 	int i;
-	
+
 	if((NULL == destPath) || (NULL == sourcePath))
 		return 0;
 
 	dest = fopen(destPath, "w");
 	memtest(dest);
-	
+
 	source = fopen(sourcePath, "r");
 	memtest(source);
-	
+
 	buf_line = (char **)calloc(10, sizeof(char *));
 	memtest(buf_line);
 
 	do
-	{		
+	{
 		buf = File_GetLine(source);
 
 		if(NULL == buf)
 			break;
-			
+
 		if(ABC_IsAnHeader(buf))
 		{
 			if(ABC_IsAGoodHeader(buf))
@@ -520,7 +520,7 @@ int File_SimplifyABC(const char *destPath, const char *sourcePath)
 				if(!ABC_IsAnHeader(next) && buf[0] == 'V')
 				{
 					char *temp = ABC_TransformLine(next, 0);
-					
+
 					if(temp != NULL)
 					{
 						RemoveLineBreak(temp);
@@ -532,13 +532,13 @@ int File_SimplifyABC(const char *destPath, const char *sourcePath)
 				{
 					char *temp = NULL;
 					temp = ABC_TransformLine(buf, 1);
-				
+
 					if(temp != NULL)
 					{
-						fputs(temp, dest);	
+						fputs(temp, dest);
 						free(temp);
 					}
-					
+
 					fseek(source, -strlen(next), SEEK_CUR);
 					free(next);
 				}
@@ -548,30 +548,30 @@ int File_SimplifyABC(const char *destPath, const char *sourcePath)
 		{
 			char *temp = NULL;
 			temp = ABC_TransformLine(buf, 0);
-			
+
 			if(temp != NULL)
 			{
 				ABC_AppendStr(&(buf_line[0]), temp);
 			}
 		}
-		
+
 		free(buf);
 	}
 	while(buf != NULL);
-	
+
 	i = 0;
-	
+
 	while(buf_line[i] != NULL)
 	{
 		fprintf(dest, "V:%d\n", i);
 		fprintf(dest, "%s\n", buf_line[i]);
 		i++;
 	}
-	
-	
+
+
 	fclose(dest);
 	fclose(source);
-	
+
 	return 1;
 }
 
@@ -591,27 +591,27 @@ extern Score *ABC_ParseFile(const char *path)
 	Note_Flags flags_next = NOTE_DEFAULT;
 	char number[3] = "";
 	int line = 1;
-	
+
 	if(NULL == path)
 		return NULL;
-	
+
 	f = fopen(path, "r");
 	if(NULL == f)
 	{
 		sprintf(abc_error, "Impossible d'ouvrir le fichier");
 		return NULL;
 	}
-	
+
 	score = Score_Alloc();
 	Score_Init(score);
-	
+
 	if(0 == (base_l = ABC_ParseHeader(score, f)))
 	{
 		return NULL;
 	}
-	
+
 	duration = base_l;
-	
+
 	do
 	{
 		car = fgetc(f);
@@ -627,7 +627,7 @@ extern Score *ABC_ParseFile(const char *path)
 			id_score = (fgetc(f) - '0');
 			if(id_score == score->n && id_score != 0)
 				Score_AddEmpty(score);
-			
+
 			Staff_ChangeCle(score->lst[1], 0, CLE_FA);
 			fgetc(f);
 			step_id = 0;
@@ -658,31 +658,31 @@ extern Score *ABC_ParseFile(const char *path)
 				note[i] = (char)h+'0';
 				if(id_score == 0 && step_id+1 == score->lst[id_score]->n)
 					Score_AddEmptyStep(score);
-				
+
 				if(note_id < 0 || duration == 0 || id_score < 0 || id_score > score->n
 				  || step_id < 0 || step_id > score->lst[id_score]->n || (ConvertStringToID(note) < 5 && !(note[0] == 'z' || note[0] == 'x')))
 				{
-					
+
 /*					printf("(step)%d (note_id)%d (note)%d (flags)%d (duration)%d\n", step_id, note_id, ConvertStringToID(note), flags, duration);*/
 					sprintf(abc_error, "Erreur dans le format du fichier (ligne %d)", line);
 					return NULL;
 				}
 
-				Staff_AddNote(score->lst[id_score], step_id, note_id, 
+				Staff_AddNote(score->lst[id_score], step_id, note_id,
 						ConvertStringToID(note), flags, duration);
 
 				if(note[0] == 'z' || note[0] == 'x')
 					Staff_ChangeRestStatus(score->lst[id_score], step_id, note_id, 1);
-					
+
 				flags = flags_next;
 				flags_next = NOTE_DEFAULT;
-				
+
 				if(car == '|')
 					flags = NOTE_DEFAULT;
-					
+
 				if(duration != base_l)
 					duration = base_l;
-					
+
 				note_id++;
 				i = 0;
 			}
@@ -697,13 +697,13 @@ extern Score *ABC_ParseFile(const char *path)
 					h = 4;
 				else
 					h = 5;
-					
+
 				if(nextcar(f) == '\'')
 				{
 					fgetc(f);
 					h++;
 				}
-				
+
 				note[i] = car;
 				i++;
 			}
@@ -726,7 +726,7 @@ extern Score *ABC_ParseFile(const char *path)
 					number[0] = car;
 					number[1] = fgetc(f);
 					number[2] = 0;
-					
+
 					duration = duration / atoi(number);
 				}
 				else
@@ -748,7 +748,7 @@ extern Score *ABC_ParseFile(const char *path)
 			default:
 				break;
 		}
-		
+
 	}
 	while(car != EOF);
 	printf("H\n");
@@ -770,12 +770,12 @@ extern Score *ABC_OpenABC(const char *path)
 		system(rm);
 		return NULL;
 	}
-	
+
 	res = ABC_ParseFile(buf);
-	
+
 	sprintf(rm, "rm -f %s", buf);
 	system(rm);
-	
+
 	return res;
 }
 
@@ -784,12 +784,12 @@ int ABC_WriteStep(FILE *f, Step *step, Note_Duration base_l)
 	ToNote *notes = NULL;
 	Note_Duration real = 0;
 	char names[] = "ccddeffggaab";
-	
+
 	if((NULL == f) || (NULL == step->notes))
 		return 0;
-	
+
 	notes = step->notes;
-	
+
 	while(notes != NULL)
 	{
 		if(notes->note->flags & NOTE_SHARP)
@@ -798,7 +798,7 @@ int ABC_WriteStep(FILE *f, Step *step, Note_Duration base_l)
 			fprintf(f, "_");
 		if(notes->note->flags & NOTE_NATURAL)
 			fprintf(f, "=");
-		
+
 		if(notes->note->rest)
 			fprintf(f, "z");
 		else
@@ -818,7 +818,7 @@ int ABC_WriteStep(FILE *f, Step *step, Note_Duration base_l)
 				fprintf(f, "%c'", names[id]);
 			else if(oct == 7)
 				fprintf(f, "%c''", names[id]);
-			
+
 		}
 		if((Note_Duration)Note_RealDuration(notes->note, step) > 64/base_l)
 		{
@@ -832,32 +832,32 @@ int ABC_WriteStep(FILE *f, Step *step, Note_Duration base_l)
 			if(real != 2)
 				fprintf(f, "%d", real);
 		}
-		
+
 		notes = notes->next;
 	}
 	fprintf(f, "|");
-	
+
 	return 1;
 }
 
 int ABC_WriteHeaderScore(FILE *f, Score *score, Note_Duration basel)
 {
 	Step *step = NULL;
-	char *tone[] = {"Cb", "Gb", "Db", "Ab", "Eb", "Bb", "F", "C", 
+	char *tone[] = {"Cb", "Gb", "Db", "Ab", "Eb", "Bb", "F", "C",
 			"G", "D", "A", "E", "B", "F#", "C#"};
 	if((NULL == f) || (NULL == score))
 		return 0;
-	
+
 	step = score->lst[0]->steps[0];
 	if(NULL == step)
 		return 0;
-	
+
 	fprintf(f, "X:%d\n", 4242);
 	fprintf(f, "M:%d/%d\n", step->num, step->den);
 	fprintf(f, "L:1/%d\n", basel);
 	fprintf(f, "Q:1/4=%d\n", 120);
 	fprintf(f, "K:%s\n", tone[step->sign+7]);
-	
+
 	return 1;
 }
 
@@ -867,18 +867,18 @@ int ABC_WriteDevScore(FILE *f, Score *score)
 	int r = 1;
 	if((NULL == f) || (NULL == score))
 		return 0;
-	
+
 	r &= ABC_WriteHeaderScore(f, score, CROCHE);
-	
+
 	for(i = 0; i < score->n; i++)
 	{
 		fprintf(f, "V:%d\n", i+1);
-		
+
 		for(j = 0; j < score->lst[i]->n; j++)
 			r &= ABC_WriteStep(f, score->lst[i]->steps[j], CROCHE);
 		fprintf(f,  "\n");
 	}
-	
+
 	return r;
 }
 
@@ -886,17 +886,17 @@ extern int ABC_WriteScore(const char *path, Score *score)
 {
 	int r;
 	FILE *f = NULL;
-	
+
 	if((NULL == path) || (NULL == score))
 		return 0;
-	
+
 	f = fopen(path, "w");
-	
+
 	if(NULL == f)
 		return 0;
-	
+
 	r = ABC_WriteDevScore(f, score);
-	
+
 	fclose(f);
 	return r;
 }
