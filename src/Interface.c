@@ -1,7 +1,7 @@
 #include "../include/Interface.h"
 #include <time.h>
 
-clock_t a,b,c,d,e,f,g;
+clock_t a,b,c,d,e,f,g, h, m, n, o, p;
 
 static void Interface_Quit(Menu **menu)
 {
@@ -200,15 +200,22 @@ extern int Interface_Main(int argc, char *argv[])
 				Window_Print();
 				f = clock();
 
-				printf("flush = %ld, Score_Print = %ld, ApplyZoom = %ld, DrawBody = %ld, Window_Print = %ld\n",
-					b-a, c-b, d-c, e-d, f-e);
-
+			
 				main_events->hover = Events_GetAreaByPixelAndType((int)((event.button.x - main_events->base->x) * 1.0 * main_events->r),
 					 (int)((event.button.y - main_events->base->y) * 1.0 * main_events->r), EVENT_ADDNOTE);
-
+				g = clock();
 				Window_TestBox(Window->screen, Window->pos_body, r);
+				h = clock();
 				Menu_Aff(menu, &x, &y);
+				m = clock();
 				SDL_Flip(Window->screen);
+				n = clock();
+				printf("flush = %ld, Score_Print = %ld, ApplyZoom = %ld, DrawBody = %ld, Window_Print = %ld, hover = %ld, testbox = %ld, menu = %ld, flip = %ld\n",
+					b-a, c-b, d-c, e-d, f-e, g-f, h-g, m-h, n-m);
+				printf("flush = %g, Score_Print = %g, ApplyZoom = %g, DrawBody = %g, Window_Print = %g, hover = %g, testbox = %g, menu = %g, flip = %g\n",
+						(b-a)*1.0/CLOCKS_PER_SEC, (c-b)*1.0/CLOCKS_PER_SEC, (d-c)*1.0/CLOCKS_PER_SEC, (e-d)*1.0/CLOCKS_PER_SEC, (f-e)*1.0/CLOCKS_PER_SEC,
+						(g-f)*1.0/CLOCKS_PER_SEC, (h-g)*1.0/CLOCKS_PER_SEC, (m-h)*1.0/CLOCKS_PER_SEC, (n-m)*1.0/CLOCKS_PER_SEC);
+
 				mouse = 0;
 			default:
 				break;

@@ -327,26 +327,37 @@ int Window_ApplyZoomOnRect(SDL_Rect *rect, double zoom, double old)
 	return 1;
 }
 
-#include <time.h>
-
 int Window_ApplyZoom(double zoom)
 {
 	int i, fact;
 	TestOK();
 	
 	
-	
 	for(i = 0; i < Window->nb_body; i++)
 	{
-
-		if(Window->body_use[i] != NULL)
-			SDL_FreeSurface(Window->body_use[i]);
-
+		if(Window->ratio != zoom)
+		{
+			if(Window->body_use[i] != NULL)
+				SDL_FreeSurface(Window->body_use[i]);
+		}
 		if(zoom == 1)
-			Window->body_use[i] = SDL_DisplayFormat(Window->body[i]);
-		else 
-			Window->body_use[i] = shrinkSurface(Window->body[i], (int)zoom, (int)zoom);
-			
+		{
+			if(Window->ratio == zoom)
+				SDL_BlitSurface(Window->body[i], NULL, Window->body_use[i], NULL);
+			else
+				Window->body_use[i] = SDL_DisplayFormat(Window->body[i]);
+		}
+		else
+		{
+			if(Window->ratio == zoom)
+			{
+				printf("Image_MyShrinkRaw\n");
+				Image_MyShrinkRaw(Window->body_use[i], Window->body[i], (int)zoom);
+			}
+			else
+				Window->body_use[i] = shrinkSurface(Window->body[i], (int)zoom, (int)zoom);
+		}
+		
 		memtest(Window->body_use[i]);
 		
 	}
@@ -1089,10 +1100,10 @@ int Note_Print(Score *score, Staff *staff, Step *step, int id_step, int id_note,
 								{
 									
 									boxRGBA(dest, Window->quavers->tab[j]->x,
-									 	real_hsep,
-									 	Window->quavers->tab[j]->x+QUEUE_BORDER,
-									 	Window->quavers->tab[j]->y + QUEUE + 20,
-									 	0, 0, 0, 255);
+										 real_hsep,
+										 Window->quavers->tab[j]->x+QUEUE_BORDER,
+										 Window->quavers->tab[j]->y + QUEUE + 20,
+										 0, 0, 0, 255);
 								}
 								
 								
@@ -1510,6 +1521,8 @@ int Window_LittleEvent(SDL_Event event, double *r, int *c, int *mouse,
 		case SDL_MOUSEMOTION:
 			if(*mouse)
 			{
+				if(main_events->lastArea != NULL)
+					return NONE;
 				if(*clic_x < Window->pos_pal->w || *clic_y < Window->pos_menu->h)
 					return NONE;
 				if(*clic_x > event.motion.x)

@@ -123,6 +123,7 @@ EventData *EventData_Alloc(void)
 	temp->base = NULL;
 	temp->mode = MODE_EDIT;
 	temp->score = NULL;
+	temp->lastArea = NULL;
 	
 	temp->tools = InitToolbar();
 	return temp;
@@ -332,7 +333,7 @@ int Events_PollMouse(SDL_Event event)
 		
 	area = Events_GetAreaByPixelAndType((int)((x - main_events->base->x) * 1.0 * main_events->r), 
 					 (int)((y - main_events->base->y) * 1.0 * main_events->r), type);
-					 
+	main_events->lastArea = area;				 
 					 
 	switch(event.type)
 	{
@@ -445,7 +446,9 @@ int Events_PollMouse(SDL_Event event)
 						default:
 							break;
 					}
-					Staff_AddNote(area->staff, area->id_step, area->id_note_add, MouseToNote(area, (y-main_events->base->y)*main_events->r), add_flag, main_events->tools.duration);
+					Staff_AddNote(area->staff, area->id_step, area->id_note_add, 
+						MouseToNote(area, (y-main_events->base->y)*main_events->r), 
+						add_flag, main_events->tools.duration);
 					
 					return FORCE_MAJ;
 				}

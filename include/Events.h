@@ -95,6 +95,7 @@ struct EventData
 	
 	Mode 		mode;
 	Toolbar 	tools;
+	Area *		lastArea;
 };
 
 Area *Area_Set(SDL_Rect rect, int nbody, Object_Type type, ...);

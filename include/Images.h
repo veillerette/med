@@ -81,7 +81,7 @@ struct Graphics
 };
 
 
-
+extern int _shrinkSurfaceY(SDL_Surface * src, SDL_Surface * dst, int factorx, int factory);
 
 Color SetColorA(int r, int g, int b, int a);
 
@@ -111,6 +111,7 @@ int PowerOfBezier(SDL_Surface *dest, const int *x, const int *y, int n, Color co
 
 int Image_DrawRectangleBorder(SDL_Surface *dst, int x, int y, int x2, int y2, int borderSize, int r, int g, int b, int a);
 
+int Image_MyShrinkRaw(SDL_Surface *dst, SDL_Surface *src, int factor);
 
 extern Graphics *Images;
 extern Graphics *HoverImages;

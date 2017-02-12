@@ -359,6 +359,124 @@ int Menu_ConfigAudio(void)
 	return 0;
 }
 
+int Menu_AddEmptyStep(void)
+{
+	int header1 = 30;
+	int r =  30, g = 200, b = 255;
+	int h = Window->height, w = Window->width;
+	SDL_Rect box = SDL_SetLocalRect(w/2-200, h/2-100, 400, 200);
+	SDL_Rect valid = SDL_SetLocalRect(box.x+box.w/2-50, box.y+box.h-50, 100, 40);
+	SDL_Rect how = SDL_SetLocalRect(box.x+box.w/2-37, box.y+box.h/2-20, 74, 40);
+	
+	int c = 1;
+	int x,y;
+	SDL_Color text = {90, 90, 90, 0};
+	int isValid=0;
+	int refresh = 1;
+	SDL_Event event;
+	int i;
+	int amount = 1;
+	int isHow = 0;
+	int rounded = 5;
+	char buf[8] = "";
+	
+	if((NULL == main_events) || (NULL == main_events->score))
+		return FORCE_CLEAR;
+	
+	while(c)
+	{
+		if(refresh)
+		{
+			
+			Window_InteractBackground(box, r, g, b, header1, isValid, valid);
+			
+			sprintf(buf, "%d", amount);
+			if(isHow)
+			{
+				roundedBoxRGBA(Window->screen, how.x, how.y, 
+					how.x+how.w, how.y+how.h, rounded, 180, 220, 255, 255);
+				Moteur_WriteText(how.x+how.w/2, how.y+how.h/2, buf, 40,
+					FONT_INTERFACE_LIGHT, text,
+					TEXT_BLENDED, TEXT_CENTER,
+					Window->screen);
+			}
+			else
+			{
+				roundedBoxRGBA(Window->screen, how.x, how.y, 
+					how.x+how.w, how.y+how.h, rounded, 240, 240, 240, 255);
+				Moteur_WriteText(how.x+how.w/2, how.y+how.h/2, buf, 40,
+					FONT_INTERFACE_LIGHT, text,
+					TEXT_BLENDED, TEXT_CENTER,
+					Window->screen);
+			}
+				
+			Moteur_WriteText(box.x + box.w/2, box.y+header1/2, "Ajouts de mesures", header1-5,
+					FONT_INTERFACE, text,
+					TEXT_BLENDED, TEXT_CENTER,
+					Window->screen);
+
+			SDL_Flip(Window->screen);
+			refresh = 0;
+		}
+		SDL_PollEvent(&event);
+		switch(event.type)
+		{
+			case SDL_QUIT:
+				c = 0;
+				return QUIT;
+				break;
+					
+			case SDL_MOUSEMOTION:
+				x = event.motion.x;
+				y = event.motion.y;
+				
+				ButtonRect(x, y, valid, &isValid, &refresh);
+				ButtonRect(x, y, how, &isHow, &refresh);
+				break;
+				
+			case SDL_MOUSEBUTTONDOWN:
+				x = event.button.x;
+				y = event.button.y;
+
+				if(PixelInRect(x, y, valid))
+				{
+					for(i = 0; i < amount; i++)
+					{
+						Score_AddEmptyStep(main_events->score);
+					}
+					return FORCE_SCOREMAJ;
+				}
+				
+				if(PixelInRect(x, y, how))
+				{
+					switch(event.button.button)
+					{
+						case SDL_BUTTON_WHEELDOWN:
+							if(amount > 1)
+							{
+								amount--;
+								refresh = 1;
+							}
+							break;
+						case SDL_BUTTON_WHEELUP:
+							if(amount < 100)
+							{
+								amount++;
+								refresh = 1;
+							}
+							break;
+					}
+				}
+				break;
+				
+			case SDL_KEYUP:
+				return 0;
+		}
+		SDL_Delay(2);
+	}
+	return 0;
+}
+
 
 int Menu_ChooseNew(int *new_vox, Cle **new_cles, int *new_num, int *new_den)
 {
@@ -906,7 +1024,7 @@ Menu *Menu_Create(void)
 	NodeArray_Add(menu->lst->next[2]->next, "Mesure", 0, NODE, menu_no_action);
 	NodeArray_Add(menu->lst->next[2]->next->next[0]->next, "Avant la sélection", 1, LEAF, _Ajouter_Mesure_Before);
 	NodeArray_Add(menu->lst->next[2]->next->next[0]->next, "Après la sélection", 1, LEAF, _Ajouter_Mesure_After);
-	NodeArray_Add(menu->lst->next[2]->next->next[0]->next, "A la fin", 0, LEAF, _Ajouter_Mesure_End);
+	NodeArray_Add(menu->lst->next[2]->next->next[0]->next, "A la fin", 0, LEAF, Menu_AddEmptyStep);
 	NodeArray_Add(menu->lst->next[2]->next, "Portée", 0, LEAF, _Add_New_Staff);
 
 	return menu;

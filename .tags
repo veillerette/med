@@ -1,0 +1,770 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+ABC_AppendStr	src/ABC.c	/^int ABC_AppendStr(char **dest, char *source)$/;"	f
+ABC_FindKeyFromStr	src/ABC.c	/^int ABC_FindKeyFromStr(char *text)$/;"	f
+ABC_IsAGoodHeader	src/ABC.c	/^int ABC_IsAGoodHeader(const char *line)$/;"	f
+ABC_IsAnHeader	src/ABC.c	/^int ABC_IsAnHeader(const char *line)$/;"	f
+ABC_Keys	src/ABC.c	/^char *ABC_Keys[] = {$/;"	v
+ABC_MultiSimplify	src/ABC.c	/^int ABC_MultiSimplify(char *buf)$/;"	f
+ABC_OpenABC	src/ABC.c	/^extern Score *ABC_OpenABC(const char *path)$/;"	f
+ABC_ParseFile	src/ABC.c	/^extern Score *ABC_ParseFile(const char *path)$/;"	f
+ABC_ParseHeader	src/ABC.c	/^int ABC_ParseHeader(Score *score, FILE *f)$/;"	f
+ABC_ScanHead	src/ABC.c	/^int ABC_ScanHead(FILE *f, char *field, char *text)$/;"	f
+ABC_SepLess	src/ABC.c	/^char *ABC_SepLess(char *str)$/;"	f
+ABC_TransformLine	src/ABC.c	/^char *ABC_TransformLine(const char *line, int isHeader)$/;"	f
+ABC_WriteDevScore	src/ABC.c	/^int ABC_WriteDevScore(FILE *f, Score *score)$/;"	f
+ABC_WriteHeaderScore	src/ABC.c	/^int ABC_WriteHeaderScore(FILE *f, Score *score, Note_Duration basel)$/;"	f
+ABC_WriteScore	src/ABC.c	/^extern int ABC_WriteScore(const char *path, Score *score)$/;"	f
+ABC_WriteStep	src/ABC.c	/^int ABC_WriteStep(FILE *f, Step *step, Note_Duration base_l)$/;"	f
+ABC_isNote	src/ABC.c	/^int ABC_isNote(char note)$/;"	f
+ABC_replaceSlash	src/ABC.c	/^void ABC_replaceSlash(char *str)$/;"	f
+ABS	include/Window.h	23;"	d
+Area	include/Events.h	/^struct Area$/;"	s
+Area	include/Events.h	/^typedef struct Area Area;$/;"	t	typeref:struct:Area
+Area_Alloc	src/Events.c	/^Area *Area_Alloc(SDL_Rect rect, int nbody, Object_Type type)$/;"	f
+Area_Console	src/Events.c	/^void Area_Console(Area *area)$/;"	f
+Area_Free	src/Events.c	/^void Area_Free(Area **area)$/;"	f
+Area_FreeRec	src/Events.c	/^void Area_FreeRec(Area *area)$/;"	f
+Area_Set	src/Events.c	/^Area *Area_Set(SDL_Rect rect, int nbody, Object_Type type, ...)$/;"	f
+Armure_Print	src/Window.c	/^int Armure_Print(Step *step, SDL_Rect *base_pos, SDL_Surface *dest)$/;"	f
+AudioConfig	include/Audio.h	/^struct AudioConfig$/;"	s
+AudioConfig	include/Audio.h	/^typedef struct AudioConfig AudioConfig;$/;"	t	typeref:struct:AudioConfig
+AudioConfig_DevInit	src/Audio.c	/^AudioConfig *AudioConfig_DevInit(int askFreq, Uint16 format, Uint8 channels, Uint16 samples,$/;"	f
+AudioConfig_Free	src/Audio.c	/^void AudioConfig_Free(AudioConfig **ac)$/;"	f
+AudioConfig_Init	src/Audio.c	/^AudioConfig *AudioConfig_Init(void)$/;"	f
+AudioConfig_SetVolume	src/Audio.c	/^void AudioConfig_SetVolume(AudioConfig *ac, int newVolume)$/;"	f
+Audio_AssignateScore	src/Audio.c	/^void Audio_AssignateScore(Score *score)$/;"	f
+Audio_GetTempo	src/Audio.c	/^int Audio_GetTempo(void)$/;"	f
+Audio_GoToStep	src/Audio.c	/^void Audio_GoToStep(int id_step)$/;"	f
+Audio_Init	src/Audio.c	/^void Audio_Init(AudioConfig *ac)$/;"	f
+Audio_KillThreads	src/Audio.c	/^int Audio_KillThreads(void)$/;"	f
+Audio_Pause	src/Audio.c	/^void Audio_Pause(void)$/;"	f
+Audio_Play	src/Audio.c	/^void Audio_Play(void)$/;"	f
+Audio_PlayStaffThread	src/Audio.c	/^int Audio_PlayStaffThread(void *data)$/;"	f
+Audio_PlayStep	src/Audio.c	/^int Audio_PlayStep(Step *step, Channel *chan)$/;"	f
+Audio_Quit	src/Audio.c	/^void Audio_Quit(void)$/;"	f
+Audio_RegulariseWave	src/Audio.c	/^int Audio_RegulariseWave(Sint16 *stream, int len)$/;"	f
+Audio_SetTempo	src/Audio.c	/^void Audio_SetTempo(int newTempo)$/;"	f
+Audio_isInit	src/Audio.c	/^int Audio_isInit(void)$/;"	f
+Audio_isPlaying	src/Audio.c	/^int Audio_isPlaying(void)$/;"	f
+BASE_BODY_X	include/Window.h	21;"	d
+BASE_BODY_Y	include/Window.h	22;"	d
+BLACK	include/System.h	/^	BLACK 	= 30,$/;"	e	enum:__anon7
+BLANCHE	include/Step.h	/^	BLANCHE		= 2,	\/*!< Blanche, 32 x base *\/$/;"	e	enum:__anon5
+BLUE	include/System.h	/^	BLUE	= 34,$/;"	e	enum:__anon7
+BlitCenter	src/Menu.c	/^static void BlitCenter(SDL_Surface *src, SDL_Rect *src_rect, SDL_Surface *dest, SDL_Rect *dest_rect)$/;"	f	file:
+Bugs connus	report/Med-Rapport.tex	/^\\vskip 0.6in$/;"	s
+ButtonRect	src/Menu.c	/^void ButtonRect(int x, int y, SDL_Rect rect, int *valid, int *refresh)$/;"	f
+CC	Makefile	/^CC=colorgcc$/;"	m
+CFLAGS	Makefile	/^CFLAGS=-ansi -Wall -Wextra -O3$/;"	m
+CLE_FA	include/Step.h	/^	CLE_FA 		= 2,	\/*!< Clé de Fa Quatrième *\/$/;"	e	enum:__anon6
+CLE_SOL	include/Step.h	/^	CLE_SOL 	= 1,	\/*!< Clé de Sol Seconde *\/$/;"	e	enum:__anon6
+CLE_UT3	include/Step.h	/^	CLE_UT3,$/;"	e	enum:__anon6
+CLE_UT4	include/Step.h	/^	CLE_UT4$/;"	e	enum:__anon6
+CLIBS	Makefile	/^CLIBS=-lm -lSDL -lSDL_gfx -lSDL_ttf -lreadline$/;"	m
+CROCHE	include/Step.h	/^	CROCHE		= 8,	\/*!< Croche, 8 x base *\/$/;"	e	enum:__anon5
+CYAN	include/System.h	/^	CYAN	= 36,$/;"	e	enum:__anon7
+ChangeCleToFa	src/Menu.c	/^int ChangeCleToFa(void)$/;"	f
+ChangeCleToSol	src/Menu.c	/^int ChangeCleToSol(void)$/;"	f
+ChangeTonality	src/Menu.c	/^int ChangeTonality(signed char new)$/;"	f
+Channel	include/Audio.h	/^struct Channel$/;"	s
+Channel	include/Audio.h	/^typedef struct Channel Channel;$/;"	t	typeref:struct:Channel
+Channel_Add	src/Audio.c	/^int Channel_Add(Channel *chan, Wave *wave)$/;"	f
+Channel_Alloc	src/Audio.c	/^Channel *Channel_Alloc(void)$/;"	f
+Channel_Calc	src/Audio.c	/^double Channel_Calc(AudioConfig *ac, Channel *chan)$/;"	f
+Channel_ChangeOctave	src/Audio.c	/^void Channel_ChangeOctave(Channel *chan, double freq)$/;"	f
+Channel_ChangeOne	src/Audio.c	/^void Channel_ChangeOne(Channel *chan, double freq)$/;"	f
+Channel_CreateOne	src/Audio.c	/^Channel *Channel_CreateOne(double freq, double (*f)(int, double, int))$/;"	f
+Channel_CreateSimplyOctave	src/Audio.c	/^Channel *Channel_CreateSimplyOctave(double freq, double (*f)(int, double, int))$/;"	f
+Channel_Delete	src/Audio.c	/^int Channel_Delete(Channel *chan, int id)$/;"	f
+Channel_Disable	src/Audio.c	/^void Channel_Disable(Channel *chan)$/;"	f
+Channel_Enable	src/Audio.c	/^void Channel_Enable(Channel *chan)$/;"	f
+Channel_Free	src/Audio.c	/^void Channel_Free(Channel **chan)$/;"	f
+Channel_ReRoll	src/Audio.c	/^int Channel_ReRoll(Channel *chan)$/;"	f
+Cle	include/Step.h	/^	} Cle;$/;"	t	typeref:enum:__anon6
+Cle_Fa	include/Images.h	/^	SDL_Surface *Cle_Fa;$/;"	m	struct:Graphics
+Cle_GetFromId	src/Step.c	/^char *Cle_GetFromId(Cle cle)$/;"	f
+Cle_GetFromString	src/Step.c	/^Cle Cle_GetFromString(const char *str)$/;"	f
+Cle_Print	src/Window.c	/^int Cle_Print(Step *step, SDL_Rect *base_pos, SDL_Surface *dest)$/;"	f
+Cle_Sol	include/Images.h	/^	SDL_Surface *Cle_Sol;$/;"	m	struct:Graphics
+Color	include/Images.h	/^struct Color$/;"	s
+Color	include/Images.h	/^typedef struct Color Color;$/;"	t	typeref:struct:Color
+Console_Parser	src/Parser.c	/^int Console_Parser(void)$/;"	f
+ConvertDisplayFormat	src/Images.c	/^SDL_Surface *ConvertDisplayFormat(SDL_Surface *src)$/;"	f
+ConvertStringToID	src/Step.c	/^char ConvertStringToID(const char *note)$/;"	f
+CreateCleFa	src/Images.c	/^SDL_Surface *CreateCleFa(int size_w, int size_h)$/;"	f
+CreateCleSol	src/Images.c	/^SDL_Surface *CreateCleSol(int size_w, int size_h)$/;"	f
+CreateDoubleFlat	src/Images.c	/^SDL_Surface *CreateDoubleFlat(int size_w, int size_h)$/;"	f
+CreateFlat	src/Images.c	/^SDL_Surface *CreateFlat(int size_w, int size_h)$/;"	f
+CreateSharp	src/Images.c	/^SDL_Surface *CreateSharp(int size_w, int size_h)$/;"	f
+Create_Little	src/Images.c	/^SDL_Surface *Create_Little(SDL_Surface *src, int ratioX, int ratioY)$/;"	f
+DOUBLECROCHE	include/Step.h	/^	DOUBLECROCHE	= 16, 	\/*!< Double, 4 x base *\/$/;"	e	enum:__anon5
+DT_DIR	include/File.h	43;"	d
+DT_REG	include/File.h	39;"	d
+Directory	include/File.h	/^struct Directory$/;"	s
+Directory	include/File.h	/^typedef struct Directory Directory;$/;"	t	typeref:struct:Directory
+Directory_Add	src/File.c	/^int Directory_Add(Directory *dir, Entry *entry)$/;"	f
+Directory_Alloc	src/File.c	/^Directory *Directory_Alloc(const char *name)$/;"	f
+Directory_Change	src/File.c	/^int Directory_Change(Directory **dir, const char *newName)$/;"	f
+Directory_Create	src/File.c	/^Directory *Directory_Create(const char *path)$/;"	f
+Directory_Debug	src/File.c	/^void Directory_Debug(Directory *dir)$/;"	f
+Directory_Free	src/File.c	/^void Directory_Free(Directory **dir)$/;"	f
+Dots	include/System.h	/^struct Dots$/;"	s
+Dots	include/System.h	/^typedef struct Dots Dots;$/;"	t	typeref:struct:Dots
+Dots_Add	src/System.c	/^int Dots_Add(Dots *dt, Uint x, Uint y, int height)$/;"	f
+Dots_CalcCoef	src/System.c	/^double Dots_CalcCoef(Dots *dt)$/;"	f
+Dots_CalcExtremCoef	src/System.c	/^double Dots_CalcExtremCoef(Dots *dt)$/;"	f
+Dots_EvaluateYFromX	src/System.c	/^int Dots_EvaluateYFromX(Dots *dt, int x)$/;"	f
+Dots_Free	src/System.c	/^void Dots_Free(Dots **dt)$/;"	f
+Dots_GetYMax	src/System.c	/^int Dots_GetYMax(Dots *dt)$/;"	f
+Dots_GetYMin	src/System.c	/^int Dots_GetYMin(Dots *dt)$/;"	f
+Dots_Init	src/System.c	/^int Dots_Init(Dots **dt)$/;"	f
+Dots_Length	src/System.c	/^int Dots_Length(Dots *dt)$/;"	f
+Dots_isLinear	src/System.c	/^int Dots_isLinear(Dots *dt)$/;"	f
+DoubleFlat	include/Images.h	/^	SDL_Surface *DoubleFlat;$/;"	m	struct:Graphics
+Draw_Border	src/Images.c	/^int Draw_Border(SDL_Surface *surf, int size)$/;"	f
+Dur   e des notes	report/Med-Rapport.tex	/^\\section{Partition}$/;"	u
+ESP_BODY	include/Window.h	20;"	d
+EVENT_ADDNOTE	include/Events.h	/^	EVENT_ADDNOTE	= 0x0040,$/;"	e	enum:__anon14
+EXE	Makefile	/^EXE=prog$/;"	m
+EXPLORER_FONT	include/Explorer.h	19;"	d
+Entry	include/File.h	/^struct Entry$/;"	s
+Entry	include/File.h	/^typedef struct Entry Entry;$/;"	t	typeref:struct:Entry
+Entry_Alloc	src/File.c	/^Entry *Entry_Alloc(const char *name, Entry_Type type, int size)$/;"	f
+Entry_Free	src/File.c	/^void Entry_Free(Entry **entry)$/;"	f
+Entry_Type	include/File.h	/^} Entry_Type;$/;"	t	typeref:enum:__anon12
+EventData	include/Events.h	/^struct EventData$/;"	s
+EventData	include/Events.h	/^typedef struct EventData EventData;$/;"	t	typeref:struct:EventData
+EventData_Add	src/Events.c	/^int EventData_Add(EventData *ed, Area *area)$/;"	f
+EventData_Alloc	src/Events.c	/^EventData *EventData_Alloc(void)$/;"	f
+EventData_Console	src/Events.c	/^void EventData_Console(EventData *ed)$/;"	f
+EventData_Flush	src/Events.c	/^int EventData_Flush(EventData *ed)$/;"	f
+EventData_Free	src/Events.c	/^void EventData_Free(EventData **ed)$/;"	f
+EventData_SetBase	src/Events.c	/^int EventData_SetBase(EventData *ed, SDL_Rect *base)$/;"	f
+EventData_SetZoom	src/Events.c	/^int EventData_SetZoom(EventData *ed, double zoom)$/;"	f
+Events_GetAreaByPixelAndType	src/Events.c	/^Area *Events_GetAreaByPixelAndType(int x, int y, Object_Type type)$/;"	f
+Events_PollKeyboard	src/Events.c	/^int Events_PollKeyboard(SDL_Event event)$/;"	f
+Events_PollMouse	src/Events.c	/^int Events_PollMouse(SDL_Event event)$/;"	f
+Explorer	include/Explorer.h	/^struct Explorer$/;"	s
+Explorer	include/Explorer.h	/^typedef struct Explorer Explorer;$/;"	t	typeref:struct:Explorer
+Explorer_Body	src/Explorer.c	/^void Explorer_Body(Explorer *e)$/;"	f
+Explorer_ChangeDirectory	src/Explorer.c	/^int Explorer_ChangeDirectory(Explorer *e, int direct)$/;"	f
+Explorer_Create	src/Explorer.c	/^Explorer *Explorer_Create(int x_base, int y_base, int w, int h,$/;"	f
+Explorer_FindPath	src/Explorer.c	/^char *Explorer_FindPath(int x, int y, int w, int h, SDL_Surface *dest)$/;"	f
+Explorer_Free	src/Explorer.c	/^void Explorer_Free(Explorer **e)$/;"	f
+Explorer_Header1	src/Explorer.c	/^void Explorer_Header1(Explorer *e)$/;"	f
+Explorer_Header2	src/Explorer.c	/^void Explorer_Header2(Explorer *e)$/;"	f
+Explorer_Header3	src/Explorer.c	/^void Explorer_Header3(Explorer *e)$/;"	f
+Explorer_PollEvent	src/Explorer.c	/^int Explorer_PollEvent(Explorer *e, SDL_Event event)$/;"	f
+FILEC	Makefile	/^FILEC:= $(wildcard $(SRC)*.c)$/;"	m
+FILEO	Makefile	/^FILEO:= $(patsubst $(SRC)%.c,$(OBJ)%.o,$(FILEC))$/;"	m
+FONT_INTERFACE	include/Window.h	31;"	d
+FONT_INTERFACE_LIGHT	include/Window.h	32;"	d
+FONT_MESURE	include/Window.h	29;"	d
+FORCE_CLEAR	include/Menu.h	17;"	d
+FORCE_MAJ	include/Events.h	16;"	d
+FORCE_SCOREMAJ	include/Events.h	15;"	d
+File_Filter	src/File.c	/^int File_Filter(const struct dirent *dir)$/;"	f
+File_GetExt	src/File.c	/^char *File_GetExt(const char *name)$/;"	f
+File_GetLine	src/ABC.c	/^char *File_GetLine(FILE *f)$/;"	f
+File_OpenScore	src/File.c	/^int File_OpenScore(const char *path, Score **dest)$/;"	f
+File_ReadAllNotes	src/File.c	/^int File_ReadAllNotes(FILE *f, ToNote **notes)$/;"	f
+File_ReadFirstHead	src/File.c	/^int File_ReadFirstHead(FILE *f)$/;"	f
+File_ReadNote	src/File.c	/^int File_ReadNote(FILE *f, Note **note)$/;"	f
+File_ReadScore	src/File.c	/^int File_ReadScore(FILE *f, Score **score)$/;"	f
+File_ReadStaff	src/File.c	/^int File_ReadStaff(FILE *f, Staff **staff)$/;"	f
+File_ReadStep	src/File.c	/^int File_ReadStep(FILE *f, Step **step)$/;"	f
+File_SaveScore	src/File.c	/^int File_SaveScore(const char *path, Score *score)$/;"	f
+File_SimplifyABC	src/ABC.c	/^int File_SimplifyABC(const char *destPath, const char *sourcePath)$/;"	f
+File_Sort	src/File.c	/^int File_Sort(const struct dirent **a, const struct dirent **b)$/;"	f
+File_WriteAllNotes	src/File.c	/^int File_WriteAllNotes(FILE *f, Step *step)$/;"	f
+File_WriteFirstHead	src/File.c	/^int File_WriteFirstHead(FILE *f)$/;"	f
+File_WriteNote	src/File.c	/^int File_WriteNote(FILE *f, Note *note)$/;"	f
+File_WriteScore	src/File.c	/^int File_WriteScore(FILE *f, Score *score)$/;"	f
+File_WriteStaff	src/File.c	/^int File_WriteStaff(FILE *f, Staff *staff)$/;"	f
+File_WriteStep	src/File.c	/^int File_WriteStep(FILE *f, Step *step)$/;"	f
+File_isExt	src/File.c	/^int File_isExt(const char *name, const char *ext)$/;"	f
+FindExpandZone	src/Menu.c	/^Menu_Node *FindExpandZone(Menu *menu, Menu_Node *mn, int clic_x, int clic_y)$/;"	f
+FindNodeByZone	src/Menu.c	/^Menu_Node *FindNodeByZone(Menu *menu, int clic_x, int clic_y)$/;"	f
+Flat	include/Images.h	/^	SDL_Surface *Flat;$/;"	m	struct:Graphics
+Fr   quences de base	report/Med-Rapport.tex	/^\\end{itemize}$/;"	u
+GET_STR	include/Explorer.h	18;"	d
+GREEN	include/System.h	/^	GREEN	= 32,$/;"	e	enum:__anon7
+GenList	include/System.h	/^struct GenList$/;"	s
+GenList	include/System.h	/^typedef struct GenList GenList;$/;"	t	typeref:struct:GenList
+GenList_Add	src/System.c	/^int GenList_Add(GenList *lst, const char *name, void *data, void (*Node_Free)(void *))$/;"	f
+GenList_Alloc	src/System.c	/^GenList *GenList_Alloc(void)$/;"	f
+GenList_Free	src/System.c	/^void GenList_Free(GenList **lst)$/;"	f
+GenList_Get	src/System.c	/^void *GenList_Get(GenList *lst, const char *name)$/;"	f
+GetFreqFromId	src/Audio.c	/^double GetFreqFromId(int id)$/;"	f
+GetRealId	src/Audio.c	/^int GetRealId(Note *note)$/;"	f
+Graphics	include/Images.h	/^struct Graphics$/;"	s
+Graphics	include/Images.h	/^typedef struct Graphics Graphics;$/;"	t	typeref:struct:Graphics
+Graphics_Alloc	src/Images.c	/^Graphics *Graphics_Alloc(void)$/;"	f
+Graphics_Free	src/Images.c	/^void Graphics_Free(Graphics **graphics)$/;"	f
+Graphics_Load	src/Images.c	/^int Graphics_Load(Graphics **data)$/;"	f
+Graphics_LoadAll	src/Images.c	/^int Graphics_LoadAll(void)$/;"	f
+Graphics_LoadHover	src/Images.c	/^int Graphics_LoadHover(Graphics **data)$/;"	f
+Graphics_LoadLittle	src/Images.c	/^int Graphics_LoadLittle(Graphics **data)$/;"	f
+Graphics_Quit	src/Images.c	/^void Graphics_Quit(void)$/;"	f
+HEAD_H	include/Images.h	31;"	d
+HEAD_W	include/Images.h	30;"	d
+HOVER	include/Events.h	18;"	d
+Hauteur des notes	report/Med-Rapport.tex	/^\\newpage$/;"	u
+HoverImages	src/Images.c	/^Graphics *HoverImages = NULL;$/;"	v
+INCL	Makefile	/^INCL=include\/$/;"	m
+Image_DrawRectangleBorder	src/Images.c	/^int Image_DrawRectangleBorder(SDL_Surface *dst, int x, int y, int x2, int y2, int borderSize, int r, int g, int b, int a)$/;"	f
+Image_MyShrinkRaw	src/Images.c	/^int Image_MyShrinkRaw(SDL_Surface *dst, SDL_Surface *src, int factor)$/;"	f
+Images	src/Images.c	/^Graphics *Images = NULL;$/;"	v
+Images_DrawRotNote	src/Images.c	/^int Images_DrawRotNote(SDL_Surface *surf, int x, int y, SDL_Surface *dest)$/;"	f
+Images_InvertBlack	src/Images.c	/^int Images_InvertBlack(SDL_Surface *surf)$/;"	f
+Impl   mentations	report/Med-Rapport.tex	/^\\end{figure}$/;"	c
+InitToolbar	src/Events.c	/^Toolbar InitToolbar(void)$/;"	f
+Integer_Alloc	src/Audio.c	/^int *Integer_Alloc(int n)$/;"	f
+Interface g   n   rale	report/Med-Rapport.tex	/^\\chapter{Manuel d'utilisation}$/;"	s
+Interface_Main	src/Interface.c	/^extern int Interface_Main(int argc, char *argv[])$/;"	f
+Interface_Quit	src/Interface.c	/^static void Interface_Quit(Menu **menu)$/;"	f	file:
+InvertBoolean	src/Menu.c	/^int InvertBoolean(char *boolean)$/;"	f
+LEAF	include/Menu.h	/^	NODE, LEAF$/;"	e	enum:__anon9
+Launch_Med	include/Interface.h	12;"	d
+Lecture	report/Med-Rapport.tex	/^\\end{figure}$/;"	u
+LittleImages	src/Images.c	/^Graphics *LittleImages = NULL;$/;"	v
+MAGENTA	include/System.h	/^	MAGENTA	= 35,$/;"	e	enum:__anon7
+MAIN_CALLBACK	src/Audio.c	/^void MAIN_CALLBACK(void *userdata, Uint8 *stream, int len)$/;"	f
+MAX_A_QUAVER	include/Window.h	27;"	d
+MENU_FONT	include/Menu.h	15;"	d
+MENU_SIZETEXT	include/Menu.h	16;"	d
+MODE_ADD	include/Events.h	/^	MODE_ADD$/;"	e	enum:__anon15
+MODE_EDIT	include/Events.h	/^	MODE_EDIT,$/;"	e	enum:__anon15
+M_PI	include/Audio.h	21;"	d
+MainEvents_AssociateScore	src/Events.c	/^void MainEvents_AssociateScore(Score *score)$/;"	f
+Menu	include/Menu.h	/^struct Menu$/;"	s
+Menu	include/Menu.h	/^typedef struct Menu Menu;$/;"	t	typeref:struct:Menu
+MenuNode_Alloc	src/Menu.c	/^Menu_Node *MenuNode_Alloc(const char *name, int need_select, Node_Type type, int (*f)(void))$/;"	f
+MenuNode_Free	src/Menu.c	/^void MenuNode_Free(Menu_Node **node)$/;"	f
+Menu_AddEmptyStep	src/Menu.c	/^int Menu_AddEmptyStep(void)$/;"	f
+Menu_Aff	src/Menu.c	/^void Menu_Aff(Menu *menu, int *x, int *y)$/;"	f
+Menu_AffBaseOne	src/Menu.c	/^void Menu_AffBaseOne(TTF_Font *font, Menu_Node *node, int *x, int *y, int status, int dir, int max)$/;"	f
+Menu_AffExtendOne	src/Menu.c	/^void Menu_AffExtendOne(TTF_Font *font, Menu *menu, Menu_Node *node, int *x, int *y)$/;"	f
+Menu_Alloc	src/Menu.c	/^Menu *Menu_Alloc(void)$/;"	f
+Menu_ChooseNew	src/Menu.c	/^int Menu_ChooseNew(int *new_vox, Cle **new_cles, int *new_num, int *new_den)$/;"	f
+Menu_ConfigAudio	src/Menu.c	/^int Menu_ConfigAudio(void)$/;"	f
+Menu_Console	src/Menu.c	/^void Menu_Console(Node_Array *lst, int tab)$/;"	f
+Menu_Create	src/Menu.c	/^Menu *Menu_Create(void)$/;"	f
+Menu_Free	src/Menu.c	/^void Menu_Free(Menu **menu)$/;"	f
+Menu_New	src/Menu.c	/^int Menu_New(void)$/;"	f
+Menu_NoSelect	src/Menu.c	/^int Menu_NoSelect(void)$/;"	f
+Menu_Node	include/Menu.h	/^struct Menu_Node$/;"	s
+Menu_Node	include/Menu.h	/^typedef struct Menu_Node Menu_Node;$/;"	t	typeref:struct:Menu_Node
+Menu_OpenFile	src/Menu.c	/^int Menu_OpenFile(void)$/;"	f
+Menu_PollMouse	src/Menu.c	/^int Menu_PollMouse(Menu *menu, SDL_Event event)$/;"	f
+Menu_SauvFileABC	src/Menu.c	/^int Menu_SauvFileABC(void)$/;"	f
+Menu_SauvFileMED	src/Menu.c	/^int Menu_SauvFileMED(void)$/;"	f
+Mixer	include/Audio.h	/^struct Mixer$/;"	s
+Mixer	include/Audio.h	/^typedef struct Mixer Mixer;$/;"	t	typeref:struct:Mixer
+Mixer_Add	src/Audio.c	/^int Mixer_Add(Mixer *mixer, Channel *chan)$/;"	f
+Mixer_Calc	src/Audio.c	/^double Mixer_Calc(AudioConfig *ac, Mixer *mixer)$/;"	f
+Mixer_Init	src/Audio.c	/^void Mixer_Init(Mixer *mixer)$/;"	f
+Mixer_Quit	src/Audio.c	/^void Mixer_Quit(Mixer *mixer)$/;"	f
+Mode	include/Events.h	/^	} Mode;$/;"	t	typeref:enum:__anon15
+Moteur_WriteParagraph	src/Text.c	/^int Moteur_WriteParagraph(int x, int y, int max_w, const char *text_paragraph, int size, int esp,$/;"	f
+Moteur_WriteText	src/Text.c	/^int Moteur_WriteText(int x, int y, const char *text, int size,$/;"	f
+MouseToNote	src/Events.c	/^char MouseToNote(Area *area, int y)$/;"	f
+MyChildrenComp	src/Menu.c	/^int MyChildrenComp(Menu_Node *goal, Menu_Node *base)$/;"	f
+NODE	include/Menu.h	/^	NODE, LEAF$/;"	e	enum:__anon9
+NOIRE	include/Step.h	/^	NOIRE		= 4,	\/*!< Noire, 16 x base *\/$/;"	e	enum:__anon5
+NONE	include/Events.h	19;"	d
+NOTE_DEFAULT	include/Step.h	/^	NOTE_DEFAULT 		= 0,		\/*!< Aucun *\/$/;"	e	enum:__anon3
+NOTE_DOUBLEFLAT	include/Step.h	/^	NOTE_DOUBLEFLAT		= 0x08,		\/*!< Note double-bémolisée *\/$/;"	e	enum:__anon3
+NOTE_DOUBLEPOINTED	include/Step.h	/^	NOTE_DOUBLEPOINTED	= 0x20,		\/*!< Note double-pointée *\/$/;"	e	enum:__anon3
+NOTE_DOUBLESHARP	include/Step.h	/^	NOTE_DOUBLESHARP	= 0x02,		\/*!< Note double-diésée *\/$/;"	e	enum:__anon3
+NOTE_FLAT	include/Step.h	/^	NOTE_FLAT		= 0x04,		\/*!< Note bémolisée *\/$/;"	e	enum:__anon3
+NOTE_LINKED	include/Step.h	/^	NOTE_LINKED		= 0x80		\/*!< Note prolongée *\/$/;"	e	enum:__anon3
+NOTE_NATURAL	include/Step.h	/^	NOTE_NATURAL		= 0x40,		\/*!< Note avec un bécare *\/$/;"	e	enum:__anon3
+NOTE_POINTED	include/Step.h	/^	NOTE_POINTED		= 0x10,		\/*!< Note pointée *\/$/;"	e	enum:__anon3
+NOTE_SHARP	include/Step.h	/^	NOTE_SHARP		= 0x01,		\/*!< Note diésée *\/$/;"	e	enum:__anon3
+NOTE_SPACE	include/Images.h	35;"	d
+NPAGE	include/Window.h	26;"	d
+NodeArray_Add	src/Menu.c	/^int NodeArray_Add(Node_Array *na, const char *name, int need_select, Node_Type type, int (*f)(void))$/;"	f
+NodeArray_AddElem	src/Menu.c	/^int NodeArray_AddElem(Node_Array *na, Menu_Node *elem)$/;"	f
+NodeArray_Alloc	src/Menu.c	/^Node_Array *NodeArray_Alloc(int max)$/;"	f
+NodeArray_Free	src/Menu.c	/^void NodeArray_Free(Node_Array **lst)$/;"	f
+NodeList	include/System.h	/^struct NodeList$/;"	s
+NodeList	include/System.h	/^typedef struct NodeList NodeList;$/;"	t	typeref:struct:NodeList
+NodeList_Add	src/System.c	/^int NodeList_Add(NodeList **node, NodeList *new)$/;"	f
+NodeList_Alloc	src/System.c	/^NodeList *NodeList_Alloc(const char *name, void *data, 	void (*Node_Free)(void *))$/;"	f
+NodeList_Free	src/System.c	/^void NodeList_Free(NodeList **node)$/;"	f
+NodeList_FreeAll	src/System.c	/^void NodeList_FreeAll(NodeList **lst)$/;"	f
+NodeList_Get	src/System.c	/^void *NodeList_Get(NodeList **node, const char *name)$/;"	f
+Node_Array	include/Menu.h	/^struct Node_Array$/;"	s
+Node_Array	include/Menu.h	/^typedef struct Node_Array Node_Array;$/;"	t	typeref:struct:Node_Array
+Node_Free	include/System.h	/^	void (*Node_Free)(void *);$/;"	m	struct:NodeList
+Node_Type	include/Menu.h	/^} Node_Type;$/;"	t	typeref:enum:__anon9
+Note	include/Step.h	/^struct Note$/;"	s
+Note	include/Step.h	/^typedef struct Note Note;$/;"	t	typeref:struct:Note
+Note_Alloc	src/Step.c	/^Note *Note_Alloc(char note, Note_Flags flags, Note_Duration duration, char rest)$/;"	f
+Note_Black	include/Images.h	/^	SDL_Surface *Note_Black;$/;"	m	struct:Graphics
+Note_ConsolePrintf	src/Step.c	/^void Note_ConsolePrintf(Note *note)$/;"	f
+Note_CreateBlack	src/Images.c	/^SDL_Surface *Note_CreateBlack(int size_w, int size_h, int size_queue)$/;"	f
+Note_CreateCrotchet	src/Images.c	/^SDL_Surface *Note_CreateCrotchet(int size_w, int size_h, int size_queue)$/;"	f
+Note_CreateCrotchetInv	src/Images.c	/^SDL_Surface *Note_CreateCrotchetInv(int size_w, int size_h, int size_queue)$/;"	f
+Note_CreateHead	src/Images.c	/^SDL_Surface *Note_CreateHead(int size_w, int size_h, Color color)$/;"	f
+Note_CreateHeadWhite	src/Images.c	/^SDL_Surface *Note_CreateHeadWhite(int size_w, int size_h, Color color)$/;"	f
+Note_CreateHeadWhole	src/Images.c	/^SDL_Surface *Note_CreateHeadWhole(int size_w, int size_h)$/;"	f
+Note_CreateNoteFromString	src/Step.c	/^Note *Note_CreateNoteFromString(const char *note, Note_Duration duration)$/;"	f
+Note_Crotchet	include/Images.h	/^	SDL_Surface *Note_Crotchet;$/;"	m	struct:Graphics
+Note_CrotchetInv	include/Images.h	/^	SDL_Surface *Note_CrotchetInv;$/;"	m	struct:Graphics
+Note_Duration	include/Step.h	/^	} Note_Duration;$/;"	t	typeref:enum:__anon5
+Note_Flags	include/Step.h	/^	} Note_Flags;$/;"	t	typeref:enum:__anon3
+Note_Free	src/Step.c	/^void Note_Free(Note **note)$/;"	f
+Note_GetFreq	src/Audio.c	/^double Note_GetFreq(Note *note)$/;"	f
+Note_Print	src/Window.c	/^int Note_Print(Score *score, Staff *staff, Step *step, int id_step, int id_note, Note *note, SDL_Rect *base_pos, SDL_Surface *dest, int nbody)$/;"	f
+Note_RealDuration	src/Step.c	/^int Note_RealDuration(Note *note, Step *step)$/;"	f
+Note_White	include/Images.h	/^	SDL_Surface *Note_White;$/;"	m	struct:Graphics
+Note_headBlack	include/Images.h	/^	SDL_Surface *Note_headBlack; \/* Noires, Croches *\/$/;"	m	struct:Graphics
+Note_headWhite	include/Images.h	/^	SDL_Surface *Note_headWhite; \/* Blanche *\/$/;"	m	struct:Graphics
+Note_headWhole	include/Images.h	/^	SDL_Surface *Note_headWhole; \/* Ronde *\/$/;"	m	struct:Graphics
+OBJ	Makefile	/^OBJ=obj\/$/;"	m
+OBJECT_ALL	include/Events.h	/^	OBJECT_ALL	= 0xFFFF$/;"	e	enum:__anon14
+OBJECT_CLE	include/Events.h	/^	OBJECT_CLE	= 0x0004,$/;"	e	enum:__anon14
+OBJECT_LINE	include/Events.h	/^	OBJECT_LINE	= 0x0002,$/;"	e	enum:__anon14
+OBJECT_NOTE	include/Events.h	/^	OBJECT_NOTE	= 0x0001,$/;"	e	enum:__anon14
+OBJECT_SHEET	include/Events.h	/^	OBJECT_SHEET	= 0x0020,$/;"	e	enum:__anon14
+OBJECT_SIGN	include/Events.h	/^	OBJECT_SIGN	= 0x0008,$/;"	e	enum:__anon14
+OBJECT_STEP	include/Events.h	/^	OBJECT_STEP	= 0x0010,$/;"	e	enum:__anon14
+Object_Type	include/Events.h	/^	} Object_Type;$/;"	t	typeref:enum:__anon14
+Partition	report/Med-Rapport.tex	/^\\chapter{Implémentations}$/;"	s
+PixelInRect	src/Events.c	/^int PixelInRect(int x, int y, SDL_Rect rect)$/;"	f
+Point	include/System.h	/^struct Point$/;"	s
+Point	include/System.h	/^typedef struct Point Point;$/;"	t	typeref:struct:Point
+Point_Alloc	src/System.c	/^Point *Point_Alloc(Uint x, Uint y)$/;"	f
+Point_Free	src/System.c	/^void Point_Free(Point **pt)$/;"	f
+Port   e et Partition	report/Med-Rapport.tex	/^\\end{itemize}$/;"	u
+PowerOfBezier	src/Images.c	/^int PowerOfBezier(SDL_Surface *dest, const int *x, const int *y, int n, Color color)$/;"	f
+QUADRUPLECROCHE	include/Step.h	/^	QUADRUPLECROCHE	= 64	\/*!< Quadruple, 1 x base *\/$/;"	e	enum:__anon5
+QUEUE	include/Images.h	32;"	d
+QUEUE_BORDER	include/Images.h	34;"	d
+QUIT	include/Events.h	13;"	d
+RATIO_LITTLE	include/Images.h	37;"	d
+RED	include/System.h	/^	RED	= 31,$/;"	e	enum:__anon7
+RONDE	include/Step.h	/^	RONDE 		= 1,	\/*!< Ronde, 64 x base *\/$/;"	e	enum:__anon5
+RealDuration	src/Step.c	/^int RealDuration(Note_Duration duration, Note_Flags flags)$/;"	f
+RemoveLineBreak	src/ABC.c	/^int RemoveLineBreak(char *str)$/;"	f
+Rest_Breve	include/Images.h	/^	SDL_Surface *Rest_Breve;$/;"	m	struct:Graphics
+Rest_BreveLong	include/Images.h	/^	SDL_Surface *Rest_BreveLong;$/;"	m	struct:Graphics
+Rest_CreateBreave	src/Images.c	/^SDL_Surface *Rest_CreateBreave(int size_w, int size_h)$/;"	f
+Rest_CreateBreveLong	src/Images.c	/^SDL_Surface *Rest_CreateBreveLong(int size_w, int size_h)$/;"	f
+Rest_CreateLong	src/Images.c	/^SDL_Surface *Rest_CreateLong(int size_w, int size_h)$/;"	f
+Rest_CreateQuaver	src/Images.c	/^SDL_Surface *Rest_CreateQuaver(int size_w, int size_h)$/;"	f
+Rest_Crotchet	include/Images.h	/^	SDL_Surface *Rest_Crotchet;$/;"	m	struct:Graphics
+Rest_Long	include/Images.h	/^	SDL_Surface *Rest_Long;$/;"	m	struct:Graphics
+Rest_Quaver	include/Images.h	/^	SDL_Surface *Rest_Quaver;$/;"	m	struct:Graphics
+SDLColor_Set	src/Images.c	/^SDL_Color SDLColor_Set(int r, int g, int b)$/;"	f
+SDL_CreateSurface	src/Images.c	/^SDL_Surface *SDL_CreateSurface(int w, int h)$/;"	f
+SDL_CreateWhiteKeySurface	src/Images.c	/^SDL_Surface *SDL_CreateWhiteKeySurface(int w, int h)$/;"	f
+SDL_FreeRect	src/Window.c	/^void SDL_FreeRect(SDL_Rect **rect)$/;"	f
+SDL_GetPixel	src/Images.c	/^Uint32 SDL_GetPixel(SDL_Surface *surf, int x, int y)$/;"	f
+SDL_SetLocalRect	src/Images.c	/^SDL_Rect SDL_SetLocalRect(int x, int y, int w, int h)$/;"	f
+SDL_SetPixel	src/Images.c	/^int SDL_SetPixel(SDL_Surface *surf, int x, int y, Uint32 pix)$/;"	f
+SDL_SetRect	src/Images.c	/^SDL_Rect *SDL_SetRect(int x, int y, int w, int h)$/;"	f
+SELECT	include/Events.h	17;"	d
+SIGN_AUTHOR	include/Staff.h	/^	SIGN_AUTHOR	= 0x04,$/;"	e	enum:__anon13
+SIGN_TEMPO	include/Staff.h	/^	SIGN_TEMPO	= 0x01,$/;"	e	enum:__anon13
+SIGN_TITLE	include/Staff.h	/^	SIGN_TITLE	= 0x08$/;"	e	enum:__anon13
+SIGN_VELOCITY	include/Staff.h	/^	SIGN_VELOCITY	= 0x02,$/;"	e	enum:__anon13
+SIZE_BODY	include/Window.h	25;"	d
+SRC	Makefile	/^SRC=src\/$/;"	m
+STAFF_BASE	include/Staff.h	7;"	d
+STAFF_H	include/Images.h	33;"	d
+STATE_ALLOC	include/Window.h	/^	STATE_ALLOC,$/;"	e	enum:__anon8
+STATE_ERROR	include/Window.h	/^	STATE_ERROR,$/;"	e	enum:__anon8
+STATE_QUIT	include/Window.h	/^	STATE_QUIT$/;"	e	enum:__anon8
+STATE_SDLINIT	include/Window.h	/^	STATE_SDLINIT,$/;"	e	enum:__anon8
+STATE_TTFINIT	include/Window.h	/^	STATE_TTFINIT,$/;"	e	enum:__anon8
+STATE_WINDOWED	include/Window.h	/^	STATE_WINDOWED,$/;"	e	enum:__anon8
+STEP_DEFAULT	include/Step.h	/^	STEP_DEFAULT		= 0$/;"	e	enum:__anon4
+SYS_NAME	include/System.h	12;"	d
+SYS_VERSION	include/System.h	11;"	d
+Score	include/Staff.h	/^struct Score$/;"	s
+Score	include/Staff.h	/^typedef struct Score Score;$/;"	t	typeref:struct:Score
+Score_AddEmpty	src/Staff.c	/^int Score_AddEmpty(Score *score)$/;"	f
+Score_AddEmptyStep	src/Staff.c	/^int Score_AddEmptyStep(Score *score)$/;"	f
+Score_AddSign	src/Staff.c	/^int Score_AddSign(Score *score, Sign_Type type, Uint value, Uint time, char *text)$/;"	f
+Score_Alloc	src/Staff.c	/^Score *Score_Alloc(void)$/;"	f
+Score_ChangeArmure	src/Staff.c	/^int Score_ChangeArmure(Score *score, int i, signed char new)$/;"	f
+Score_DeleteSign	src/Staff.c	/^int Score_DeleteSign(Score *score, Sign_Type type, Uint time)$/;"	f
+Score_DeleteStep	src/Staff.c	/^int Score_DeleteStep(Score *score, int i)$/;"	f
+Score_Free	src/Staff.c	/^void Score_Free(Score **score)$/;"	f
+Score_Init	src/Staff.c	/^int Score_Init(Score *score)$/;"	f
+Score_NumberStep	src/Staff.c	/^int Score_NumberStep(Score *score)$/;"	f
+Score_Print	src/Window.c	/^int Score_Print(Score *score, SDL_Rect *base_pos)$/;"	f
+Score_SetEmptyStep	src/Staff.c	/^int Score_SetEmptyStep(Score *score, int i)$/;"	f
+Score_SetTempo	src/Staff.c	/^void Score_SetTempo(Score *score, int tempo)$/;"	f
+Score_ShowSignConsole	src/Staff.c	/^int Score_ShowSignConsole(Score *score)$/;"	f
+SetColor	src/Images.c	/^Color SetColor(int r, int g, int b)$/;"	f
+SetColorA	src/Images.c	/^Color SetColorA(int r, int g, int b, int a)$/;"	f
+Sharp	include/Images.h	/^	SDL_Surface *Sharp;$/;"	m	struct:Graphics
+Sign	include/Staff.h	/^struct Sign$/;"	s
+Sign	include/Staff.h	/^typedef struct Sign Sign;$/;"	t	typeref:struct:Sign
+Sign_Alloc	src/Staff.c	/^Sign *Sign_Alloc(Sign_Type type, Uint value, Uint time, char *text)$/;"	f
+Sign_Free	src/Staff.c	/^void Sign_Free(Sign **sign)$/;"	f
+Sign_FreeAll	src/Staff.c	/^void Sign_FreeAll(Sign **sign)$/;"	f
+Sign_Type	include/Staff.h	/^	} Sign_Type;$/;"	t	typeref:enum:__anon13
+Staff	include/Staff.h	/^struct Staff$/;"	s
+Staff	include/Staff.h	/^typedef struct Staff Staff;$/;"	t	typeref:struct:Staff
+Staff_AddEmptyStep	src/Staff.c	/^int Staff_AddEmptyStep(Staff *staff)$/;"	f
+Staff_AddNote	src/Staff.c	/^int Staff_AddNote(Staff *staff, int step_id, int note_id, char note, $/;"	f
+Staff_Alloc	src/Staff.c	/^Staff *Staff_Alloc(const char *name)$/;"	f
+Staff_ChangeArmure	src/Staff.c	/^int Staff_ChangeArmure(Staff *staff, int step_id, signed char new)$/;"	f
+Staff_ChangeCle	src/Staff.c	/^int Staff_ChangeCle(Staff *staff, int step_id, Cle new)$/;"	f
+Staff_ChangeRestStatus	src/Staff.c	/^int Staff_ChangeRestStatus(Staff *staff, int step_id, int note_id, char newStatus)$/;"	f
+Staff_Console	src/Staff.c	/^void Staff_Console(Staff *staff)$/;"	f
+Staff_DeleteStep	src/Staff.c	/^int Staff_DeleteStep(Staff *staff, int pos)$/;"	f
+Staff_DiviseRest	src/Staff.c	/^int Staff_DiviseRest(Staff *staff, int step_id, int note_id)$/;"	f
+Staff_Free	src/Staff.c	/^void Staff_Free(Staff **staff)$/;"	f
+Staff_Init	src/Staff.c	/^int Staff_Init(Staff *staff, int num, Note_Duration den, int cle, char sign)$/;"	f
+Staff_InsereEmptyStep	src/Staff.c	/^int Staff_InsereEmptyStep(Staff *staff, int pos)$/;"	f
+Staff_SetNumDen	src/Staff.c	/^int Staff_SetNumDen(Staff *staff, int step_id, int num, Note_Duration den)$/;"	f
+Staff_Transpose	src/Staff.c	/^int Staff_Transpose(Staff *staff, char value)$/;"	f
+Staff_VerifAlloc	src/Staff.c	/^void Staff_VerifAlloc(Staff *staff)$/;"	f
+Step	include/Step.h	/^struct Step$/;"	s
+Step	include/Step.h	/^typedef struct Step Step;$/;"	t	typeref:struct:Step
+Step_AddNote	src/Step.c	/^int Step_AddNote(Step *step, int id, char note, Note_Flags flags,$/;"	f
+Step_Alloc	src/Step.c	/^Step *Step_Alloc(int num, Note_Duration den, Cle cle, char sign, Step_Flags flags)$/;"	f
+Step_Change	src/Step.c	/^int Step_Change(Step *step, int num, Note_Duration den, Cle cle, $/;"	f
+Step_ChangeRestStatus	src/Step.c	/^int Step_ChangeRestStatus(Step *step, int id, char newStatus)$/;"	f
+Step_ConsoleFastPrintf	src/Step.c	/^void Step_ConsoleFastPrintf(Step *step)$/;"	f
+Step_ConsolePrintf	src/Step.c	/^void Step_ConsolePrintf(Step *step)$/;"	f
+Step_CorrectFlags	src/Step.c	/^int Step_CorrectFlags(Step *step, int id, char note, Note_Flags *flags)$/;"	f
+Step_DelLocal	src/Step.c	/^int Step_DelLocal(Step *step, int begin, int end)$/;"	f
+Step_DiviseRest	src/Step.c	/^int Step_DiviseRest(Step *step, int id)$/;"	f
+Step_DurationBefore	src/Step.c	/^int Step_DurationBefore(Step *step, int id_note)$/;"	f
+Step_Flags	include/Step.h	/^	} Step_Flags;$/;"	t	typeref:enum:__anon4
+Step_Free	src/Step.c	/^void Step_Free(Step **step)$/;"	f
+Step_GetMinDuration	src/Step.c	/^Note_Duration Step_GetMinDuration(Step *step)$/;"	f
+Step_GetNextNote	src/Window.c	/^Note *Step_GetNextNote(Step *step, int id)$/;"	f
+Step_GetNote	src/Step.c	/^Note *Step_GetNote(Step *step, int id_note)$/;"	f
+Step_GetNoteAfterDuration	src/Step.c	/^Note *Step_GetNoteAfterDuration(Step *step, int duration)$/;"	f
+Step_GetToNoteAfterDuration	src/Step.c	/^ToNote *Step_GetToNoteAfterDuration(Step *step, int duration)$/;"	f
+Step_Init	src/Step.c	/^int Step_Init(Step *step)$/;"	f
+Step_Print	src/Window.c	/^int Step_Print(Score *score, Staff *staff, Step *step, int id_step, SDL_Rect *base_pos, SDL_Surface *dest, int nbody)$/;"	f
+Step_PrintMesure	src/Window.c	/^int Step_PrintMesure(Step *step, SDL_Rect *base_pos, SDL_Surface *dest)$/;"	f
+Step_Regularise	src/Step.c	/^int Step_Regularise(Step *step)$/;"	f
+Step_Transpose	src/Step.c	/^int Step_Transpose(Step *step, char value)$/;"	f
+Step_Verif	src/Step.c	/^int Step_Verif(Step *step)$/;"	f
+Step_VerifArmFlags	src/Step.c	/^int Step_VerifArmFlags(Step *step)$/;"	f
+Str_Concat	src/Explorer.c	/^char *Str_Concat(int n, ...)$/;"	f
+Str_Copy	src/Text.c	/^char *Str_Copy(const char *str)$/;"	f
+Str_GoInSub	src/Explorer.c	/^char *Str_GoInSub(const char *path, const char *sub)$/;"	f
+Str_TopFolder	src/Explorer.c	/^char *Str_TopFolder(const char *path)$/;"	f
+TEXT_BLENDED	include/Text.h	/^	TEXT_BLENDED	= 0x02$/;"	e	enum:__anon2
+TEXT_CENTER	include/Text.h	/^	TEXT_CENTER	= 0x02,$/;"	e	enum:__anon1
+TEXT_LEFT	include/Text.h	/^	TEXT_LEFT	= 0x01,$/;"	e	enum:__anon1
+TEXT_RIGHT	include/Text.h	/^	TEXT_RIGHT	= 0x04$/;"	e	enum:__anon1
+TEXT_SOLID	include/Text.h	/^	TEXT_SOLID	= 0x01,$/;"	e	enum:__anon2
+TRIPLECROCHE	include/Step.h	/^	TRIPLECROCHE	= 32,	\/*!< Triple, 2 x base *\/$/;"	e	enum:__anon5
+Tempo_GetMsTempo	src/Audio.c	/^int Tempo_GetMsTempo(void)$/;"	f
+TerminalColor	include/System.h	/^	} TerminalColor;$/;"	t	typeref:enum:__anon7
+TestOK	include/Window.h	24;"	d
+Test_ConvertStringToId	src/Test.c	/^int Test_ConvertStringToId(void)$/;"	f
+Test_Main	src/Test.c	/^extern int Test_Main(void)$/;"	f
+Test_NoteAlloc	src/Test.c	/^int Test_NoteAlloc(void)$/;"	f
+Test_NoteFree	src/Test.c	/^int Test_NoteFree(void)$/;"	f
+Test_StepAlloc	src/Test.c	/^int Test_StepAlloc(void)$/;"	f
+Test_StepFree	src/Test.c	/^int Test_StepFree(void)$/;"	f
+Test_StepInit	src/Test.c	/^int Test_StepInit(void)$/;"	f
+Test_ToNoteAlloc	src/Test.c	/^int Test_ToNoteAlloc(void)$/;"	f
+Test_ToNoteFree	src/Test.c	/^int Test_ToNoteFree(void)$/;"	f
+Text_Align	include/Text.h	/^	} Text_Align;$/;"	t	typeref:enum:__anon1
+Text_Style	include/Text.h	/^	} Text_Style;$/;"	t	typeref:enum:__anon2
+ToNote	include/Step.h	/^struct ToNote$/;"	s
+ToNote	include/Step.h	/^typedef struct ToNote ToNote;$/;"	t	typeref:struct:ToNote
+ToNote_Alloc	src/Step.c	/^ToNote *ToNote_Alloc(char note, Note_Flags flags, int duration, char rest)$/;"	f
+ToNote_ChangeRestStatus	src/Step.c	/^int ToNote_ChangeRestStatus(ToNote *notes, int id, char newStatus)$/;"	f
+ToNote_ConsolePrintf	src/Step.c	/^void ToNote_ConsolePrintf(ToNote *notes)$/;"	f
+ToNote_DiviseRest	src/Step.c	/^int ToNote_DiviseRest(ToNote *tonote, int id, int newDuration, int stepNum)$/;"	f
+ToNote_Free	src/Step.c	/^void ToNote_Free(ToNote **tonote)$/;"	f
+ToNote_FreeAll	src/Step.c	/^void ToNote_FreeAll(ToNote **tonote)$/;"	f
+ToNote_Regularise	src/Step.c	/^int ToNote_Regularise(ToNote *notes)$/;"	f
+ToNote_Transpose	src/Step.c	/^int ToNote_Transpose(ToNote *tonote, char value)$/;"	f
+ToolBar_PollMouse	src/Menu.c	/^int ToolBar_PollMouse(Menu *menu, SDL_Event event)$/;"	f
+Toolbar	include/Events.h	/^struct Toolbar$/;"	s
+Toolbar	include/Events.h	/^typedef struct Toolbar Toolbar;$/;"	t	typeref:struct:Toolbar
+Toolbar_PrintMode	src/Menu.c	/^void Toolbar_PrintMode(Menu *menu)$/;"	f
+Toolbar_PrintNote	src/Menu.c	/^void Toolbar_PrintNote(Menu *menu)$/;"	f
+Uint	include/System.h	/^typedef unsigned int Uint;$/;"	t
+WHITE	include/System.h	/^	WHITE	= 37$/;"	e	enum:__anon7
+Wave	include/Audio.h	/^struct Wave$/;"	s
+Wave	include/Audio.h	/^typedef struct Wave Wave;$/;"	t	typeref:struct:Wave
+Wave_Alloc	src/Audio.c	/^Wave *Wave_Alloc(double (*f)(int,double, int), double freq, int volume)$/;"	f
+Wave_Calc	src/Audio.c	/^double Wave_Calc(AudioConfig *ac, Wave *wave)$/;"	f
+Wave_Free	src/Audio.c	/^void Wave_Free(Wave **wave)$/;"	f
+Window	src/Window.c	/^WindowData *Window = NULL;$/;"	v
+WindowData	include/Window.h	/^struct WindowData$/;"	s
+WindowData	include/Window.h	/^typedef struct WindowData WindowData;$/;"	t	typeref:struct:WindowData
+WindowData_Alloc	src/Window.c	/^WindowData *WindowData_Alloc(void)$/;"	f
+WindowData_Free	src/Window.c	/^void WindowData_Free(WindowData **window)$/;"	f
+Window_AddEmptyBody	src/Window.c	/^int Window_AddEmptyBody(void)$/;"	f
+Window_ApplyZoom	src/Window.c	/^int Window_ApplyZoom(double zoom)$/;"	f
+Window_ApplyZoomOnRect	src/Window.c	/^int Window_ApplyZoomOnRect(SDL_Rect *rect, double zoom, double old)$/;"	f
+Window_ClearWindow	src/Window.c	/^int Window_ClearWindow(Color color)$/;"	f
+Window_CreateWindow	src/Window.c	/^int Window_CreateWindow(int width, int height, const char *title)$/;"	f
+Window_DrawBody	src/Window.c	/^int Window_DrawBody()$/;"	f
+Window_DrawStaff	src/Window.c	/^void Window_DrawStaff(int x, int y, int x_end, SDL_Surface *dest)$/;"	f
+Window_GetNeperianSum	src/Window.c	/^Note_Duration Window_GetNeperianSum(Note_Duration realMin, Note_Duration duration)$/;"	f
+Window_GetScreenSize	src/Window.c	/^int Window_GetScreenSize(int *width, int *height)$/;"	f
+Window_GetSize	src/Window.c	/^int Window_GetSize(Score *score, int idStep, Step *step)$/;"	f
+Window_GetSpaceNote	src/Window.c	/^int Window_GetSpaceNote(Score *score, int idStep, Step *step, Note *note, int idNote)$/;"	f
+Window_GetSumAlt	src/Window.c	/^int Window_GetSumAlt(Score *score, int idStep, int durbefore, int dur)$/;"	f
+Window_GetSumStep	src/Window.c	/^int Window_GetSumStep(Step *step, int durbefore, int dur)$/;"	f
+Window_Init	src/Window.c	/^int Window_Init(void)$/;"	f
+Window_InitBody	src/Window.c	/^int Window_InitBody()$/;"	f
+Window_InitMenu	src/Window.c	/^static int Window_InitMenu(SDL_Surface *menu)$/;"	f	file:
+Window_InitPal	src/Window.c	/^static int Window_InitPal(SDL_Surface *pal)$/;"	f	file:
+Window_InteractBackground	src/Window.c	/^void Window_InteractBackground(SDL_Rect box, int r, int g, int b, int header1, int isValid, SDL_Rect valid)$/;"	f
+Window_InteractInfo	src/Window.c	/^int Window_InteractInfo(const char *path, int r, int g, int b)$/;"	f
+Window_LittleEvent	src/Window.c	/^int Window_LittleEvent(SDL_Event event, double *r, int *c, int *mouse,$/;"	f
+Window_MyEventBlit	src/Window.c	/^int Window_MyEventBlit(Object_Type type, int nbody, SDL_Surface *surf, SDL_Rect *rect1, $/;"	f
+Window_OK	src/Window.c	/^int Window_OK(void)$/;"	f
+Window_Print	src/Window.c	/^int Window_Print(void)$/;"	f
+Window_Quit	src/Window.c	/^void Window_Quit(void)$/;"	f
+Window_Staff	src/Window.c	/^void Window_Staff(SDL_Surface *dest, int x, int y, int w)$/;"	f
+Window_State	include/Window.h	/^	} Window_State;$/;"	t	typeref:enum:__anon8
+Window_TestBox	src/Window.c	/^int Window_TestBox(SDL_Surface *dest, SDL_Rect *pos, int zoom)$/;"	f
+Window_isNotePlaying	src/Window.c	/^int Window_isNotePlaying(Note *note)$/;"	f
+YELLOW	include/System.h	/^	YELLOW	= 33,$/;"	e	enum:__anon7
+_Add_New_Staff	src/Menu.c	/^int _Add_New_Staff(void)$/;"	f
+_Aide_APropos	src/Menu.c	/^int _Aide_APropos(void)$/;"	f
+_Ajouter_Mesure_After	src/Menu.c	/^int _Ajouter_Mesure_After(void)$/;"	f
+_Ajouter_Mesure_Before	src/Menu.c	/^int _Ajouter_Mesure_Before(void)$/;"	f
+_Ajouter_Mesure_End	src/Menu.c	/^int _Ajouter_Mesure_End(void)$/;"	f
+_DIR	include/File.h	/^	_DIR$/;"	e	enum:__anon12
+_FILE	include/File.h	/^	_FILE,$/;"	e	enum:__anon12
+_Fichier_Quit	src/Menu.c	/^int _Fichier_Quit(void)$/;"	f
+_GNU_SOURCE	include/Explorer.h	4;"	d
+_GNU_SOURCE	include/File.h	5;"	d
+_Selection_Delete	src/Menu.c	/^int _Selection_Delete(void)$/;"	f
+_Selection_Deselec	src/Menu.c	/^int _Selection_Deselec(void)$/;"	f
+_Selection_Divise	src/Menu.c	/^int _Selection_Divise(void)$/;"	f
+_Selection_Regularise	src/Menu.c	/^int _Selection_Regularise(void)$/;"	f
+__0Arm	src/Menu.c	/^int __0Arm(void){ return ChangeTonality(0); }$/;"	f
+__1Arm	src/Menu.c	/^int __1Arm(void){ return ChangeTonality(1); }$/;"	f
+__2Arm	src/Menu.c	/^int __2Arm(void){ return ChangeTonality(2); }$/;"	f
+__3Arm	src/Menu.c	/^int __3Arm(void){ return ChangeTonality(3); }$/;"	f
+__4Arm	src/Menu.c	/^int __4Arm(void){ return ChangeTonality(4); }$/;"	f
+__5Arm	src/Menu.c	/^int __5Arm(void){ return ChangeTonality(5); }$/;"	f
+__6Arm	src/Menu.c	/^int __6Arm(void){ return ChangeTonality(6); }$/;"	f
+__7Arm	src/Menu.c	/^int __7Arm(void){ return ChangeTonality(7); }$/;"	f
+__HEAD_ABC__	include/ABC.h	10;"	d
+__HEAD_AUDIO__	include/Audio.h	10;"	d
+__HEAD_EVENTS__	include/Events.h	2;"	d
+__HEAD_EXPLORER__	include/Explorer.h	2;"	d
+__HEAD_FILE__	include/File.h	2;"	d
+__HEAD_IMAGES__	include/Images.h	2;"	d
+__HEAD_INTERFACE__	include/Interface.h	2;"	d
+__HEAD_MENU__	include/Menu.h	2;"	d
+__HEAD_PARSER__	include/Parser.h	2;"	d
+__HEAD_STAFF__	include/Staff.h	2;"	d
+__HEAD_STEP__	include/Step.h	10;"	d
+__HEAD_SYSTEM__	include/System.h	2;"	d
+__HEAD_TEST__	include/Test.h	2;"	d
+__HEAD_TEXT__	include/Text.h	2;"	d
+__HEAD_WINDOW__	include/Window.h	2;"	d
+___1Arm	src/Menu.c	/^int ___1Arm(void){ return ChangeTonality(-1); }$/;"	f
+___2Arm	src/Menu.c	/^int ___2Arm(void){ return ChangeTonality(-2); }$/;"	f
+___3Arm	src/Menu.c	/^int ___3Arm(void){ return ChangeTonality(-3); }$/;"	f
+___4Arm	src/Menu.c	/^int ___4Arm(void){ return ChangeTonality(-4); }$/;"	f
+___5Arm	src/Menu.c	/^int ___5Arm(void){ return ChangeTonality(-5); }$/;"	f
+___6Arm	src/Menu.c	/^int ___6Arm(void){ return ChangeTonality(-6); }$/;"	f
+___7Arm	src/Menu.c	/^int ___7Arm(void){ return ChangeTonality(-7); }$/;"	f
+_linked	include/Window.h	/^	int _linked;$/;"	m	struct:WindowData
+_mem	src/System.c	/^extern void _mem(void *ptr, const char *str, const char *file, int line)$/;"	f
+a	include/Images.h	/^	Uint a : 8;$/;"	m	struct:Color
+a	src/Interface.c	/^clock_t a,b,c,d,e,f,g, h, m, n, o, p;$/;"	v
+abc_error	src/ABC.c	/^char abc_error[50] = "";$/;"	v
+b	include/Images.h	/^	Uint b : 8;$/;"	m	struct:Color
+b	src/Interface.c	/^clock_t a,b,c,d,e,f,g, h, m, n, o, p;$/;"	v
+base	include/Events.h	/^	SDL_Rect *	base;$/;"	m	struct:EventData
+base	include/Explorer.h	/^	SDL_Rect base;$/;"	m	struct:Explorer
+body	include/Window.h	/^	SDL_Surface **body; \/* The bigs surfaces (pages) *\/$/;"	m	struct:WindowData
+body_use	include/Window.h	/^	SDL_Surface **body_use; \/* Surface for uses (pages) *\/$/;"	m	struct:WindowData
+c	src/Interface.c	/^clock_t a,b,c,d,e,f,g, h, m, n, o, p;$/;"	v
+carre	src/Audio.c	/^double carre(int x, double freq, int hardwareFreq)$/;"	f
+carreHarmo	src/Audio.c	/^double carreHarmo(int x, double freq, int hardwareFreq)$/;"	f
+channels	include/Audio.h	/^	Channel **channels;	\/*!< Tableau dynamique des voix *\/$/;"	m	struct:Mixer
+cle	include/Step.h	/^	Cle cle : 16;			\/*!< Clé de la mesure *\/$/;"	m	struct:Step
+colorprintf	src/System.c	/^extern int colorprintf(TerminalColor color, const char *format, ...)$/;"	f
+comp_duration	src/Step.c	/^int comp_duration(const void *p, const void *p2)$/;"	f
+d	src/Interface.c	/^clock_t a,b,c,d,e,f,g, h, m, n, o, p;$/;"	v
+dad	include/Explorer.h	/^	SDL_Rect dad;$/;"	m	struct:Explorer
+data	include/Staff.h	/^	int data;$/;"	m	struct:Score
+data	include/System.h	/^	void *data;$/;"	m	struct:NodeList
+den	include/Step.h	/^	Note_Duration den : 8;		\/*!< Dénominateur de la fraction de mesure, temps de base *\/$/;"	m	struct:Step
+dir	include/Explorer.h	/^	Directory *dir;$/;"	m	struct:Explorer
+doubleflat	include/Events.h	/^	char 		doubleflat;$/;"	m	struct:Toolbar
+doublesharp	include/Events.h	/^	char 		doublesharp;$/;"	m	struct:Toolbar
+dst	include/Explorer.h	/^	SDL_Surface *dst;$/;"	m	struct:Explorer
+duration	include/Events.h	/^	Note_Duration 	duration;$/;"	m	struct:Toolbar
+duration	include/Step.h	/^	Note_Duration duration : 8;	\/*!< Durée d'une note\/silence *\/$/;"	m	struct:Note
+e	src/Interface.c	/^clock_t a,b,c,d,e,f,g, h, m, n, o, p;$/;"	v
+f	include/Audio.h	/^	double (*f)(int x, double freq, int hardwareFreq);	\/*!< Fonction du signal, en général sin\/carre *\/$/;"	m	struct:Wave
+f	include/Menu.h	/^			int (*f)(void);$/;"	m	struct:Menu_Node::__anon10::__anon11
+f	src/Interface.c	/^clock_t a,b,c,d,e,f,g, h, m, n, o, p;$/;"	v
+famous	include/System.h	/^	int famous;$/;"	m	struct:NodeList
+find2min	src/Step.c	/^int find2min(int n)$/;"	f
+find2rest	src/Step.c	/^Note_Duration *find2rest(int duration)$/;"	f
+flags	include/Step.h	/^	Note_Flags flags : 24;		\/*!< Attributs d'une note *\/$/;"	m	struct:Note
+flags	include/Step.h	/^	Step_Flags flags : 16;		\/*!< Attributs de la mesure *\/$/;"	m	struct:Step
+flat	include/Events.h	/^	char 		flat;$/;"	m	struct:Toolbar
+font	include/Menu.h	/^	TTF_Font *font;$/;"	m	struct:Menu
+freq	include/Audio.h	/^	double freq;						\/*!< Fréquence *\/$/;"	m	struct:Wave
+g	include/Images.h	/^	Uint g : 8;$/;"	m	struct:Color
+g	src/Interface.c	/^clock_t a,b,c,d,e,f,g, h, m, n, o, p;$/;"	v
+globalVolume	include/Audio.h	/^	int globalVolume;		\/*!< Volume maximal *\/$/;"	m	struct:AudioConfig
+h	src/Interface.c	/^clock_t a,b,c,d,e,f,g, h, m, n, o, p;$/;"	v
+hardware	include/Audio.h	/^	SDL_AudioSpec hardware;		\/*!< Spécifications hardware disponibles *\/$/;"	m	struct:AudioConfig
+header1	include/Explorer.h	/^	int header1;$/;"	m	struct:Explorer
+header2	include/Explorer.h	/^	int header2;$/;"	m	struct:Explorer
+header3	include/Explorer.h	/^	int header3;$/;"	m	struct:Explorer
+height	include/Menu.h	/^	int height;$/;"	m	struct:Menu
+height	include/Window.h	/^	int height;$/;"	m	struct:WindowData
+hover	include/Events.h	/^	Area *		hover;$/;"	m	struct:EventData
+hover	include/Explorer.h	/^	int hover;$/;"	m	struct:Explorer
+hover	include/Menu.h	/^	Menu_Node *hover;$/;"	m	struct:Menu
+hover_button1	include/Events.h	/^	char		hover_button1;$/;"	m	struct:Toolbar
+hover_button2	include/Events.h	/^	char		hover_button2;$/;"	m	struct:Toolbar
+hover_button3	include/Events.h	/^	char		hover_button3;$/;"	m	struct:Toolbar
+hover_tempo	include/Events.h	/^	char		hover_tempo;$/;"	m	struct:Toolbar
+id	include/System.h	/^	int id;$/;"	m	struct:NodeList
+id_note	include/Events.h	/^			int 	id_note;$/;"	m	struct:Area::__anon16::__anon17
+id_note_add	include/Events.h	/^			int 	id_note_add; \/* only when type=EVENT_ADDNOTE *\/$/;"	m	struct:Area::__anon16::__anon18
+id_staff	include/Events.h	/^			int 	id_staff;$/;"	m	struct:Area::__anon16::__anon18
+id_step	include/Audio.h	/^	int id_step;			\/*!< Position du curseur de lecture *\/$/;"	m	struct:AudioConfig
+id_step	include/Events.h	/^			int 	id_step;$/;"	m	struct:Area::__anon16::__anon18
+last	include/Explorer.h	/^	SDL_Event last;$/;"	m	struct:Explorer
+lastArea	include/Events.h	/^	Area *		lastArea;$/;"	m	struct:EventData
+line	include/Explorer.h	/^	int line;$/;"	m	struct:Explorer
+log2	include/System.h	14;"	d
+lst	include/Events.h	/^	Area *		lst; \/* ordonned by surface size *\/$/;"	m	struct:EventData
+lst	include/Menu.h	/^	Node_Array *lst;$/;"	m	struct:Menu
+lst	include/Staff.h	/^	Staff **lst;$/;"	m	struct:Score
+lst	include/System.h	/^	NodeList *lst;$/;"	m	struct:GenList
+lst_famous	include/System.h	/^	int lst_famous;$/;"	m	struct:GenList
+m	include/Audio.h	/^	int m;			\/*!< Place allouée *\/$/;"	m	struct:Mixer
+m	include/Audio.h	/^	int m;		\/*!< Place disponible *\/$/;"	m	struct:Channel
+m	include/File.h	/^	int m;$/;"	m	struct:Directory
+m	src/Interface.c	/^clock_t a,b,c,d,e,f,g, h, m, n, o, p;$/;"	v
+main_audio	src/Audio.c	/^AudioConfig *main_audio = NULL;$/;"	v
+main_events	src/Events.c	/^EventData *main_events = NULL;$/;"	v
+max	include/Menu.h	/^	int max;$/;"	m	struct:Node_Array
+max	include/Staff.h	/^	int max;$/;"	m	struct:Staff
+max_height	include/Window.h	/^	int max_height;$/;"	m	struct:WindowData
+max_width	include/Window.h	/^	int max_width;$/;"	m	struct:WindowData
+memtest	include/System.h	15;"	d
+menu	include/Window.h	/^	SDL_Surface *menu; \/* top *\/$/;"	m	struct:WindowData
+menu_no_action	src/Menu.c	/^int menu_no_action(void)$/;"	f
+mixSinCarre	src/Audio.c	/^double mixSinCarre(int x, double freq, int hardwareFreq)$/;"	f
+mixer	include/Audio.h	/^	Mixer mixer;			\/*!< Ensemble des voix *\/$/;"	m	struct:AudioConfig
+mode	include/Events.h	/^	Mode 		mode;$/;"	m	struct:EventData
+mode	include/Menu.h	/^	SDL_Rect mode;$/;"	m	struct:Menu
+my_split	src/Parser.c	/^char **my_split(char *base, int *argc)$/;"	f
+n	include/Audio.h	/^	int n;			\/*!< Nombre *\/$/;"	m	struct:Mixer
+n	include/Audio.h	/^	int n;		\/*!< Nombre *\/$/;"	m	struct:Channel
+n	include/Events.h	/^	int 		n;$/;"	m	struct:EventData
+n	include/File.h	/^	int n;$/;"	m	struct:Directory
+n	include/Menu.h	/^	int n;$/;"	m	struct:Node_Array
+n	include/Staff.h	/^	int n;$/;"	m	struct:Score
+n	include/Staff.h	/^	int n;$/;"	m	struct:Staff
+n	include/System.h	/^	int n;$/;"	m	struct:Dots
+n	include/System.h	/^	int n;$/;"	m	struct:GenList
+n	src/Interface.c	/^clock_t a,b,c,d,e,f,g, h, m, n, o, p;$/;"	v
+name	include/File.h	/^	char *name;$/;"	m	struct:Directory
+name	include/File.h	/^	char *name;$/;"	m	struct:Entry
+name	include/Menu.h	/^	char *name;$/;"	m	struct:Menu_Node
+name	include/Staff.h	/^	char *name;$/;"	m	struct:Staff
+name	include/System.h	/^	char *name;$/;"	m	struct:NodeList
+nb_body	include/Window.h	/^	int nb_body;$/;"	m	struct:WindowData
+nbody	include/Events.h	/^	int		nbody;$/;"	m	struct:Area
+need_refresh	include/Audio.h	/^	int need_refresh;		\/*!< Demande de rafraichissement de l'écran *\/$/;"	m	struct:AudioConfig
+need_select	include/Menu.h	/^			int need_select;$/;"	m	struct:Menu_Node::__anon10::__anon11
+next	include/Events.h	/^	Area *		next;$/;"	m	struct:Area
+next	include/Menu.h	/^		Node_Array *next;$/;"	m	union:Menu_Node::__anon10
+next	include/Menu.h	/^	Menu_Node **next;$/;"	m	struct:Node_Array
+next	include/Staff.h	/^	Sign *next;$/;"	m	struct:Sign
+next	include/Step.h	/^	ToNote *next;		\/*!< Prochaine note *\/$/;"	m	struct:ToNote
+next	include/System.h	/^	NodeList *next;$/;"	m	struct:NodeList
+nextcar	src/ABC.c	/^int nextcar(FILE *f)$/;"	f
+note	include/Step.h	/^	Note *note;		\/*!< Note courante *\/$/;"	m	struct:ToNote
+note	include/Step.h	/^	char note; 			\/*!< Hauteur d'une note, A0=21, B1=22 ...*\/$/;"	m	struct:Note
+note1_center	include/Images.h	/^	SDL_Rect *note1_center;$/;"	m	struct:Graphics
+note_playing	include/Audio.h	/^	Note *note_playing;	\/*!< Si on = 1, renvoie vers la note jouée à ce moment *\/$/;"	m	struct:Channel
+notes	include/Step.h	/^	ToNote *notes;			\/*!< Liste chainées des notes *\/$/;"	m	struct:Step
+num	include/Step.h	/^	int num;			\/*!< Numérateur de la fraction de mesure *\/$/;"	m	struct:Step
+o	src/Interface.c	/^clock_t a,b,c,d,e,f,g, h, m, n, o, p;$/;"	v
+on	include/Audio.h	/^	int on;		\/*!< Une note est-telle en cours d'être joué sur ce channel ? *\/$/;"	m	struct:Channel
+p	src/Interface.c	/^clock_t a,b,c,d,e,f,g, h, m, n, o, p;$/;"	v
+pal	include/Window.h	/^	SDL_Surface *pal; \/* left *\/$/;"	m	struct:WindowData
+playing	include/Audio.h	/^	int playing;			\/*!< Boolean, 1 = joue, 0 = ne joue pas *\/$/;"	m	struct:AudioConfig
+pos	include/Explorer.h	/^	SDL_Rect *pos;$/;"	m	struct:Explorer
+pos	include/Menu.h	/^	SDL_Rect pos;$/;"	m	struct:Menu_Node
+pos_BreveLong	include/Images.h	/^	SDL_Rect *pos_BreveLong;$/;"	m	struct:Graphics
+pos_Long	include/Images.h	/^	SDL_Rect *pos_Long;$/;"	m	struct:Graphics
+pos_Quaver	include/Images.h	/^	SDL_Rect *pos_Quaver;$/;"	m	struct:Graphics
+pos_body	include/Window.h	/^	SDL_Rect *pos_body; \/* base of first page *\/$/;"	m	struct:WindowData
+pos_link	include/Window.h	/^	SDL_Rect *pos_link;$/;"	m	struct:WindowData
+pos_menu	include/Window.h	/^	SDL_Rect *pos_menu;$/;"	m	struct:WindowData
+pos_pal	include/Window.h	/^	SDL_Rect *pos_pal;$/;"	m	struct:WindowData
+pos_restCrotchet	include/Images.h	/^	SDL_Rect *pos_restCrotchet;$/;"	m	struct:Graphics
+quavers	include/Window.h	/^	Dots *quavers;$/;"	m	struct:WindowData
+r	include/Events.h	/^	double 		r; \/* zoom *\/$/;"	m	struct:EventData
+r	include/Images.h	/^	Uint r : 8;$/;"	m	struct:Color
+random_note	src/Test.c	/^Note_Duration random_note(void)$/;"	f
+ratio	include/Window.h	/^	double ratio;$/;"	m	struct:WindowData
+rect	include/Events.h	/^	SDL_Rect 	rect;$/;"	m	struct:Area
+rest	include/Events.h	/^	char 		rest;	$/;"	m	struct:Toolbar
+rest	include/Step.h	/^	char rest; 			\/*!< Silence = 1, Note = 0 *\/$/;"	m	struct:Note
+rot_noteH	include/Images.h	/^	int rot_noteH;$/;"	m	struct:Graphics
+rot_noteW	include/Images.h	/^	int rot_noteW;$/;"	m	struct:Graphics
+score	include/Audio.h	/^	Score *score;			\/*!< Partition *\/$/;"	m	struct:AudioConfig
+score	include/Events.h	/^	Score *		score;$/;"	m	struct:EventData
+screen	include/Window.h	/^	SDL_Surface *screen;$/;"	m	struct:WindowData
+select	include/Events.h	/^	Area *		select;$/;"	m	struct:EventData
+select	include/Explorer.h	/^	int select;$/;"	m	struct:Explorer
+select	include/Menu.h	/^	Menu_Node *select;$/;"	m	struct:Menu
+sharp	include/Events.h	/^	char 		sharp;$/;"	m	struct:Toolbar
+sign	include/Events.h	/^		Sign **sign; \/* OBJECT_SIGN *\/$/;"	m	union:Area::__anon16
+sign	include/Step.h	/^	signed char sign;		\/*!< Armure de la mesure *\/$/;"	m	struct:Step
+signs	include/Staff.h	/^	Sign *signs;$/;"	m	struct:Score
+sinusoide	src/Audio.c	/^double sinusoide(int x, double freq, int hardwareFreq)$/;"	f
+size	include/File.h	/^	int size;$/;"	m	struct:Entry
+staff	include/Events.h	/^			Staff *	staff;$/;"	m	struct:Area::__anon16::__anon18
+state	include/Window.h	/^	Window_State state;$/;"	m	struct:WindowData
+statusdur	include/Events.h	/^	int 		statusdur;$/;"	m	struct:Toolbar
+step	include/Events.h	/^			Step *	step;$/;"	m	struct:Area::__anon16::__anon17
+steps	include/Staff.h	/^	Step **steps; \/* dynamic tab *\/$/;"	m	struct:Staff
+sum_duration	include/Window.h	/^	Note_Duration sum_duration;$/;"	m	struct:WindowData
+tab	include/File.h	/^	Entry **tab;$/;"	m	struct:Directory
+tab	include/System.h	/^	Point **tab;$/;"	m	struct:Dots
+tempo	include/Staff.h	/^	int tempo;$/;"	m	struct:Score
+text	include/Staff.h	/^	char *text;$/;"	m	struct:Sign
+text_color	src/System.c	/^extern int text_color(TerminalColor color)$/;"	f
+threads	include/Audio.h	/^	SDL_Thread **threads;		\/*!< Les différents threads des voix *\/$/;"	m	struct:AudioConfig
+time	include/Staff.h	/^	Uint time;$/;"	m	struct:Sign
+tools	include/Events.h	/^	Toolbar 	tools;$/;"	m	struct:EventData
+totalheight	include/System.h	/^	int totalheight;$/;"	m	struct:Dots
+type	include/Events.h	/^	Object_Type 	type;$/;"	m	struct:Area
+type	include/File.h	/^	Entry_Type type;$/;"	m	struct:Entry
+type	include/Menu.h	/^	Node_Type type;$/;"	m	struct:Menu_Node
+type	include/Staff.h	/^	Sign_Type type : 16;$/;"	m	struct:Sign
+valid	include/Explorer.h	/^	SDL_Rect valid;$/;"	m	struct:Explorer
+value	include/Staff.h	/^	Uint value : 16;$/;"	m	struct:Sign
+volume	include/Audio.h	/^	int volume; \/* 0 to 100 *\/				\/*!< Volume du signal *\/$/;"	m	struct:Wave
+waves	include/Audio.h	/^	Wave **waves;	\/*!< Différents harmoniques *\/$/;"	m	struct:Channel
+width	include/Window.h	/^	int width;$/;"	m	struct:WindowData
+x	include/Audio.h	/^	unsigned long x;		\/*!< Incrémenteur dans le temps*\/$/;"	m	struct:AudioConfig
+x	include/System.h	/^	Uint x : 16;$/;"	m	struct:Point
+y	include/System.h	/^	Uint y : 16;$/;"	m	struct:Point

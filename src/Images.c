@@ -961,6 +961,21 @@ int Image_DrawRectangleBorder(SDL_Surface *dst, int x, int y, int x2, int y2, in
 	SDL_FillRect(dst, &pos, SDL_MapRGBA(dst->format, r, g, b, a));
 
 	return 1;
+}
 
+int Image_MyShrinkRaw(SDL_Surface *dst, SDL_Surface *src, int factor)
+{
+	register int x,y;
+	
+	if((NULL == dst) || (NULL == src))
+		return 0;
 
+	for(y = 0; y < src->h; y+=factor)
+	{
+		for(x = 0; x < src->w; x+=factor)
+		{
+			SDL_SetPixel(dst, x / factor, y / factor, SDL_GetPixel(src, x, y));
+		}
+	}
+	return 1;
 }

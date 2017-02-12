@@ -119,8 +119,3 @@ int Moteur_WriteParagraph(int x, int y, int max_w, const char *text_paragraph, i
 
 }
 
-int getSizeStr(char *str)
-{
-	int i = 0;
-	while(str++ != 0 && ++i);
-}
