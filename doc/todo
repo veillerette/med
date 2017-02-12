@@ -17,6 +17,7 @@
 [100%] Sauvegarde dans MED/ABC du tempo + Ouverture MED/ABC du Tempo
 - Bécarre
 - Double-dièse
+[OK]- Plus de déplacements de la souris lorsqu'un élement est sélectionné
 
 <<< Bugs >>>
 - Note pointée (modification temps réel à la sélection, affichage -> prendre en compte le bon space)
