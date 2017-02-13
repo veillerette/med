@@ -1383,14 +1383,16 @@ int ToolBar_PollMouse(Menu *menu, SDL_Event event)
 	int rest;
 	int sauv = 0;
 	int pointed = 0;
-	int playingX = 750;
+	int playingX = 750+45;
+	int volumeX = 986;
+	
 	switch(event.type)
 	{
 		case SDL_MOUSEMOTION:
 			x = event.motion.x;
 			y = event.motion.y;
 			
-			if(x >= 866 && x <= 906 && y >= 39 && y <= 69)
+			if(x >= 866+45 && x <= 906+45 && y >= 39 && y <= 69)
 			{
 				if(!main_events->tools.hover_tempo)
 				{
@@ -1403,6 +1405,23 @@ int ToolBar_PollMouse(Menu *menu, SDL_Event event)
 				if(main_events->tools.hover_tempo)
 				{
 					main_events->tools.hover_tempo = 0;
+					return FORCE_MAJ;
+				}
+			}
+			
+			if(x >= volumeX && x <= volumeX+15 && y >= dy-20 && y <= dy+20)
+			{
+				if(!main_events->tools.hover_volume)
+				{
+					main_events->tools.hover_volume = 1;
+					return FORCE_MAJ;
+				}
+			}
+			else
+			{
+				if(main_events->tools.hover_volume)
+				{
+					main_events->tools.hover_volume = 0;
 					return FORCE_MAJ;
 				}
 			}
@@ -1426,7 +1445,7 @@ int ToolBar_PollMouse(Menu *menu, SDL_Event event)
 			x = event.button.x;
 			y = event.button.y;
 			
-			if(x >= 866 && x <= 906 && y >= 39 && y <= 69)
+			if(x >= 866+45 && x <= 906+45 && y >= 39 && y <= 69)
 			{
 				switch(event.button.button)
 				{
@@ -1435,6 +1454,18 @@ int ToolBar_PollMouse(Menu *menu, SDL_Event event)
 						return FORCE_MAJ;
 					case SDL_BUTTON_WHEELUP:
 						Audio_SetTempo(Audio_GetTempo()+1);
+						return FORCE_MAJ;
+				}
+			}
+			if(x >= volumeX && x <= volumeX+15 && y >= dy-20 && y <= dy+20)
+			{
+				switch(event.button.button)
+				{
+					case SDL_BUTTON_WHEELDOWN:
+						Audio_SetVolume(Audio_GetVolume()-1000);
+						return FORCE_MAJ;
+					case SDL_BUTTON_WHEELUP:
+						Audio_SetVolume(Audio_GetVolume()+1000);
 						return FORCE_MAJ;
 				}
 			}
@@ -1481,7 +1512,7 @@ int ToolBar_PollMouse(Menu *menu, SDL_Event event)
 					return FORCE_MAJ;
 				}
 			}
-			for(i = 0; i < 4; i++)
+			for(i = 0; i < 5; i++)
 			{
 				if(x >= 410+i*45 && x <= 450+i*45 && 
 					y >= dy-20 && y <= dy+20)
@@ -1490,7 +1521,7 @@ int ToolBar_PollMouse(Menu *menu, SDL_Event event)
 					break;
 				}
 			}
-			for(i = 0; i < 4; i++)
+			for(i = 0; i < 5; i++)
 			{
 				if(x >= 410+i*45 && x <= 450+i*45 && 
 					y >= dy-20 && y <= dy+20)
@@ -1516,6 +1547,9 @@ int ToolBar_PollMouse(Menu *menu, SDL_Event event)
 						case 3:
 							none = InvertBoolean(&(main_events->tools.doubleflat));
 							break;
+						case 4:
+							none = InvertBoolean(&(main_events->tools.natural));
+							break;
 					}
 					if(main_events->mode == MODE_EDIT && main_events->select != NULL)
 					{
@@ -1540,8 +1574,16 @@ int ToolBar_PollMouse(Menu *menu, SDL_Event event)
 									case 3:
 										temp->flags |= NOTE_DOUBLEFLAT;
 										break;
+									case 4:
+										temp->flags |= NOTE_NATURAL;
+										break;
 								}
 							}
+							printf("Add note real time flags = %X\n", temp->flags);
+							
+							Step_ChangeRestStatus(main_events->select->step,
+										main_events->select->id_note,
+										1);
 							Step_AddNote(main_events->select->step,
 									main_events->select->id_note,
 									temp->note,
@@ -1570,6 +1612,8 @@ int ToolBar_PollMouse(Menu *menu, SDL_Event event)
 						case 3:
 							main_events->tools.doubleflat = 0;
 							break;
+						case 4:
+							main_events->tools.natural = 0;
 					}
 				}
 			}
@@ -1577,7 +1621,7 @@ int ToolBar_PollMouse(Menu *menu, SDL_Event event)
 			sauv = main_events->tools.statusdur;
 			for(i = 0; i < 2; i++)
 			{
-				if(x >= 625+i*45 && x <= 665+i*45 && 
+				if(x >= 625+45+i*45 && x <= 665+45+i*45 && 
 					y >= dy-20 && y <= dy+20)
 				{
 					if(main_events->tools.statusdur == 0)
@@ -1738,6 +1782,13 @@ void Toolbar_PrintNote(Menu *menu)
 		roundedBoxRGBA(Window->screen, pos.x-20, y-20, pos.x+20, y+20, 3, 90, 100, 110, 255);
 	BlitCenter(LittleImages->DoubleFlat, NULL, Window->screen, &pos);
 
+	pos.x += 45;
+	
+	if(main_events->tools.natural)
+		roundedBoxRGBA(Window->screen, pos.x-20, y-20, pos.x+20, y+20, 3, 75, 85, 95, 255);
+	else
+		roundedBoxRGBA(Window->screen, pos.x-20, y-20, pos.x+20, y+20, 3, 90, 100, 110, 255);
+
 
 	pos.x += 40;
 	pos.y -= 23;
@@ -1817,6 +1868,25 @@ void Toolbar_PrintNote(Menu *menu)
 				MENU_FONT, text, 
 				TEXT_BLENDED, TEXT_CENTER, 
 				Window->screen);
+	pos.y += 3;
+	pos.x += 35;
+			
+	pos.x += 40;
+	pos.y -= 23;
+	roundedBoxRGBA(Window->screen, pos.x, pos.y, pos.x+1, pos.y+46, 7, 90, 100, 110, 255);
+	pos.x += 20;
+	
+	if(main_events->tools.hover_volume)
+	{
+		boxRGBA(Window->screen, pos.x, pos.y, pos.x+15, pos.y+45, 80, 90, 115, 255);
+	}
+	else
+	{
+		boxRGBA(Window->screen, pos.x, pos.y, pos.x+15, pos.y+45, 119, 135, 153, 255);
+	}
+	
+	boxRGBA(Window->screen, pos.x, pos.y+45-(45*Audio_GetFracVolume()), 
+							pos.x+15, pos.y+45, 135, 155, 170, 255);
 	
 }
 

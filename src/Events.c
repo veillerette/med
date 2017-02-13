@@ -108,6 +108,8 @@ Toolbar InitToolbar(void)
 	tools.hover_button2 = 0;
 	tools.hover_button3 = 0;
 	tools.hover_tempo = 0;
+	tools.hover_volume = 0;
+	tools.natural = 0;
 	return tools;
 }
 

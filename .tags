@@ -38,7 +38,9 @@ AudioConfig_Free	src/Audio.c	/^void AudioConfig_Free(AudioConfig **ac)$/;"	f
 AudioConfig_Init	src/Audio.c	/^AudioConfig *AudioConfig_Init(void)$/;"	f
 AudioConfig_SetVolume	src/Audio.c	/^void AudioConfig_SetVolume(AudioConfig *ac, int newVolume)$/;"	f
 Audio_AssignateScore	src/Audio.c	/^void Audio_AssignateScore(Score *score)$/;"	f
+Audio_GetFracVolume	src/Audio.c	/^double Audio_GetFracVolume(void)$/;"	f
 Audio_GetTempo	src/Audio.c	/^int Audio_GetTempo(void)$/;"	f
+Audio_GetVolume	src/Audio.c	/^int Audio_GetVolume(void)$/;"	f
 Audio_GoToStep	src/Audio.c	/^void Audio_GoToStep(int id_step)$/;"	f
 Audio_Init	src/Audio.c	/^void Audio_Init(AudioConfig *ac)$/;"	f
 Audio_KillThreads	src/Audio.c	/^int Audio_KillThreads(void)$/;"	f
@@ -49,6 +51,7 @@ Audio_PlayStep	src/Audio.c	/^int Audio_PlayStep(Step *step, Channel *chan)$/;"	f
 Audio_Quit	src/Audio.c	/^void Audio_Quit(void)$/;"	f
 Audio_RegulariseWave	src/Audio.c	/^int Audio_RegulariseWave(Sint16 *stream, int len)$/;"	f
 Audio_SetTempo	src/Audio.c	/^void Audio_SetTempo(int newTempo)$/;"	f
+Audio_SetVolume	src/Audio.c	/^void Audio_SetVolume(int newVolume)$/;"	f
 Audio_isInit	src/Audio.c	/^int Audio_isInit(void)$/;"	f
 Audio_isPlaying	src/Audio.c	/^int Audio_isPlaying(void)$/;"	f
 BASE_BODY_X	include/Window.h	21;"	d
@@ -99,7 +102,9 @@ ConvertStringToID	src/Step.c	/^char ConvertStringToID(const char *note)$/;"	f
 CreateCleFa	src/Images.c	/^SDL_Surface *CreateCleFa(int size_w, int size_h)$/;"	f
 CreateCleSol	src/Images.c	/^SDL_Surface *CreateCleSol(int size_w, int size_h)$/;"	f
 CreateDoubleFlat	src/Images.c	/^SDL_Surface *CreateDoubleFlat(int size_w, int size_h)$/;"	f
+CreateDoubleSharp	src/Images.c	/^SDL_Surface *CreateDoubleSharp(int size_w, int size_h)$/;"	f
 CreateFlat	src/Images.c	/^SDL_Surface *CreateFlat(int size_w, int size_h)$/;"	f
+CreateNatural	src/Images.c	/^SDL_Surface *CreateNatural(int size_w, int size_h)$/;"	f
 CreateSharp	src/Images.c	/^SDL_Surface *CreateSharp(int size_w, int size_h)$/;"	f
 Create_Little	src/Images.c	/^SDL_Surface *Create_Little(SDL_Surface *src, int ratioX, int ratioY)$/;"	f
 DOUBLECROCHE	include/Step.h	/^	DOUBLECROCHE	= 16, 	\/*!< Double, 4 x base *\/$/;"	e	enum:__anon5
@@ -126,6 +131,7 @@ Dots_Init	src/System.c	/^int Dots_Init(Dots **dt)$/;"	f
 Dots_Length	src/System.c	/^int Dots_Length(Dots *dt)$/;"	f
 Dots_isLinear	src/System.c	/^int Dots_isLinear(Dots *dt)$/;"	f
 DoubleFlat	include/Images.h	/^	SDL_Surface *DoubleFlat;$/;"	m	struct:Graphics
+DoubleSharp	include/Images.h	/^	SDL_Surface *DoubleSharp;$/;"	m	struct:Graphics
 Draw_Border	src/Images.c	/^int Draw_Border(SDL_Surface *surf, int size)$/;"	f
 Dur   e des notes	report/Med-Rapport.tex	/^\\section{Partition}$/;"	u
 ESP_BODY	include/Window.h	20;"	d
@@ -289,6 +295,7 @@ NOTE_POINTED	include/Step.h	/^	NOTE_POINTED		= 0x10,		\/*!< Note pointée *\/$/;
 NOTE_SHARP	include/Step.h	/^	NOTE_SHARP		= 0x01,		\/*!< Note diésée *\/$/;"	e	enum:__anon3
 NOTE_SPACE	include/Images.h	35;"	d
 NPAGE	include/Window.h	26;"	d
+Natural	include/Images.h	/^	SDL_Surface *Natural;$/;"	m	struct:Graphics
 NodeArray_Add	src/Menu.c	/^int NodeArray_Add(Node_Array *na, const char *name, int need_select, Node_Type type, int (*f)(void))$/;"	f
 NodeArray_AddElem	src/Menu.c	/^int NodeArray_AddElem(Node_Array *na, Menu_Node *elem)$/;"	f
 NodeArray_Alloc	src/Menu.c	/^Node_Array *NodeArray_Alloc(int max)$/;"	f
@@ -624,7 +631,7 @@ font	include/Menu.h	/^	TTF_Font *font;$/;"	m	struct:Menu
 freq	include/Audio.h	/^	double freq;						\/*!< Fréquence *\/$/;"	m	struct:Wave
 g	include/Images.h	/^	Uint g : 8;$/;"	m	struct:Color
 g	src/Interface.c	/^clock_t a,b,c,d,e,f,g, h, m, n, o, p;$/;"	v
-globalVolume	include/Audio.h	/^	int globalVolume;		\/*!< Volume maximal *\/$/;"	m	struct:AudioConfig
+globalVolume	include/Audio.h	/^	int globalVolume;		\/*!< Volume global *\/$/;"	m	struct:AudioConfig
 h	src/Interface.c	/^clock_t a,b,c,d,e,f,g, h, m, n, o, p;$/;"	v
 hardware	include/Audio.h	/^	SDL_AudioSpec hardware;		\/*!< Spécifications hardware disponibles *\/$/;"	m	struct:AudioConfig
 header1	include/Explorer.h	/^	int header1;$/;"	m	struct:Explorer
@@ -639,6 +646,7 @@ hover_button1	include/Events.h	/^	char		hover_button1;$/;"	m	struct:Toolbar
 hover_button2	include/Events.h	/^	char		hover_button2;$/;"	m	struct:Toolbar
 hover_button3	include/Events.h	/^	char		hover_button3;$/;"	m	struct:Toolbar
 hover_tempo	include/Events.h	/^	char		hover_tempo;$/;"	m	struct:Toolbar
+hover_volume	include/Events.h	/^	char		hover_volume;$/;"	m	struct:Toolbar
 id	include/System.h	/^	int id;$/;"	m	struct:NodeList
 id_note	include/Events.h	/^			int 	id_note;$/;"	m	struct:Area::__anon16::__anon17
 id_note_add	include/Events.h	/^			int 	id_note_add; \/* only when type=EVENT_ADDNOTE *\/$/;"	m	struct:Area::__anon16::__anon18
@@ -662,6 +670,7 @@ main_audio	src/Audio.c	/^AudioConfig *main_audio = NULL;$/;"	v
 main_events	src/Events.c	/^EventData *main_events = NULL;$/;"	v
 max	include/Menu.h	/^	int max;$/;"	m	struct:Node_Array
 max	include/Staff.h	/^	int max;$/;"	m	struct:Staff
+maxVolume	include/Audio.h	/^	int maxVolume;			\/*!< Volume maximal autorisé *\/$/;"	m	struct:AudioConfig
 max_height	include/Window.h	/^	int max_height;$/;"	m	struct:WindowData
 max_width	include/Window.h	/^	int max_width;$/;"	m	struct:WindowData
 memtest	include/System.h	15;"	d
@@ -687,6 +696,7 @@ name	include/File.h	/^	char *name;$/;"	m	struct:Entry
 name	include/Menu.h	/^	char *name;$/;"	m	struct:Menu_Node
 name	include/Staff.h	/^	char *name;$/;"	m	struct:Staff
 name	include/System.h	/^	char *name;$/;"	m	struct:NodeList
+natural	include/Events.h	/^	char		natural;$/;"	m	struct:Toolbar
 nb_body	include/Window.h	/^	int nb_body;$/;"	m	struct:WindowData
 nbody	include/Events.h	/^	int		nbody;$/;"	m	struct:Area
 need_refresh	include/Audio.h	/^	int need_refresh;		\/*!< Demande de rafraichissement de l'écran *\/$/;"	m	struct:AudioConfig

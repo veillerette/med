@@ -385,6 +385,34 @@ SDL_Surface *Rest_CreateBreveLong(int size_w, int size_h)
 	return surf;
 }
 
+SDL_Surface *CreateNatural(int size_w, int size_h)
+{
+	SDL_Surface *surf = NULL;
+	int m = size_h * 3 - 5;
+	int w = size_w * 3.0 / 4;
+	
+	
+	surf = SDL_CreateWhiteKeySurface(w+1, m);
+	
+	
+	Draw_Border(surf, 2);
+	return surf;
+}
+
+SDL_Surface *CreateDoubleSharp(int size_w, int size_h)
+{
+	SDL_Surface *surf = NULL;
+	int m = size_h * 3 - 5;
+	int w = size_w * 3.0 / 4;
+	
+	
+	surf = SDL_CreateWhiteKeySurface(w+1, m);
+	
+	
+	Draw_Border(surf, 2);
+	return surf;
+}
+
 SDL_Surface *CreateSharp(int size_w, int size_h)
 {
 	SDL_Surface *surf = NULL;
@@ -577,6 +605,8 @@ Graphics *Graphics_Alloc(void)
 	temp->Sharp = NULL;
 	temp->Flat = NULL;
 	temp->DoubleFlat = NULL;
+	temp->DoubleSharp = NULL;
+	temp->Natural = NULL;
 
 	temp->rot_noteW = 0;
 	temp->rot_noteH = 0;
@@ -634,8 +664,15 @@ void Graphics_Free(Graphics **graphics)
 
 		if((*graphics)->Flat != NULL)
 			SDL_FreeSurface((*graphics)->Flat);
+			
 		if((*graphics)->DoubleFlat != NULL)
 			SDL_FreeSurface((*graphics)->DoubleFlat);
+		
+		if((*graphics)->DoubleSharp != NULL)
+			SDL_FreeSurface((*graphics)->DoubleSharp);
+		
+		if((*graphics)->Natural != NULL)
+			SDL_FreeSurface((*graphics)->Natural);
 
 		if((*graphics)->Cle_Sol != NULL)
 			SDL_FreeSurface((*graphics)->Cle_Sol);
@@ -721,6 +758,14 @@ int Graphics_Load(Graphics **data)
 
 	(*data)->DoubleFlat = ConvertDisplayFormat(CreateDoubleFlat(HEAD_W, HEAD_H));
 	if(NULL == (*data)->DoubleFlat)
+		r = 0;
+	
+	(*data)->DoubleSharp = ConvertDisplayFormat(CreateDoubleSharp(HEAD_W, HEAD_H));
+	if(NULL == (*data)->DoubleSharp)
+		r = 0;
+	
+	(*data)->Natural = ConvertDisplayFormat(CreateNatural(HEAD_W, HEAD_H));
+	if(NULL == (*data)->Natural)
 		r = 0;
 
 	(*data)->Cle_Sol = ConvertDisplayFormat(CreateCleSol(HEAD_W, HEAD_H));

@@ -75,7 +75,8 @@ struct AudioConfig
 {
 	SDL_AudioSpec hardware;		/*!< Spécifications hardware disponibles */
 	unsigned long x;		/*!< Incrémenteur dans le temps*/
-	int globalVolume;		/*!< Volume maximal */
+	int globalVolume;		/*!< Volume global */
+	int maxVolume;			/*!< Volume maximal autorisé */
 	
 	Mixer mixer;			/*!< Ensemble des voix */
 	Score *score;			/*!< Partition */
@@ -416,6 +417,25 @@ void Audio_SetTempo(int newTempo);
  * \return tempo
  */
 int Audio_GetTempo(void);
+
+
+/**
+ * \brief Changer le volume global
+ */
+void Audio_SetVolume(int newVolume);
+
+
+/**
+ * \brief Renvoie le volume global
+ */
+int Audio_GetVolume(void);
+
+
+/**
+ * \brief Renvoie le rapport du volume global
+ */
+double Audio_GetFracVolume(void);
+
 
 /*****************************************************
 ******************************************************/

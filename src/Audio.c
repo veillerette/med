@@ -181,6 +181,7 @@ AudioConfig *AudioConfig_DevInit(int askFreq, Uint16 format, Uint8 channels, Uin
 	ac->playing = 0;
 	ac->threads = NULL;
 	ac->need_refresh = 0;
+	ac->maxVolume = 32000;
 	Mixer_Init(&(ac->mixer));
 
 	spec.freq = askFreq;
@@ -621,4 +622,35 @@ int Audio_GetTempo(void)
 	if(main_audio != NULL)
 		return main_audio->score->tempo;
 	return 0;
+}
+
+void Audio_SetVolume(int newVolume)
+{
+	if(main_audio != NULL)
+	{
+		if(newVolume < 0)
+			main_audio->globalVolume = 0;
+		else if(newVolume > main_audio->maxVolume)
+			main_audio->globalVolume = main_audio->maxVolume;
+		else
+			main_audio->globalVolume = newVolume;
+	}
+}
+
+int Audio_GetVolume(void)
+{
+	if(main_audio != NULL)
+	{
+		return main_audio->globalVolume;
+	}
+	return 0;
+}
+
+double Audio_GetFracVolume(void)
+{
+	if(main_audio != NULL)
+	{
+		return main_audio->globalVolume * 1.0 / main_audio->maxVolume;
+	}
+	return 0.;
 }

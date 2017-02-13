@@ -73,7 +73,9 @@ struct Graphics
 	/* Diéses et Bémols */
 	SDL_Surface *Sharp;
 	SDL_Surface *Flat;
+	SDL_Surface *DoubleSharp;
 	SDL_Surface *DoubleFlat;
+	SDL_Surface *Natural;
 	
 	/* Clés */
 	SDL_Surface *Cle_Sol;

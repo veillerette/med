@@ -7,16 +7,16 @@
 [OK]- Toolbar (Dieze, Bémol, DoubleDieze, DoubleBémol)
 [OK]- Toolbar (Modification durée note à la volée et altérations)
 [OK]- Gestion de plusieurs pages
-- Changer Volume dans la toolbar
+[OK]- Changer Volume dans la toolbar
 [OK]- Changer Tempo dans la toolbar
 [OK]- Armures -> Step
 [70%]- Changer l'armure grâce au menu
 - Supprimer doubles affichages Dieze/Bémol dans une mesure
-- Ajout de plusieurs mesures en fin (scroll souris)
+[OK]- Ajout de plusieurs mesures en fin (scroll souris)
 [50%]- Clé de fa (Manque graphismes)
 [100%] Sauvegarde dans MED/ABC du tempo + Ouverture MED/ABC du Tempo
-- Bécarre
-- Double-dièse
+[50%]- Bécarre
+[50%]- Double-dièse
 [OK]- Plus de déplacements de la souris lorsqu'un élement est sélectionné
 
 <<< Bugs >>>
