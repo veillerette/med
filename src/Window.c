@@ -126,15 +126,27 @@ void Window_Quit(void)
 		if(Window->pos_body != NULL)
 			SDL_FreeRect(&(Window->pos_body));
 		
+		#ifdef DEBUG
 		fprintf(stderr, "g");
+		#endif
 			
 		WindowData_Free(&Window);
 		
+		#ifdef DEBUG
 		fprintf(stderr, "h");
+		#endif
+		
 		TTF_Quit();
+		
+		#ifdef DEBUG
 		fprintf(stderr, "i");
+		#endif
+		
 		SDL_Quit();
+		
+		#ifdef DEBUG
 		fprintf(stderr, "j");
+		#endif
 	}
 }
 
@@ -351,7 +363,10 @@ int Window_ApplyZoom(double zoom)
 		{
 			if(Window->ratio == zoom)
 			{
+				#ifdef DEBUG
 				printf("Image_MyShrinkRaw\n");
+				#endif
+				
 				Image_MyShrinkRaw(Window->body_use[i], Window->body[i], (int)zoom);
 			}
 			else
@@ -665,6 +680,7 @@ int Window_GetSpaceNote(Score *score, int idStep, Step *step, Note *note, int id
 	Note_Duration min = Step_GetMinDuration(step);
 	Note_Duration realMin = 1;
 	int temp;
+	int add = 0;
 	
 	for(k = 0; k < score->n; k++)
 	{
@@ -673,7 +689,10 @@ int Window_GetSpaceNote(Score *score, int idStep, Step *step, Note *note, int id
 			realMin = min; 
 	}
 	
-	res = (Window_GetNeperianSum(realMin, note->duration)) * NOTE_SPACE;
+	if(note->flags & NOTE_POINTED)
+		res = (Window_GetNeperianSum(realMin, note->duration)) * NOTE_SPACE * 1.5;
+	else
+		res = (Window_GetNeperianSum(realMin, note->duration)) * NOTE_SPACE;
 	
 	res += (temp= Window_GetSumAlt(score, idStep, Step_DurationBefore(step, idNote), note->duration));
 	

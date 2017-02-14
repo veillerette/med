@@ -439,7 +439,7 @@ int Audio_PlayStep(Step *step, Channel *chan)
 	if((NULL == chan))
 		return 0;
 
-	#ifndef DEBUG
+	#ifdef DEBUG
 	printf("playing step on channel %p\n", chan);
 	#endif
 
@@ -461,7 +461,8 @@ int Audio_PlayStep(Step *step, Channel *chan)
 		}
 
 		begin = SDL_GetTicks();
-		while(SDL_GetTicks() - begin < ((Tempo_GetMsTempo()-30) * ((64.0 / note->note->duration) / 16.0)))
+		while(SDL_GetTicks() - begin < ((Tempo_GetMsTempo()-30) * 
+				((Note_RealDuration(note->note, step)) / 16.0)))
 			SDL_Delay(1);
 
 		Channel_Disable(chan);
@@ -486,7 +487,11 @@ int Audio_PlayStaffThread(void *data)
 		Audio_PlayStep(*(staff->steps + i), main_audio->mixer.channels[id_staff]);
 	Channel_Disable(main_audio->mixer.channels[id_staff]);
 	main_audio->threads[id_staff] = NULL;
+	
+	#ifdef DEBUG
 	colorprintf(GREEN, "End of Playing staff n°%d\n", id_staff);
+	#endif
+	
 	main_audio->playing = 0;
 	main_audio->need_refresh = 1;
 	return 1;
@@ -501,7 +506,10 @@ int Audio_KillThreads(void)
 		{
 			if(main_audio->threads[i] != NULL)
 			{
+				#ifdef DEBUG
 				printf("Kill a thread for staff n°%d\n", i);
+				#endif
+				
 				SDL_KillThread(main_audio->threads[i]);
 				main_audio->threads[i] = NULL;
 			}
@@ -547,7 +555,9 @@ void Audio_AssignateScore(Score *score)
 		main_audio->threads = (SDL_Thread **)calloc(score->n, sizeof(SDL_Thread *));
 		memtest(main_audio->threads);
 
+		#ifdef DEBUG
 		printf("end assignateScore(), mixer->n=%d score=%p, id_step=%d\n", main_audio->mixer.n, main_audio->score, main_audio->id_step);
+		#endif
 	}
 }
 
@@ -582,13 +592,20 @@ void Audio_Play(void)
 	}
 	main_audio->playing = 1;
 	SDL_PauseAudio(0);
+	
+	#ifdef DEBUG
 	colorprintf(GREEN, "Playing audio !\n");
+	#endif
+	
 	for(i = 0; i < main_audio->score->n; i++)
 	{
 
 		if(NULL == main_audio->threads[i])
 		{
+			#ifdef DEBUG
 			printf("Init a new thread for staff n°%d\n", i);
+			#endif
+			
 			main_audio->threads[i] = SDL_CreateThread(Audio_PlayStaffThread, Integer_Alloc(i));
 		}
 		else
@@ -602,7 +619,11 @@ void Audio_Pause(void)
 	{
 		main_audio->playing = 0;
 		SDL_PauseAudio(1);
+		
+		#ifdef DEBUG
 		colorprintf(GREEN, "Pausing Audio !\n");
+		#endif
+		
 		main_audio->x = 0;
 		Audio_KillThreads();
 	}

@@ -5,19 +5,13 @@ clock_t a,b,c,d,e,f,g, h, m, n, o, p;
 
 static void Interface_Quit(Menu **menu)
 {
-	fprintf(stderr, "a");
 	Audio_Pause();
 	Audio_Quit();
-	fprintf(stderr, "b");
 	if(main_events->score != NULL)
 		Score_Free(&main_events->score);
-	fprintf(stderr, "c");
 	EventData_Free(&main_events);
-	fprintf(stderr, "d");
 	Graphics_Quit();
-	fprintf(stderr, "e");
 	Menu_Free(menu);
-	fprintf(stderr, "f");
 	Window_Quit();
 }
 
@@ -210,12 +204,15 @@ extern int Interface_Main(int argc, char *argv[])
 				m = clock();
 				SDL_Flip(Window->screen);
 				n = clock();
+				
+				#ifdef DEBUG
 				printf("flush = %ld, Score_Print = %ld, ApplyZoom = %ld, DrawBody = %ld, Window_Print = %ld, hover = %ld, testbox = %ld, menu = %ld, flip = %ld\n",
 					b-a, c-b, d-c, e-d, f-e, g-f, h-g, m-h, n-m);
 				printf("flush = %g, Score_Print = %g, ApplyZoom = %g, DrawBody = %g, Window_Print = %g, hover = %g, testbox = %g, menu = %g, flip = %g\n",
 						(b-a)*1.0/CLOCKS_PER_SEC, (c-b)*1.0/CLOCKS_PER_SEC, (d-c)*1.0/CLOCKS_PER_SEC, (e-d)*1.0/CLOCKS_PER_SEC, (f-e)*1.0/CLOCKS_PER_SEC,
 						(g-f)*1.0/CLOCKS_PER_SEC, (h-g)*1.0/CLOCKS_PER_SEC, (m-h)*1.0/CLOCKS_PER_SEC, (n-m)*1.0/CLOCKS_PER_SEC);
-
+				#endif
+				
 				mouse = 0;
 			default:
 				break;

@@ -132,7 +132,6 @@ void Menu_Free(Menu **menu)
 
 int menu_no_action(void)
 {
-	printf("menu_no_action()\n");
 	return FORCE_MAJ;
 }
 
@@ -483,9 +482,8 @@ int Menu_ChooseNew(int *new_vox, Cle **new_cles, int *new_num, int *new_den)
 	Cle cles[10] = {0};
 	int isCle[10] = {0};
 	SDL_Rect pos[10];
-	int nbr_vox = 1;
+	int nbr_vox = 2;
 	int num = 4, den = 4;
-	
 	int header1 = 30;
 	int r = 50, g = 50, b = 255;
 	int h = Window->height, w = Window->width;
@@ -494,8 +492,6 @@ int Menu_ChooseNew(int *new_vox, Cle **new_cles, int *new_num, int *new_den)
 	SDL_Rect vox = SDL_SetLocalRect(box.x + 300, box.y+header1+50, 70, 40); 
 	SDL_Rect step1 = SDL_SetLocalRect(box.x+200, box.y+box.h-150, 70, 40);
 	SDL_Rect step2 = SDL_SetLocalRect(box.x+350, step1.y, step1.w, step1.h);
-	
-	
 	int rounded = 5;
 	int c = 1;
 	int x,y;
@@ -509,10 +505,13 @@ int Menu_ChooseNew(int *new_vox, Cle **new_cles, int *new_num, int *new_den)
 	SDL_Rect cle_base;
 	SDL_Event event;
 	
+	
 	SDL_Flip(Window->screen);
 	
 	for(i = 0; i < 10; i++)
 		cles[i] = CLE_SOL;
+	
+	cles[1] = CLE_FA;
 	
 	while(c)
 	{
@@ -1579,7 +1578,10 @@ int ToolBar_PollMouse(Menu *menu, SDL_Event event)
 										break;
 								}
 							}
+							
+							#ifdef DEBUG
 							printf("Add note real time flags = %X\n", temp->flags);
+							#endif
 							
 							Step_ChangeRestStatus(main_events->select->step,
 										main_events->select->id_note,
@@ -1772,7 +1774,7 @@ void Toolbar_PrintNote(Menu *menu)
 		roundedBoxRGBA(Window->screen, pos.x-20, y-20, pos.x+20, y+20, 3, 75, 85, 95, 255);
 	else
 		roundedBoxRGBA(Window->screen, pos.x-20, y-20, pos.x+20, y+20, 3, 90, 100, 110, 255);
-	BlitCenter(LittleImages->Sharp, NULL, Window->screen, &pos); /* Must be DoubleSharp !! */
+	BlitCenter(LittleImages->DoubleSharp, NULL, Window->screen, &pos);
 	
 	pos.x += 45;
 	
@@ -1788,7 +1790,7 @@ void Toolbar_PrintNote(Menu *menu)
 		roundedBoxRGBA(Window->screen, pos.x-20, y-20, pos.x+20, y+20, 3, 75, 85, 95, 255);
 	else
 		roundedBoxRGBA(Window->screen, pos.x-20, y-20, pos.x+20, y+20, 3, 90, 100, 110, 255);
-
+	BlitCenter(LittleImages->Natural, NULL, Window->screen, &pos);
 
 	pos.x += 40;
 	pos.y -= 23;

@@ -921,8 +921,11 @@ int Graphics_LoadLittle(Graphics **data)
 	cur->Sharp = Create_Little(Images->Sharp, RATIO_LITTLE+1, RATIO_LITTLE+1);
 	cur->Flat = Create_Little(Images->Flat, RATIO_LITTLE+1, RATIO_LITTLE+1);
 	cur->DoubleFlat = Create_Little(Images->DoubleFlat, RATIO_LITTLE+1, RATIO_LITTLE+1);
+	cur->DoubleSharp = Create_Little(Images->DoubleSharp, RATIO_LITTLE+1, RATIO_LITTLE+1);
+	cur->Natural = Create_Little(Images->Natural, RATIO_LITTLE+1, RATIO_LITTLE+1);
 
-	colorprintf(GREEN, "Ok !\n");
+	colorprintf(GREEN, "Ok !");
+	printf("\n");
 	return 1;
 }
 

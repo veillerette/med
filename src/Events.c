@@ -294,7 +294,9 @@ char MouseToNote(Area *area, int y)
 	for(i = 0; i < goal; i++)
 		res -= tab[i%7];
 	
+	#ifdef DEBUG
 	printf("return res=%d\n", res);
+	#endif
 	
 	return res;
 }
