@@ -388,14 +388,32 @@ SDL_Surface *Rest_CreateBreveLong(int size_w, int size_h)
 SDL_Surface *CreateNatural(int size_w, int size_h)
 {
 	SDL_Surface *surf = NULL;
-	int m = size_h * 3 - 5;
+	int m = size_h * 3;
 	int w = size_w * 3.0 / 4;
+	int i;
+	int x[4] = {0, 5, w-17, w-12};
 	
+	for(i = 0; i < 4; i++)
+		x[i] += 5;
 	
 	surf = SDL_CreateWhiteKeySurface(w+1, m);
 	
+	boxRGBA(surf, x[0], 0, x[1], size_h*2+size_h/4, 0, 0, 0, 255);
+	boxRGBA(surf, x[2], size_h-size_h/5, x[3], m, 0, 0, 0, 255);
 	
-	Draw_Border(surf, 2);
+	for(i = 0; i < size_h/5+3; i++)
+	{
+		aalineRGBA(surf, x[0], size_h+6-i, x[3], size_h-i, 0, 0, 0, 255);
+		aalineRGBA(surf, x[0], size_h+6-i+1, x[3], size_h-i, 0, 0, 0, 255);
+		aalineRGBA(surf, x[0], size_h+6-i, x[3], size_h-i+1, 0, 0, 0, 255);
+	}
+	
+	for(i = 0; i < size_h/4+3; i++)
+	{
+		aalineRGBA(surf, x[0], size_h*2+size_h/4-i, x[3], size_h*2+size_h/4-6-i, 0, 0, 0, 255);
+		aalineRGBA(surf, x[0], size_h*2+size_h/4-i+1, x[3], size_h*2+size_h/4-6-i, 0, 0, 0, 255);
+		aalineRGBA(surf, x[0], size_h*2+size_h/4-i, x[3], size_h*2+size_h/4-6-i+1, 0, 0, 0, 255);
+	}
 	return surf;
 }
 
@@ -405,10 +423,8 @@ SDL_Surface *CreateDoubleSharp(int size_w, int size_h)
 	int m = size_h * 3 - 5;
 	int w = size_w * 3.0 / 4;
 	
-	
 	surf = SDL_CreateWhiteKeySurface(w+1, m);
-	
-	
+		
 	Draw_Border(surf, 2);
 	return surf;
 }

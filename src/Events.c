@@ -403,6 +403,7 @@ int Events_PollMouse(SDL_Event event)
 					main_events->tools.flat = temp->flags & NOTE_FLAT;
 					main_events->tools.doublesharp = temp->flags & NOTE_DOUBLESHARP;
 					main_events->tools.doubleflat = temp->flags & NOTE_DOUBLEFLAT;
+					main_events->tools.natural = temp->flags & NOTE_NATURAL;
 					main_events->tools.statusdur = 1*(temp->flags & NOTE_POINTED) + 2*(temp->flags & NOTE_DOUBLEPOINTED);
 				}
 				
@@ -439,6 +440,8 @@ int Events_PollMouse(SDL_Event event)
 						add_flag |= NOTE_DOUBLESHARP;
 					else if(main_events->tools.doubleflat)
 						add_flag |= NOTE_DOUBLEFLAT;
+					if(main_events->tools.natural)
+						add_flag |= NOTE_NATURAL;
 					switch(main_events->tools.statusdur)
 					{
 						case 1:
@@ -450,6 +453,8 @@ int Events_PollMouse(SDL_Event event)
 						default:
 							break;
 					}
+					
+					
 					Staff_AddNote(area->staff, area->id_step, area->id_note_add, 
 						MouseToNote(area, (y-main_events->base->y)*main_events->r), 
 						add_flag, main_events->tools.duration);

@@ -1444,6 +1444,7 @@ int ToolBar_PollMouse(Menu *menu, SDL_Event event)
 			x = event.button.x;
 			y = event.button.y;
 			
+			printf("A\n");
 			if(x >= 866+45 && x <= 906+45 && y >= 39 && y <= 69)
 			{
 				switch(event.button.button)
@@ -1456,6 +1457,7 @@ int ToolBar_PollMouse(Menu *menu, SDL_Event event)
 						return FORCE_MAJ;
 				}
 			}
+			printf("B\n");
 			if(x >= volumeX && x <= volumeX+15 && y >= dy-20 && y <= dy+20)
 			{
 				switch(event.button.button)
@@ -1468,10 +1470,10 @@ int ToolBar_PollMouse(Menu *menu, SDL_Event event)
 						return FORCE_MAJ;
 				}
 			}
-			
+			printf("C\n");
 			if(y<dy-20 || y > dy+20)
 				return NONE;
-			
+			printf("D\n");
 			if(x >= playingX && x <= playingX+40 && y >= dy-20 && y <= dy+20)
 			{
 				if(Audio_isPlaying())
@@ -1484,7 +1486,7 @@ int ToolBar_PollMouse(Menu *menu, SDL_Event event)
 				}
 				return FORCE_MAJ;
 			}
-				
+				printf("E\n");
 			for(i = 0; i < 7; i++)
 			{
 				if(x >= 60+i*45 && x <= 100+i*45 &&
@@ -1497,6 +1499,7 @@ int ToolBar_PollMouse(Menu *menu, SDL_Event event)
 						{
 							Note *temp = Step_GetNote(main_events->select->step, main_events->select->id_note);
 							rest = temp->rest;
+							
 							Step_AddNote(main_events->select->step,
 									main_events->select->id_note,
 									temp->note,
@@ -1511,6 +1514,7 @@ int ToolBar_PollMouse(Menu *menu, SDL_Event event)
 					return FORCE_MAJ;
 				}
 			}
+			printf("F\n");
 			for(i = 0; i < 5; i++)
 			{
 				if(x >= 410+i*45 && x <= 450+i*45 && 
@@ -1520,6 +1524,7 @@ int ToolBar_PollMouse(Menu *menu, SDL_Event event)
 					break;
 				}
 			}
+			printf("G\n");
 			for(i = 0; i < 5; i++)
 			{
 				if(x >= 410+i*45 && x <= 450+i*45 && 
@@ -1530,6 +1535,7 @@ int ToolBar_PollMouse(Menu *menu, SDL_Event event)
 				else
 					goal_alt = -1;
 				none = 0;
+				printf("goal_alt = %d\n", goal_alt);
 				if(goal_alt >= 0)
 				{
 					switch(goal_alt)
@@ -1550,6 +1556,9 @@ int ToolBar_PollMouse(Menu *menu, SDL_Event event)
 							none = InvertBoolean(&(main_events->tools.natural));
 							break;
 					}
+					
+					printf("menu select=%p\n", main_events->select);
+					
 					if(main_events->mode == MODE_EDIT && main_events->select != NULL)
 					{
 						if(main_events->select->type == OBJECT_NOTE)
@@ -1583,9 +1592,8 @@ int ToolBar_PollMouse(Menu *menu, SDL_Event event)
 							printf("Add note real time flags = %X\n", temp->flags);
 							#endif
 							
-							Step_ChangeRestStatus(main_events->select->step,
-										main_events->select->id_note,
-										1);
+							printf("Step_AddNote flags=%x\n", temp->flags);
+							
 							Step_AddNote(main_events->select->step,
 									main_events->select->id_note,
 									temp->note,
@@ -1881,14 +1889,17 @@ void Toolbar_PrintNote(Menu *menu)
 	if(main_events->tools.hover_volume)
 	{
 		boxRGBA(Window->screen, pos.x, pos.y, pos.x+15, pos.y+45, 80, 90, 115, 255);
+		boxRGBA(Window->screen, pos.x, pos.y+45-(45*Audio_GetFracVolume()), 
+					pos.x+15, pos.y+45, 115, 135, 150, 255);
 	}
 	else
 	{
 		boxRGBA(Window->screen, pos.x, pos.y, pos.x+15, pos.y+45, 119, 135, 153, 255);
+		boxRGBA(Window->screen, pos.x, pos.y+45-(45*Audio_GetFracVolume()), 
+					pos.x+15, pos.y+45, 135, 155, 170, 255);
 	}
 	
-	boxRGBA(Window->screen, pos.x, pos.y+45-(45*Audio_GetFracVolume()), 
-							pos.x+15, pos.y+45, 135, 155, 170, 255);
+	
 	
 }
 

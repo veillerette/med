@@ -546,12 +546,14 @@ int Step_AddNote(Step *step, int id, char note, Note_Flags flags,
 	if(NULL == step->notes)
 		return -1;
 	cur = &(step->notes);
-
+	
+	printf("step flags = %X\n", flags);
+	
 	if(!(flags & NOTE_NATURAL))
 		Step_CorrectFlags(step, id, note, &flags);
 	else
 		flags = NOTE_NATURAL;
-		
+	printf("step id = %d, note = %d, flags = %X, dur = %d\n", id, note, flags, duration);	
 	while(id > 0)
 	{
 		if(NULL == (*cur)->next)

@@ -14,13 +14,14 @@
 - Supprimer doubles affichages Dieze/Bémol dans une mesure
 [OK]- Ajout de plusieurs mesures en fin (scroll souris)
 [50%]- Clé de fa (Manque graphismes)
-[100%] Sauvegarde dans MED/ABC du tempo + Ouverture MED/ABC du Tempo
-[50%]- Bécarre
+[OK] Sauvegarde dans MED/ABC du tempo + Ouverture MED/ABC du Tempo
+[OK]- Bécarre
 [50%]- Double-dièse
 [OK]- Plus de déplacements de la souris lorsqu'un élement est sélectionné
 
 <<< Bugs >>>
-- Note pointée (modification temps réel à la sélection, affichage -> prendre en compte le bon space)
+- Modification temps réelle à la selection
+[80%]- Note pointée (modification temps réel à la sélection, affichage)
 - Problèmes mesures 5/4, 4/2, 5/2
 [OK]- Correction bug croches bizarres (dans le mozart notamment) ????
 [OK]- Bug à l'ajout de 4/5ème portée

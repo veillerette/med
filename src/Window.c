@@ -809,9 +809,9 @@ int Note_Print(Score *score, Staff *staff, Step *step, int id_step, int id_note,
 	}
 	else if(note->flags & NOTE_NATURAL)
 	{
-		base_pos->y -= HEAD_H - 5;
+		base_pos->y -= HEAD_H;
 		SDL_BlitSurface(Images->Natural, NULL, dest, base_pos);
-		base_pos->y += HEAD_H - 5;
+		base_pos->y += HEAD_H ;
 		
 		base_pos->x += HEAD_W*3.0/4;
 	}
@@ -1548,8 +1548,8 @@ int Window_LittleEvent(SDL_Event event, double *r, int *c, int *mouse,
 			{
 				case SDL_BUTTON_WHEELDOWN:
 					(*r)++;
-					if(*r > 7)
-						*r = 7;
+					if(*r > 3)
+						*r = 3;
 					else
 						*m=1;
 					break;
