@@ -234,7 +234,42 @@ int ToNote_DiviseRest(ToNote *tonote, int id, int newDuration, int stepNum)
 		return 1;
 	}
 	return ToNote_DiviseRest(tonote->next, id - 1, newDuration, stepNum);
+}
+
+int ToNote_Divise(ToNote *tonote, int id, int newDuration, int stepNum)
+{
+	if(NULL == tonote)
+		return 0;
+	if(!id)
+	{
+		ToNote *sauv_next = tonote->next;
+		int nDiv = 0;
+		
+		if(tonote->note->duration == QUADRUPLECROCHE)
+			return 0;
+			
+		if(tonote->note->duration == RONDE)
+			nDiv = stepNum;
+		else
+		{
+			newDuration = tonote->note->duration * 2;
+			nDiv = 2;
+		}
+		
+		tonote->note->duration = newDuration;
+		nDiv--;
+
+		while(nDiv > 0)
+		{
+			tonote->next = ToNote_Alloc(tonote->note->note, NOTE_DEFAULT, newDuration, tonote->note->rest);
+			tonote = tonote->next;
+			nDiv--;
+		}
+		tonote->next = sauv_next;
 	
+		return 1;
+	}
+	return ToNote_Divise(tonote->next, id - 1, newDuration, stepNum);
 }
 
 int Step_DiviseRest(Step *step, int id)
@@ -242,6 +277,13 @@ int Step_DiviseRest(Step *step, int id)
 	if(NULL == step)
 		return 0;
 	return ToNote_DiviseRest(step->notes, id, step->den, step->num);
+}
+
+int Step_Divise(Step *step, int id)
+{
+	if(NULL == step)
+		return 0;
+	return ToNote_Divise(step->notes, id, step->den, step->num);
 }
 
 int Step_Init(Step *step)

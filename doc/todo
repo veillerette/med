@@ -33,7 +33,7 @@
 [OK]- Freeze curseur de lecture / Petites latences de suivi
 
 <<< Majors >>>
-[40%]- Multi-Sélections
+[OK]- Multi-Sélections
 [OK]- Exportation fichier perso
 [OK]- Importation fichier perso
 [OK]- Sauvegarde/Ouverture Fichier
@@ -43,6 +43,8 @@
 [80%]- Fenêtre Nouveau Fichier
 [OK]- Import/Export fichier partition
 [OK]- Export fichier ABC
+- Copier/Coller
+- 
 
 <<< Améliorations possibles >>>
 [90%]- Importation fichiers ABC

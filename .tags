@@ -420,11 +420,13 @@ Select_AddLast	src/Events.c	/^int Select_AddLast(Area *area)$/;"	f
 Select_Debug	src/Events.c	/^void Select_Debug(void)$/;"	f
 Select_Flush	src/Events.c	/^void Select_Flush(void)$/;"	f
 Select_GetIterate	src/Events.c	/^Select_Node *Select_GetIterate(void)$/;"	f
+Select_GetLast	src/Events.c	/^Select_Node *Select_GetLast(void)$/;"	f
 Select_Node	include/Events.h	/^struct Select_Node$/;"	s
 Select_Node	include/Events.h	/^typedef struct Select_Node Select_Node;$/;"	t	typeref:struct:Select_Node
 Select_Remove	src/Events.c	/^int Select_Remove(Area *area)$/;"	f
 Select_isEmpty	src/Events.c	/^int Select_isEmpty(void)$/;"	f
 Select_isIn	src/Events.c	/^int Select_isIn(Area *area)$/;"	f
+Select_isOne	src/Events.c	/^int Select_isOne(void)$/;"	f
 Selection	include/Events.h	/^struct Selection$/;"	s
 Selection	include/Events.h	/^typedef struct Selection Selection;$/;"	t	typeref:struct:Selection
 Selection_AddFirst	src/Events.c	/^int Selection_AddFirst(Selection *select, Area *area)$/;"	f
@@ -469,6 +471,7 @@ Step_ConsoleFastPrintf	src/Step.c	/^void Step_ConsoleFastPrintf(Step *step)$/;"	
 Step_ConsolePrintf	src/Step.c	/^void Step_ConsolePrintf(Step *step)$/;"	f
 Step_CorrectFlags	src/Step.c	/^int Step_CorrectFlags(Step *step, int id, char note, Note_Flags *flags)$/;"	f
 Step_DelLocal	src/Step.c	/^int Step_DelLocal(Step *step, int begin, int end)$/;"	f
+Step_Divise	src/Step.c	/^int Step_Divise(Step *step, int id)$/;"	f
 Step_DiviseRest	src/Step.c	/^int Step_DiviseRest(Step *step, int id)$/;"	f
 Step_DurationBefore	src/Step.c	/^int Step_DurationBefore(Step *step, int id_note)$/;"	f
 Step_Flags	include/Step.h	/^	} Step_Flags;$/;"	t	typeref:enum:__anon4
@@ -514,6 +517,7 @@ ToNote	include/Step.h	/^typedef struct ToNote ToNote;$/;"	t	typeref:struct:ToNot
 ToNote_Alloc	src/Step.c	/^ToNote *ToNote_Alloc(char note, Note_Flags flags, int duration, char rest)$/;"	f
 ToNote_ChangeRestStatus	src/Step.c	/^int ToNote_ChangeRestStatus(ToNote *notes, int id, char newStatus)$/;"	f
 ToNote_ConsolePrintf	src/Step.c	/^void ToNote_ConsolePrintf(ToNote *notes)$/;"	f
+ToNote_Divise	src/Step.c	/^int ToNote_Divise(ToNote *tonote, int id, int newDuration, int stepNum)$/;"	f
 ToNote_DiviseRest	src/Step.c	/^int ToNote_DiviseRest(ToNote *tonote, int id, int newDuration, int stepNum)$/;"	f
 ToNote_Free	src/Step.c	/^void ToNote_Free(ToNote **tonote)$/;"	f
 ToNote_FreeAll	src/Step.c	/^void ToNote_FreeAll(ToNote **tonote)$/;"	f
@@ -767,7 +771,6 @@ rot_noteW	include/Images.h	/^	int rot_noteW;$/;"	m	struct:Graphics
 score	include/Audio.h	/^	Score *score;			\/*!< Partition *\/$/;"	m	struct:AudioConfig
 score	include/Events.h	/^	Score *		score;$/;"	m	struct:EventData
 screen	include/Window.h	/^	SDL_Surface *screen;$/;"	m	struct:WindowData
-select	include/Events.h	/^	Area *		select;$/;"	m	struct:EventData
 select	include/Explorer.h	/^	int select;$/;"	m	struct:Explorer
 select	include/Menu.h	/^	Menu_Node *select;$/;"	m	struct:Menu
 sharp	include/Events.h	/^	char 		sharp;$/;"	m	struct:Toolbar

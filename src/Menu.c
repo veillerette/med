@@ -182,67 +182,133 @@ int _Aide_APropos(void)
 
 int _Selection_Delete(void)
 {
-	if(NULL == main_events->select)
+	int maj = 0;
+	Select_Node *sn = NULL;
+	if(Select_isEmpty() || main_events->mode != MODE_EDIT)
 		return FORCE_MAJ;
-	switch(main_events->select->type)
+	
+	sn = Select_GetIterate();
+	while(sn != NULL)
 	{
-		case OBJECT_NOTE:
-			Step_ChangeRestStatus(main_events->select->step, main_events->select->id_note, 1);	
-			return FORCE_SCOREMAJ;
-		case OBJECT_STEP:
-			Score_DeleteStep(main_events->score, main_events->select->id_step);
-			return FORCE_SCOREMAJ;
-		default:
-			break;
+		switch(sn->val->type)
+		{
+			case OBJECT_NOTE:
+				Step_ChangeRestStatus(sn->val->step,
+						sn->val->id_note, 1);
+				maj = 1;
+				break;
+			case OBJECT_STEP:
+				Score_DeleteStep(main_events->score, sn->val->id_step);
+				maj = 1;
+				break;
+			default:
+				break;
+		}
+		sn = sn->next;
 	}
+	
+	if(maj)
+		return FORCE_SCOREMAJ;
+		
 	return FORCE_MAJ;
 }
 
 int _Selection_Deselec(void)
 {
-	if(main_events->select != NULL)
-	{
-		main_events->select = NULL;
-		return FORCE_SCOREMAJ;
-	}
+	Select_Flush();
 	return FORCE_MAJ;
 }
 
 int _Selection_Divise(void)
 {
-	if(NULL == main_events->select)
+	int maj = 0;
+	Select_Node *sn = NULL;
+	
+	if(Select_isEmpty())
 		return FORCE_MAJ;
-	if(main_events->select->type != OBJECT_NOTE)
-		return FORCE_MAJ;
-	Step_DiviseRest(main_events->select->step, main_events->select->id_note);
-	return FORCE_SCOREMAJ;
+	
+	sn = Select_GetIterate();
+	
+	while(sn != NULL)
+	{
+		switch(sn->val->type)
+		{
+			case OBJECT_NOTE:
+				if(Step_Divise(sn->val->step,
+						sn->val->id_note))
+					maj = 1;
+				break;
+			default:
+				break;
+		}
+		sn = sn->next;
+	}
+	
+	if(maj)
+		return FORCE_SCOREMAJ;
+	
+	return FORCE_MAJ;
 }
 
 int _Selection_Regularise(void)
 {
-	if(NULL == main_events->select || main_events->select->type != OBJECT_STEP)
+	int maj = 0;
+	Select_Node *sn = NULL;
+	
+	if(Select_isEmpty())
 		return FORCE_MAJ;
-	Step_Regularise(*(main_events->select->staff->steps + main_events->select->id_step));
-	return FORCE_SCOREMAJ;
+		
+	sn = Select_GetIterate();
+	
+	while(sn != NULL)
+	{
+		switch(sn->val->type)
+		{
+			case OBJECT_STEP:
+				Step_Regularise(*(sn->val->staff->steps + sn->val->id_step));
+				maj = 1;
+				break;
+			default:
+				break;
+		}
+		sn = sn->next;
+	}
+	if(maj)
+		return FORCE_SCOREMAJ;
+	return FORCE_MAJ;
 }
 
 int _Ajouter_Mesure_Before(void)
 {
-	if(NULL == main_events->select)
+	Select_Node *sn = NULL;	
+	if(Select_isEmpty())
 		return FORCE_MAJ;
-	if(main_events->select->type != OBJECT_STEP)
+	
+	if(main_events->tabselect->last != (sn = Select_GetIterate()) 
+	  || sn->val->type != OBJECT_STEP)
+	{
+		Window_InteractInfo("Veuillez ne sélectionner qu'une seule mesure", 255, 100, 50);
 		return FORCE_MAJ;
-	Score_SetEmptyStep(main_events->score, main_events->select->id_step);
+	}
+
+	Score_SetEmptyStep(main_events->score, sn->val->id_step);
 	return FORCE_SCOREMAJ;
 }
 
 int _Ajouter_Mesure_After(void)
 {
-	if(NULL == main_events->select)
+	Select_Node *sn = NULL;	
+	if(Select_isEmpty())
 		return FORCE_MAJ;
-	if(main_events->select->type != OBJECT_STEP)
+	
+	if(main_events->tabselect->last != (sn = Select_GetIterate()) 
+	  || sn->val->type != OBJECT_STEP)
+	{
+		Window_InteractInfo("Veuillez ne sélectionner qu'une seule mesure", 255, 100, 50);
 		return FORCE_MAJ;
-	Score_SetEmptyStep(main_events->score, main_events->select->id_step+1);
+	}
+
+	Score_SetEmptyStep(main_events->score, sn->val->id_step+1);
 	return FORCE_SCOREMAJ;
 }
 
@@ -924,26 +990,34 @@ int Menu_SauvFileABC(void)
 
 int ChangeCleToSol(void)
 {
-	if((NULL == main_events) || (NULL == main_events->score))
+	Select_Node *sn = NULL;	
+	if(Select_isEmpty())
 		return FORCE_MAJ;
 	
-	if((NULL == main_events->select) || (main_events->select->type != OBJECT_STEP))
-		return FORCE_MAJ;
+	if(main_events->tabselect->last != (sn = Select_GetIterate()) 
+	  || sn->val->type != OBJECT_STEP)
+	{
+		Window_InteractInfo("Veuillez sélectionner une seule mesure", 255, 100, 50);
+	}
 	
-	Staff_ChangeCle(main_events->select->staff, 0, CLE_SOL);
+	Staff_ChangeCle(sn->val->staff, 0, CLE_SOL);
 	
 	return FORCE_SCOREMAJ;
 }
 
 int ChangeCleToFa(void)
 {
-	if((NULL == main_events) || (NULL == main_events->score))
+	Select_Node *sn = NULL;	
+	if(Select_isEmpty())
 		return FORCE_MAJ;
 	
-	if((NULL == main_events->select) || (main_events->select->type != OBJECT_STEP))
-		return FORCE_MAJ;
+	if(main_events->tabselect->last != (sn = Select_GetIterate()) 
+	  || sn->val->type != OBJECT_STEP)
+	{
+		Window_InteractInfo("Veuillez sélectionner une seule mesure", 255, 100, 50);
+	}
 	
-	Staff_ChangeCle(main_events->select->staff, 0, CLE_FA);
+	Staff_ChangeCle(sn->val->staff, 0, CLE_FA);
 	
 	return FORCE_SCOREMAJ;
 }
@@ -951,16 +1025,20 @@ int ChangeCleToFa(void)
 int ChangeTonality(signed char new)
 {
 	int i,j;
-	if((NULL == main_events) || (NULL == main_events->score))
+	Select_Node *sn = NULL;	
+	if(Select_isEmpty())
 		return FORCE_MAJ;
-		
-	if((NULL == main_events->select) || (main_events->select->type != OBJECT_STEP))
-		return FORCE_MAJ;
+	
+	if(main_events->tabselect->last != (sn = Select_GetIterate()) 
+	  || sn->val->type != OBJECT_STEP)
+	{
+		Window_InteractInfo("Veuillez sélectionner une seule mesure", 255, 100, 50);
+	}
 		
 	for(i = 0; i < main_events->score->n; i++)
 	{
-		Staff_ChangeArmure(main_events->score->lst[i], main_events->select->id_step, new);
-		for(j = main_events->select->id_step; j< main_events->score->lst[i]->n; j++)
+		Staff_ChangeArmure(main_events->score->lst[i], sn->val->id_step, new);
+		for(j = sn->val->id_step; j< main_events->score->lst[i]->n; j++)
 			Step_VerifArmFlags(main_events->score->lst[i]->steps[j]);
 	}
 	return FORCE_SCOREMAJ;
@@ -1321,7 +1399,7 @@ int Menu_PollMouse(Menu *menu, SDL_Event event)
 				Window_Print();
 				Menu_Aff(menu, &x, &y);
 				SDL_Flip(Window->screen);
-				if(!mn->need_select || (mn->need_select && main_events->select != NULL))
+				if(!mn->need_select || (mn->need_select && !Select_isEmpty()))
 					return mn->f();
 				else
 					return Menu_NoSelect();
@@ -1384,6 +1462,7 @@ int ToolBar_PollMouse(Menu *menu, SDL_Event event)
 	int pointed = 0;
 	int playingX = 750+45;
 	int volumeX = 986;
+	Select_Node *sn = NULL;
 	
 	switch(event.type)
 	{
@@ -1493,20 +1572,22 @@ int ToolBar_PollMouse(Menu *menu, SDL_Event event)
 					y >= dy-20 && y <= dy+20)
 				{
 					main_events->tools.duration = pow(2, i);
-					if(main_events->mode == MODE_EDIT && main_events->select != NULL)
+					if(main_events->mode == MODE_EDIT && !Select_isEmpty()
+					   && Select_isOne())
 					{
-						if(main_events->select->type == OBJECT_NOTE)
+						sn = Select_GetIterate();
+						if(sn->val->type == OBJECT_NOTE)
 						{
-							Note *temp = Step_GetNote(main_events->select->step, main_events->select->id_note);
+							Note *temp = Step_GetNote(sn->val->step, sn->val->id_note);
 							rest = temp->rest;
 							
-							Step_AddNote(main_events->select->step,
-									main_events->select->id_note,
+							Step_AddNote(sn->val->step,
+									sn->val->id_note,
 									temp->note,
 									temp->flags,
 									main_events->tools.duration);
-							Step_ChangeRestStatus(main_events->select->step,
-										main_events->select->id_note,
+							Step_ChangeRestStatus(sn->val->step,
+										sn->val->id_note,
 										rest);
 							return FORCE_SCOREMAJ;
 						}
@@ -1556,14 +1637,14 @@ int ToolBar_PollMouse(Menu *menu, SDL_Event event)
 							none = InvertBoolean(&(main_events->tools.natural));
 							break;
 					}
-					
-					printf("menu select=%p\n", main_events->select);
-					
-					if(main_events->mode == MODE_EDIT && main_events->select != NULL)
+										
+					if(main_events->mode == MODE_EDIT && !Select_isEmpty()
+					   && Select_isOne())
 					{
-						if(main_events->select->type == OBJECT_NOTE)
+						sn = Select_GetIterate();
+						if(sn->val->type == OBJECT_NOTE)
 						{
-							Note *temp = Step_GetNote(main_events->select->step, main_events->select->id_note);
+							Note *temp = Step_GetNote(sn->val->step, sn->val->id_note);
 							rest = temp->rest;
 							temp->flags = NOTE_DEFAULT;
 							if(none)
@@ -1594,13 +1675,13 @@ int ToolBar_PollMouse(Menu *menu, SDL_Event event)
 							
 							printf("Step_AddNote flags=%x\n", temp->flags);
 							
-							Step_AddNote(main_events->select->step,
-									main_events->select->id_note,
+							Step_AddNote(sn->val->step,
+									sn->val->id_note,
 									temp->note,
 									temp->flags,
 									main_events->tools.duration);
-							Step_ChangeRestStatus(main_events->select->step,
-										main_events->select->id_note,
+							Step_ChangeRestStatus(sn->val->step,
+										sn->val->id_note,
 										rest);
 							return FORCE_SCOREMAJ;
 						}
@@ -1646,10 +1727,13 @@ int ToolBar_PollMouse(Menu *menu, SDL_Event event)
 				
 			if(sauv != main_events->tools.statusdur)
 			{
-				if(main_events->mode == MODE_EDIT && main_events->select != NULL)
+				if(main_events->mode == MODE_EDIT && !Select_isEmpty()
+				      && Select_isOne())
 				{
-					Note *temp = Step_GetNote(main_events->select->step, main_events->select->id_note);
-								rest = temp->rest;
+					sn = Select_GetIterate();
+					Note *temp = Step_GetNote(sn->val->step, sn->val->id_note);
+					
+					rest = temp->rest;
 					temp->flags = NOTE_DEFAULT;
 					if(main_events->tools.sharp)
 						temp->flags |= NOTE_SHARP;
@@ -1668,13 +1752,13 @@ int ToolBar_PollMouse(Menu *menu, SDL_Event event)
 							temp->flags |= NOTE_DOUBLEPOINTED;
 							break;
 					}
-					Step_AddNote(main_events->select->step,
-							main_events->select->id_note,
+					Step_AddNote(sn->val->step,
+							sn->val->id_note,
 							temp->note,
 							temp->flags,
 							main_events->tools.duration);
-					Step_ChangeRestStatus(main_events->select->step,
-								main_events->select->id_note,
+					Step_ChangeRestStatus(sn->val->step,
+								sn->val->id_note,
 								rest);
 					return FORCE_SCOREMAJ;
 				}

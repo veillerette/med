@@ -682,8 +682,7 @@ int Window_GetSpaceNote(Score *score, int idStep, Step *step, Note *note, int id
 	Note_Duration min = Step_GetMinDuration(step);
 	Note_Duration realMin = 1;
 	int temp;
-	int add = 0;
-	
+		
 	for(k = 0; k < score->n; k++)
 	{
 		min = Step_GetMinDuration(*(score->lst[k]->steps + idStep));

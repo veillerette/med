@@ -120,7 +120,6 @@ EventData *EventData_Alloc(void)
 	
 	temp->lst = NULL;
 	temp->n = 0;
-	temp->select = NULL;
 	temp->hover = NULL;
 	temp->base = NULL;
 	temp->mode = MODE_EDIT;
@@ -137,20 +136,17 @@ void EventData_Free(EventData **ed)
 {
 	if(*ed != NULL)
 	{
-		Area *sauv = (*ed)->select;
 		Area *sauv2 = (*ed)->hover;
 		Area *cur = (*ed)->lst;
 		Area *cur2 = NULL;
 		while(cur != NULL)
 		{
 			cur2 = cur->next;
-			if(cur != sauv && cur != sauv2)
+			if(cur != sauv2)
 				Area_Free(&cur);
 			cur = cur2;
 		}
 		
-		if((*ed)->select != NULL)
-			free((*ed)->select);
 		if((*ed)->hover != NULL)
 			free((*ed)->hover);
 		free(*ed);
@@ -224,7 +220,6 @@ int EventData_Flush(EventData *ed)
 	ed->lst = NULL;
 	ed->n = 0;
 	ed->hover = NULL;
-	ed->select = NULL;
 	Select_Flush();
 	return 1;
 }
@@ -237,8 +232,8 @@ void EventData_Console(EventData *ed)
 	return;
 	area = ed->lst;
 	
-	printf("EventData, n=%d, select=%p, hover=%p\n",
-				ed->n, (void *)ed->select, (void *)ed->hover);
+	printf("EventData, n=%d, hover=%p\n",
+				ed->n, (void *)ed->hover);
 	
 	while(area != NULL)
 	{
@@ -594,7 +589,7 @@ int Events_PollKeyboard(SDL_Event event)
 						switch(sn->val->type)
 						{
 							case OBJECT_NOTE:
-								if(Step_DiviseRest(sn->val->step,
+								if(Step_Divise(sn->val->step,
 										sn->val->id_note))
 									is_maj = 1;
 								break;
@@ -846,6 +841,13 @@ Select_Node *Select_GetIterate(void)
 	return main_events->tabselect->first;
 }
 
+Select_Node *Select_GetLast(void)
+{
+	if((NULL == main_events) || (NULL == main_events->tabselect))
+		return NULL;
+	return main_events->tabselect->last;
+}
+
 void Select_Debug(void)
 {
 	int i;
@@ -860,6 +862,15 @@ void Select_Debug(void)
 		i++;
 		sn = sn->next;
 	}
+}
+
+int Select_isOne(void)
+{
+	if((NULL == main_events) || (NULL == main_events->tabselect))
+		return 0;
+	if((main_events->tabselect->first == main_events->tabselect->last))
+			return 1;
+	return 0;
 }
 
 

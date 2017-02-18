@@ -101,7 +101,6 @@ struct EventData
 	Area *		lst; /* ordonned by surface size */
 	int 		n;
 	
-	Area *		select;
 	Area *		hover;
 	SDL_Rect *	base;
 	
@@ -158,6 +157,10 @@ int Select_isIn(Area *area);
 int Select_isEmpty(void);
 
 Select_Node *Select_GetIterate(void);
+
+Select_Node *Select_GetLast(void);
+
+int Select_isOne(void);
 
 void Select_Debug(void);
 

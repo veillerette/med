@@ -257,6 +257,16 @@ int Step_DiviseRest(Step *step, int id);
 
 
 /**
+ * \brief Divise une note ou un silence en deux silences de durées égales dans une mesure. Si la note est une ronde, emplie par la durée d'un temps
+ *
+ * \param step La mesure
+ * \param id Numéro de la note à modifier
+ *
+ * \return 1 en cas de succès, 0 sinon.
+ */
+int Step_Divise(Step *step, int id);
+
+/**
  * \brief Initialise une mesure. Indispensable avant d'ajouter des notes.
  *	  Rajoute un ou plusieurs silences pour remplir la mesure avec la bonne durée globale.
  *
