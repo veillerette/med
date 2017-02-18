@@ -128,6 +128,8 @@ EventData *EventData_Alloc(void)
 	temp->lastArea = NULL;
 	
 	temp->tools = InitToolbar();
+	temp->tabselect = Selection_Alloc();
+	temp->ctrl = 0;
 	return temp;
 }
 
@@ -223,6 +225,7 @@ int EventData_Flush(EventData *ed)
 	ed->n = 0;
 	ed->hover = NULL;
 	ed->select = NULL;
+	Select_Flush();
 	return 1;
 }
 
@@ -416,13 +419,47 @@ int Events_PollMouse(SDL_Event event)
 					if(is)
 						Audio_Play();
 				}
-				
+				/*
 				if(main_events->select == area)
 					return NONE;
 				main_events->select = area;
+				*/
+				printf("area = %p\n", area);
 				
-				
+				if(NULL == area)
+				{
+					if(!Select_isEmpty())
+					{
+						Select_Flush();
+						
+						Select_Debug();
+						return SELECT;
+					}
 					
+					Select_Debug();
+					return NONE;
+				}
+				
+				
+				if(!main_events->ctrl)
+				{
+					Select_Flush();
+					Select_AddFirst(area);
+					
+					Select_Debug();
+					return SELECT;
+				}
+				if(Select_isIn(area))
+				{
+					Select_Remove(area);
+					
+					Select_Debug();
+					return SELECT;
+				}
+				Select_AddFirst(area);
+					
+				
+				Select_Debug();
 				return SELECT;
 			}
 			else
@@ -471,18 +508,34 @@ int Events_PollMouse(SDL_Event event)
 
 int Events_PollKeyboard(SDL_Event event)
 {
+	Select_Node *sn = NULL;
+	int is_maj = 0;
+	
 	if(NULL == main_events)
 		return NONE;
+		
 	switch(event.type)
 	{
 		case SDL_QUIT:
 			return QUIT;
+		case SDL_KEYUP:
+			switch(event.key.keysym.sym)
+			{
+				case SDLK_RCTRL:
+				case SDLK_LCTRL:
+					main_events->ctrl = 0;
+					return NONE;
+					break;
+				default:
+					break;
+			}
+			break;
 		case SDL_KEYDOWN:
 			switch(event.key.keysym.sym)
 			{
 				case SDLK_BACKSPACE:
-				case SDLK_DELETE:
-					if(main_events->select == NULL || main_events->mode!=MODE_EDIT)
+				case SDLK_DELETE:/*
+					if(main_events->select == NULL || main_events->mode != MODE_EDIT)
 						return NONE;
 					switch(main_events->select->type)
 					{
@@ -494,9 +547,32 @@ int Events_PollKeyboard(SDL_Event event)
 							return FORCE_MAJ;
 						default:
 							break;
+					}*/
+					if(Select_isEmpty() || main_events->mode != MODE_EDIT)
+						return NONE;
+					
+					sn = Select_GetIterate();
+					while(sn != NULL)
+					{
+						switch(sn->val->type)
+						{
+							case OBJECT_NOTE:
+								Step_ChangeRestStatus(sn->val->step,
+										sn->val->id_note, 1);
+								break;
+							case OBJECT_STEP:
+								Score_DeleteStep(main_events->score, sn->val->id_step);
+								break;
+							default:
+								break;
+						}
+						sn = sn->next;
 					}
+					return FORCE_MAJ;
+					
+					break;
 				case SDLK_d:
-					if(main_events->select == NULL)
+					/*if(main_events->select == NULL)
 						return NONE;
 					switch(main_events->select->type)
 					{
@@ -507,7 +583,33 @@ int Events_PollKeyboard(SDL_Event event)
 								return NONE;
 						default:
 							break;
+					}*/
+					if(Select_isEmpty())
+						return NONE;
+					
+					sn = Select_GetIterate();
+					
+					while(sn != NULL)
+					{
+						switch(sn->val->type)
+						{
+							case OBJECT_NOTE:
+								if(Step_DiviseRest(sn->val->step,
+										sn->val->id_note))
+									is_maj = 1;
+								break;
+							default:
+								break;
+						}
+						sn = sn->next;
 					}
+					
+					if(is_maj)
+						return FORCE_MAJ;
+					
+					return NONE;
+					
+					break;
 				case SDLK_a:
 					if(main_events->mode == MODE_ADD)
 						return NONE;
@@ -526,6 +628,11 @@ int Events_PollKeyboard(SDL_Event event)
 					else
 						Audio_Play();
 					return FORCE_MAJ;
+					
+				case SDLK_RCTRL:
+				case SDLK_LCTRL:
+					main_events->ctrl = 1;
+					return NONE;
 				default:
 					break;
 			}
@@ -538,6 +645,222 @@ int Events_PollKeyboard(SDL_Event event)
 	return NONE;
 }
 
+Select_Node *SelectNode_Alloc(Area *area)
+{
+	Select_Node *temp = (Select_Node *)malloc(sizeof(Select_Node));
+	memtest(temp);
+	
+	temp->val = area;
+	temp->next = NULL;
+	
+	return temp;
+}
+
+void SelectNode_Free(Select_Node **sn)
+{
+	if(*sn != NULL)
+	{
+		free(*sn);
+		*sn = NULL;
+	}
+}
+
+void SelectNode_FreeAll(Select_Node **sn)
+{
+	if(*sn != NULL)
+	{
+		SelectNode_FreeAll(&((*sn)->next));
+		SelectNode_Free(sn);
+	}
+}
+
+Selection *Selection_Alloc(void)
+{
+	Selection *temp = (Selection *)malloc(sizeof(Selection));
+	memtest(temp);
+	
+	temp->first = NULL;
+	temp->last = NULL;
+	
+	return temp;
+}
+
+int Selection_AddFirst(Selection *select, Area *area)
+{
+	Select_Node *new = NULL;
+	
+	if((NULL == select) || (NULL == area))
+		return 0;
+	
+	new = SelectNode_Alloc(area);
+	
+	if(NULL == select->first)
+	{
+		select->first = new;
+		select->last = select->first;
+		return 1;
+	}
+	
+	new->next = select->first;
+	select->first = new;
+	
+	return 1;
+}
+
+int Select_AddFirst(Area *area)
+{
+	if(main_events != NULL)
+		return Selection_AddFirst(main_events->tabselect, area);
+	return 0;
+}
+
+int Selection_AddLast(Selection *select, Area *area)
+{
+	Select_Node *new = NULL;
+	
+	if((NULL == select) || (NULL == area))
+		return 0;
+	
+	new = SelectNode_Alloc(area);
+	
+	if(NULL == select->last)
+	{
+		select->last = new;
+		select->first = select->last;
+		return 1;
+	}
+	
+	select->last->next = new;
+	select->last = new;
+	
+	return 1;
+}
+
+int Select_AddLast(Area *area)
+{
+	if(main_events != NULL)
+		return Selection_AddLast(main_events->tabselect, area);
+	return 0;
+}
+
+void Selection_Flush(Selection *select)
+{
+	if(select != NULL)
+	{
+		SelectNode_FreeAll(&(select->first));
+		select->last = NULL;
+	}
+}
+
+void Select_Flush(void)
+{
+	if(main_events != NULL)
+		Selection_Flush(main_events->tabselect);
+}
+
+int Selection_Remove(Selection *select, Area *area)
+{
+	Select_Node *sn = NULL;
+	Select_Node *sauv = NULL;
+	if((NULL == select) || (NULL == area))
+		return 0;
+
+	sn = select->first;
+	
+	if(select->first->val == area)
+	{
+		select->first = select->first->next;
+		if(select->last->val == area)
+			select->last = select->first;
+		return 1;
+	}
+	
+	while(sn->next != NULL && sn->next->val != area)
+		sn = sn->next;
+	
+	if(NULL == sn->next)
+		return 0;
+	
+	if(NULL == sn->next->next)
+		select->last = sn;
+	
+	sauv = sn->next;
+	sn->next = sn->next->next;
+	
+	SelectNode_Free(&sauv);
+	
+	return 1;	
+}
+
+int Select_Remove(Area *area)
+{
+	if(main_events != NULL)
+	{
+		return Selection_Remove(main_events->tabselect, area);
+	}
+	return 0;
+}
+
+int Selection_isIn(Selection *select, Area *area)
+{
+	Select_Node *sn = NULL;
+	
+	if((NULL == select) || (NULL == area))
+		return 0;
+
+	sn = select->first;
+	
+	while(sn != NULL && sn->val != area)
+		sn = sn->next;
+		
+	if(NULL == sn)
+		return 0;
+		
+	return 1;
+}
+
+int Select_isIn(Area *area)
+{
+	if(main_events != NULL)
+		return Selection_isIn(main_events->tabselect, area);
+	return 0;
+}
+
+int Select_isEmpty(void)
+{
+	if(main_events != NULL)
+	{
+		if(main_events->tabselect == NULL)
+			return 1;
+		if(main_events->tabselect->first == NULL)
+			return 1;
+		return 0;
+	}
+	return 1;
+}
+
+Select_Node *Select_GetIterate(void)
+{
+	if((NULL == main_events) || (NULL == main_events->tabselect))
+		return NULL;
+	return main_events->tabselect->first;
+}
+
+void Select_Debug(void)
+{
+	int i;
+	Select_Node *sn = NULL;
+	
+	printf("Selections : \n");
+	sn = main_events->tabselect->first;
+	i = 0;
+	while(sn != NULL)
+	{
+		printf("%d -> %p type=%d\n", i, (void *)sn->val, sn->val->type);
+		i++;
+		sn = sn->next;
+	}
+}
 
 
 

@@ -420,12 +420,32 @@ SDL_Surface *CreateNatural(int size_w, int size_h)
 SDL_Surface *CreateDoubleSharp(int size_w, int size_h)
 {
 	SDL_Surface *surf = NULL;
-	int m = size_h * 3 - 5;
-	int w = size_w * 3.0 / 4;
+	int m = size_h;
+	int w = size_h;
+	int c = m/2-3;
+	int i;
 	
 	surf = SDL_CreateWhiteKeySurface(w+1, m);
 		
-	Draw_Border(surf, 2);
+	boxRGBA(surf, 0, 0, c, c, 0, 0, 0, 255);
+	boxRGBA(surf, m-c, 0, m, c, 0, 0, 0, 255);
+	boxRGBA(surf, 0, m-c, c, m, 0, 0, 0, 255);
+	boxRGBA(surf, m-c, m-c, m, m, 0, 0, 0, 255);
+	
+	for(i = 0; i < 5; i++)
+	{
+		aalineRGBA(surf, c-4+i, c-i, m-c+i, m-c+4-i, 0, 0, 0, 255);
+		aalineRGBA(surf, c-4+i, c-1-i, m-c+i, m-c+3-i, 0, 0, 0, 255);
+	}
+	
+	for(i = 0; i < 5; i++)
+	{
+		aalineRGBA(surf, c-4+i, m-c+i, m-c+i, c-4+i, 0, 0, 0, 255);
+		aalineRGBA(surf, c-4+i, m-c+i+1, m-c+i, c-3+i, 0, 0, 0, 255);
+	}
+	
+	size_w = size_w; /* to avoid unused variable */
+	
 	return surf;
 }
 
@@ -559,16 +579,37 @@ SDL_Surface *CreateCleSol(int size_w, int size_h)
 SDL_Surface *CreateCleFa(int size_w, int size_h)
 {
 	SDL_Surface *surf = NULL;
-	SDL_Color color = {50, 0, 50, 0};
-	surf = SDL_CreateWhiteKeySurface(size_w * 2, size_h * 3.5);
+	int h = size_h * 3.25;
+	int w = size_w * 2;
+	int i;
+	int real_w = w - 20;
+	
+	int x[] = {real_w/3, real_w*1.25, size_w/8};
+	int y[] = {0, size_h*0.75, h*0.85};
+	
+	surf = SDL_CreateWhiteKeySurface(w, h);
 	memtest(surf);
 
-	Moteur_WriteText(size_w, size_h * 1.75, "FA", 70,
-				"media/Garamond.ttf", color,
-				TEXT_BLENDED, TEXT_CENTER,
-				surf);
-
-	Draw_Border(surf, 2);
+	filledCircleRGBA(surf, w-10, size_h-13, 5, 0, 0, 0, 255);
+	filledCircleRGBA(surf, w-10, size_h+13, 5, 0, 0, 0, 255);
+	
+	for(i = 0; i < 10; i++)
+	{
+		x[1]+=2;
+		PowerOfBezier(surf, x, y, 3, SetColor(0, 0, 0));
+		x[0]++;
+		PowerOfBezier(surf, x, y, 3, SetColor(0, 0, 0));
+		x[2]++;
+		PowerOfBezier(surf, x, y, 3, SetColor(0, 0, 0));
+	}
+	
+	for(i = 0; i < 12; i++)
+	{
+		arcRGBA(surf, real_w/3+10+i, size_h+i, size_h-1+i, 195, 270, 0, 0, 0, 255);
+	}
+	
+	filledCircleRGBA(surf, size_w/3.2, size_h-4, 10, 0, 0, 0, 255);
+	
 	return surf;
 }
 
@@ -937,7 +978,7 @@ int Graphics_LoadLittle(Graphics **data)
 	cur->Sharp = Create_Little(Images->Sharp, RATIO_LITTLE+1, RATIO_LITTLE+1);
 	cur->Flat = Create_Little(Images->Flat, RATIO_LITTLE+1, RATIO_LITTLE+1);
 	cur->DoubleFlat = Create_Little(Images->DoubleFlat, RATIO_LITTLE+1, RATIO_LITTLE+1);
-	cur->DoubleSharp = Create_Little(Images->DoubleSharp, RATIO_LITTLE+1, RATIO_LITTLE+1);
+	cur->DoubleSharp = Create_Little(Images->DoubleSharp, RATIO_LITTLE, RATIO_LITTLE);
 	cur->Natural = Create_Little(Images->Natural, RATIO_LITTLE+1, RATIO_LITTLE+1);
 
 	colorprintf(GREEN, "Ok !");

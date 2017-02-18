@@ -495,7 +495,8 @@ int Window_TestBox(SDL_Surface *dest, SDL_Rect *pos, int zoom)
 			a = 150;
 
 
-			if(main_events->select == area)
+			/*if(main_events->select == area)*/
+			if(Select_isIn(area))
 			{
 
 				r = 200;
@@ -533,7 +534,8 @@ int Window_TestBox(SDL_Surface *dest, SDL_Rect *pos, int zoom)
 			
 			if(area->type == OBJECT_STEP)
 			{
-				if(main_events->select == area)
+				/*if(main_events->select == area)*/
+				if(Select_isIn(area))
 				{
 					r = 0;
 					g = 0;
@@ -559,15 +561,15 @@ int Window_TestBox(SDL_Surface *dest, SDL_Rect *pos, int zoom)
 								r, g, b, a);
 				}
 				else if(((area->type == EVENT_ADDNOTE && main_events->mode == MODE_ADD &&
-						 (area == main_events->hover || area == main_events->select) )
+						 (area == main_events->hover || Select_isIn(area)) )
 					||
-					(area->type != EVENT_ADDNOTE && main_events->mode == MODE_EDIT && main_events->select == area)
+					(area->type != EVENT_ADDNOTE && main_events->mode == MODE_EDIT && Select_isIn(area))
 					))
 				{
 					switch(area->type)
 					{
 						case OBJECT_STEP:
-							if(main_events->select == area || (0 && main_events->hover == area))
+							if(Select_isIn(area) || (0 && main_events->hover == area))
 								Image_DrawRectangleBorder(dest, (pos->x + ((area->rect.x - 15 + SIZE_BODY*area->nbody) /zoom)), 
 									(pos->y  + ((area->rect.y - 50) /zoom)),
 									(pos->x + (area->rect.x - 15 + SIZE_BODY*area->nbody)/zoom + (area->rect.w + 30)/zoom),
@@ -784,11 +786,9 @@ int Note_Print(Score *score, Staff *staff, Step *step, int id_step, int id_note,
 	}
 	else if(note->flags & NOTE_DOUBLESHARP)
 	{
-		base_pos->y -= HEAD_H - 5;
 		SDL_BlitSurface(Images->DoubleSharp, NULL, dest, base_pos);
-		base_pos->y += HEAD_H - 5;
 		
-		base_pos->x += HEAD_W*3.0/4;
+		base_pos->x += HEAD_W*3.0/4+1;
 	}
 	else if(note->flags & NOTE_FLAT)
 	{
@@ -797,7 +797,7 @@ int Note_Print(Score *score, Staff *staff, Step *step, int id_step, int id_note,
 		SDL_BlitSurface(Images->Flat, NULL, dest, base_pos);
 		base_pos->y += 1.5*HEAD_H - 10;
 		
-		base_pos->x += HEAD_W*3.0/4 - 8;
+		base_pos->x += HEAD_W*3.0/4 - 8+1;
 	}
 	else if(note->flags & NOTE_DOUBLEFLAT)
 	{
@@ -805,7 +805,7 @@ int Note_Print(Score *score, Staff *staff, Step *step, int id_step, int id_note,
 		SDL_BlitSurface(Images->DoubleFlat, NULL, dest, base_pos);
 		base_pos->y += 1.5*HEAD_H - 10;
 		
-		base_pos->x += (HEAD_W*3.0/4)*2;
+		base_pos->x += (HEAD_W*3.0/4)*2+1;
 	}
 	else if(note->flags & NOTE_NATURAL)
 	{
@@ -813,7 +813,7 @@ int Note_Print(Score *score, Staff *staff, Step *step, int id_step, int id_note,
 		SDL_BlitSurface(Images->Natural, NULL, dest, base_pos);
 		base_pos->y += HEAD_H ;
 		
-		base_pos->x += HEAD_W*3.0/4;
+		base_pos->x += HEAD_W*3.0/4+1;
 	}
 	
 	if(!note->rest && note_y >= 45)

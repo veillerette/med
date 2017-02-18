@@ -412,6 +412,27 @@ Score_Print	src/Window.c	/^int Score_Print(Score *score, SDL_Rect *base_pos)$/;"
 Score_SetEmptyStep	src/Staff.c	/^int Score_SetEmptyStep(Score *score, int i)$/;"	f
 Score_SetTempo	src/Staff.c	/^void Score_SetTempo(Score *score, int tempo)$/;"	f
 Score_ShowSignConsole	src/Staff.c	/^int Score_ShowSignConsole(Score *score)$/;"	f
+SelectNode_Alloc	src/Events.c	/^Select_Node *SelectNode_Alloc(Area *area)$/;"	f
+SelectNode_Free	src/Events.c	/^void SelectNode_Free(Select_Node **sn)$/;"	f
+SelectNode_FreeAll	src/Events.c	/^void SelectNode_FreeAll(Select_Node **sn)$/;"	f
+Select_AddFirst	src/Events.c	/^int Select_AddFirst(Area *area)$/;"	f
+Select_AddLast	src/Events.c	/^int Select_AddLast(Area *area)$/;"	f
+Select_Debug	src/Events.c	/^void Select_Debug(void)$/;"	f
+Select_Flush	src/Events.c	/^void Select_Flush(void)$/;"	f
+Select_GetIterate	src/Events.c	/^Select_Node *Select_GetIterate(void)$/;"	f
+Select_Node	include/Events.h	/^struct Select_Node$/;"	s
+Select_Node	include/Events.h	/^typedef struct Select_Node Select_Node;$/;"	t	typeref:struct:Select_Node
+Select_Remove	src/Events.c	/^int Select_Remove(Area *area)$/;"	f
+Select_isEmpty	src/Events.c	/^int Select_isEmpty(void)$/;"	f
+Select_isIn	src/Events.c	/^int Select_isIn(Area *area)$/;"	f
+Selection	include/Events.h	/^struct Selection$/;"	s
+Selection	include/Events.h	/^typedef struct Selection Selection;$/;"	t	typeref:struct:Selection
+Selection_AddFirst	src/Events.c	/^int Selection_AddFirst(Selection *select, Area *area)$/;"	f
+Selection_AddLast	src/Events.c	/^int Selection_AddLast(Selection *select, Area *area)$/;"	f
+Selection_Alloc	src/Events.c	/^Selection *Selection_Alloc(void)$/;"	f
+Selection_Flush	src/Events.c	/^void Selection_Flush(Selection *select)$/;"	f
+Selection_Remove	src/Events.c	/^int Selection_Remove(Selection *select, Area *area)$/;"	f
+Selection_isIn	src/Events.c	/^int Selection_isIn(Selection *select, Area *area)$/;"	f
 SetColor	src/Images.c	/^Color SetColor(int r, int g, int b)$/;"	f
 SetColorA	src/Images.c	/^Color SetColorA(int r, int g, int b, int a)$/;"	f
 Sharp	include/Images.h	/^	SDL_Surface *Sharp;$/;"	m	struct:Graphics
@@ -606,6 +627,7 @@ channels	include/Audio.h	/^	Channel **channels;	\/*!< Tableau dynamique des voix
 cle	include/Step.h	/^	Cle cle : 16;			\/*!< Clé de la mesure *\/$/;"	m	struct:Step
 colorprintf	src/System.c	/^extern int colorprintf(TerminalColor color, const char *format, ...)$/;"	f
 comp_duration	src/Step.c	/^int comp_duration(const void *p, const void *p2)$/;"	f
+ctrl	include/Events.h	/^	int 		ctrl;$/;"	m	struct:EventData
 d	src/Interface.c	/^clock_t a,b,c,d,e,f,g, h, m, n, o, p;$/;"	v
 dad	include/Explorer.h	/^	SDL_Rect dad;$/;"	m	struct:Explorer
 data	include/Staff.h	/^	int data;$/;"	m	struct:Score
@@ -624,6 +646,7 @@ f	src/Interface.c	/^clock_t a,b,c,d,e,f,g, h, m, n, o, p;$/;"	v
 famous	include/System.h	/^	int famous;$/;"	m	struct:NodeList
 find2min	src/Step.c	/^int find2min(int n)$/;"	f
 find2rest	src/Step.c	/^Note_Duration *find2rest(int duration)$/;"	f
+first	include/Events.h	/^	Select_Node *first;$/;"	m	struct:Selection
 flags	include/Step.h	/^	Note_Flags flags : 24;		\/*!< Attributs d'une note *\/$/;"	m	struct:Note
 flags	include/Step.h	/^	Step_Flags flags : 16;		\/*!< Attributs de la mesure *\/$/;"	m	struct:Step
 flat	include/Events.h	/^	char 		flat;$/;"	m	struct:Toolbar
@@ -653,6 +676,7 @@ id_note_add	include/Events.h	/^			int 	id_note_add; \/* only when type=EVENT_ADD
 id_staff	include/Events.h	/^			int 	id_staff;$/;"	m	struct:Area::__anon16::__anon18
 id_step	include/Audio.h	/^	int id_step;			\/*!< Position du curseur de lecture *\/$/;"	m	struct:AudioConfig
 id_step	include/Events.h	/^			int 	id_step;$/;"	m	struct:Area::__anon16::__anon18
+last	include/Events.h	/^	Select_Node *last;$/;"	m	struct:Selection
 last	include/Explorer.h	/^	SDL_Event last;$/;"	m	struct:Explorer
 lastArea	include/Events.h	/^	Area *		lastArea;$/;"	m	struct:EventData
 line	include/Explorer.h	/^	int line;$/;"	m	struct:Explorer
@@ -702,6 +726,7 @@ nbody	include/Events.h	/^	int		nbody;$/;"	m	struct:Area
 need_refresh	include/Audio.h	/^	int need_refresh;		\/*!< Demande de rafraichissement de l'écran *\/$/;"	m	struct:AudioConfig
 need_select	include/Menu.h	/^			int need_select;$/;"	m	struct:Menu_Node::__anon10::__anon11
 next	include/Events.h	/^	Area *		next;$/;"	m	struct:Area
+next	include/Events.h	/^	Select_Node *next;$/;"	m	struct:Select_Node
 next	include/Menu.h	/^		Node_Array *next;$/;"	m	union:Menu_Node::__anon10
 next	include/Menu.h	/^	Menu_Node **next;$/;"	m	struct:Node_Array
 next	include/Staff.h	/^	Sign *next;$/;"	m	struct:Sign
@@ -759,6 +784,7 @@ steps	include/Staff.h	/^	Step **steps; \/* dynamic tab *\/$/;"	m	struct:Staff
 sum_duration	include/Window.h	/^	Note_Duration sum_duration;$/;"	m	struct:WindowData
 tab	include/File.h	/^	Entry **tab;$/;"	m	struct:Directory
 tab	include/System.h	/^	Point **tab;$/;"	m	struct:Dots
+tabselect	include/Events.h	/^	Selection *	tabselect;$/;"	m	struct:EventData
 tempo	include/Staff.h	/^	int tempo;$/;"	m	struct:Score
 text	include/Staff.h	/^	char *text;$/;"	m	struct:Sign
 text_color	src/System.c	/^extern int text_color(TerminalColor color)$/;"	f
@@ -770,6 +796,7 @@ type	include/Events.h	/^	Object_Type 	type;$/;"	m	struct:Area
 type	include/File.h	/^	Entry_Type type;$/;"	m	struct:Entry
 type	include/Menu.h	/^	Node_Type type;$/;"	m	struct:Menu_Node
 type	include/Staff.h	/^	Sign_Type type : 16;$/;"	m	struct:Sign
+val	include/Events.h	/^	Area *val;$/;"	m	struct:Select_Node
 valid	include/Explorer.h	/^	SDL_Rect valid;$/;"	m	struct:Explorer
 value	include/Staff.h	/^	Uint value : 16;$/;"	m	struct:Sign
 volume	include/Audio.h	/^	int volume; \/* 0 to 100 *\/				\/*!< Volume du signal *\/$/;"	m	struct:Wave

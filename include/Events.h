@@ -81,6 +81,20 @@ struct Toolbar
 	Note_Duration 	duration;
 };
 
+typedef struct Select_Node Select_Node;
+struct Select_Node
+{
+	Area *val;
+	Select_Node *next;
+};
+
+typedef struct Selection Selection;
+struct Selection
+{
+	Select_Node *first;
+	Select_Node *last;
+};
+
 typedef struct EventData EventData;
 struct EventData
 {
@@ -98,6 +112,9 @@ struct EventData
 	Mode 		mode;
 	Toolbar 	tools;
 	Area *		lastArea;
+	
+	Selection *	tabselect;
+	int 		ctrl;
 };
 
 Area *Area_Set(SDL_Rect rect, int nbody, Object_Type type, ...);
@@ -125,6 +142,24 @@ Area *Events_GetAreaByPixelAndType(int x, int y, Object_Type type);
 int PixelInRect(int x, int y, SDL_Rect rect);
 
 void MainEvents_AssociateScore(Score *score);
+
+Selection *Selection_Alloc(void);
+
+int Select_AddFirst(Area *area);
+
+int Select_AddLast(Area *area);
+
+void Select_Flush(void);
+
+int Select_Remove(Area *area);
+
+int Select_isIn(Area *area);
+
+int Select_isEmpty(void);
+
+Select_Node *Select_GetIterate(void);
+
+void Select_Debug(void);
 
 extern EventData *main_events;
 

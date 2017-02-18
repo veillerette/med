@@ -13,10 +13,10 @@
 [70%]- Changer l'armure grâce au menu
 - Supprimer doubles affichages Dieze/Bémol dans une mesure
 [OK]- Ajout de plusieurs mesures en fin (scroll souris)
-[50%]- Clé de fa (Manque graphismes)
+[OK]- Clé de fa (Manque graphismes)
 [OK] Sauvegarde dans MED/ABC du tempo + Ouverture MED/ABC du Tempo
 [OK]- Bécarre
-[50%]- Double-dièse
+[OK]- Double-dièse
 [OK]- Plus de déplacements de la souris lorsqu'un élement est sélectionné
 
 <<< Bugs >>>
@@ -25,15 +25,15 @@
 - Problèmes mesures 5/4, 4/2, 5/2
 [OK]- Correction bug croches bizarres (dans le mozart notamment) ????
 [OK]- Bug à l'ajout de 4/5ème portée
-[90%]- Bugs à l'alignement dièzes/bémols !
+[95%]- Bugs à l'alignement dièzes/bémols !
 [OK]- valgrind et Score_AddEmpty()
 [OK]- Score_Free d'un ABC
-[85%]- Ouverture fichier ABC bizarres
+[OK]- Ouverture fichier ABC bizarres
 -Croches parfois trop proches des têtes (uniquement vers le bas)
 [OK]- Freeze curseur de lecture / Petites latences de suivi
 
 <<< Majors >>>
-- Multi-Sélections
+[40%]- Multi-Sélections
 [OK]- Exportation fichier perso
 [OK]- Importation fichier perso
 [OK]- Sauvegarde/Ouverture Fichier
