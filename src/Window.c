@@ -1435,7 +1435,7 @@ int Print_DetermineNoteSpace(Score *score, SDL_Rect *base_pos, int i_step)
 		return 0;
 	
 	Window->realSpace = NOTE_BASE_SPACE;
-	return 1;
+	
 	printf("determine base_pos : x=%d y=%d, i_step = %d\n", base_pos->x, base_pos->y, i_step);
 	
 	
