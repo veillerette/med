@@ -96,6 +96,7 @@ Cle_Print	src/Window.c	/^int Cle_Print(Step *step, SDL_Rect *base_pos, SDL_Surfa
 Cle_Sol	include/Images.h	/^	SDL_Surface *Cle_Sol;$/;"	m	struct:Graphics
 Color	include/Images.h	/^struct Color$/;"	s
 Color	include/Images.h	/^typedef struct Color Color;$/;"	t	typeref:struct:Color
+Configuration Audio	report/Med-Rapport.tex	/^Une fois un fichier valider, le programme détermine avec l'extension si c'est un fichier ABC ou MED et tente de l'ouvrir. Un message d'erreur s'affiche en cas d'échec.\\\\$/;"	s
 Console_Parser	src/Parser.c	/^int Console_Parser(void)$/;"	f
 ConvertDisplayFormat	src/Images.c	/^SDL_Surface *ConvertDisplayFormat(SDL_Surface *src)$/;"	f
 ConvertStringToID	src/Step.c	/^char ConvertStringToID(const char *note)$/;"	f
@@ -138,6 +139,7 @@ ESP_BODY	include/Window.h	20;"	d
 EVENT_ADDNOTE	include/Events.h	/^	EVENT_ADDNOTE	= 0x0040,$/;"	e	enum:__anon14
 EXE	Makefile	/^EXE=prog$/;"	m
 EXPLORER_FONT	include/Explorer.h	19;"	d
+El   ments techniques	report/pres/main.tex	/^}$/;"	u
 Entry	include/File.h	/^struct Entry$/;"	s
 Entry	include/File.h	/^typedef struct Entry Entry;$/;"	t	typeref:struct:Entry
 Entry_Alloc	src/File.c	/^Entry *Entry_Alloc(const char *name, Entry_Type type, int size)$/;"	f
@@ -155,6 +157,7 @@ EventData_SetZoom	src/Events.c	/^int EventData_SetZoom(EventData *ed, double zoo
 Events_GetAreaByPixelAndType	src/Events.c	/^Area *Events_GetAreaByPixelAndType(int x, int y, Object_Type type)$/;"	f
 Events_PollKeyboard	src/Events.c	/^int Events_PollKeyboard(SDL_Event event)$/;"	f
 Events_PollMouse	src/Events.c	/^int Events_PollMouse(SDL_Event event)$/;"	f
+Explorateur de fichier	report/Med-Rapport.tex	/^\\newpage$/;"	s
 Explorer	include/Explorer.h	/^struct Explorer$/;"	s
 Explorer	include/Explorer.h	/^typedef struct Explorer Explorer;$/;"	t	typeref:struct:Explorer
 Explorer_Body	src/Explorer.c	/^void Explorer_Body(Explorer *e)$/;"	f
@@ -234,10 +237,12 @@ Integer_Alloc	src/Audio.c	/^int *Integer_Alloc(int n)$/;"	f
 Interface g   n   rale	report/Med-Rapport.tex	/^\\chapter{Manuel d'utilisation}$/;"	s
 Interface_Main	src/Interface.c	/^extern int Interface_Main(int argc, char *argv[])$/;"	f
 Interface_Quit	src/Interface.c	/^static void Interface_Quit(Menu **menu)$/;"	f	file:
+Introduction	report/pres/main.tex	/^}$/;"	u
 InvertBoolean	src/Menu.c	/^int InvertBoolean(char *boolean)$/;"	f
 LEAF	include/Menu.h	/^	NODE, LEAF$/;"	e	enum:__anon9
 Launch_Med	include/Interface.h	12;"	d
-Lecture	report/Med-Rapport.tex	/^\\end{figure}$/;"	u
+Le mode Ajout	report/Med-Rapport.tex	/^\\end{itemize}$/;"	u
+Lecture	report/Med-Rapport.tex	/^Pour le mixage de plusieurs ondes audios simultanées (plusieurs portées jouant en même temps), le programme effectue la moyenne de toutes les ondes non nulles.$/;"	u
 LittleImages	src/Images.c	/^Graphics *LittleImages = NULL;$/;"	v
 MAGENTA	include/System.h	/^	MAGENTA	= 35,$/;"	e	enum:__anon7
 MAIN_CALLBACK	src/Audio.c	/^void MAIN_CALLBACK(void *userdata, Uint8 *stream, int len)$/;"	f
@@ -284,6 +289,7 @@ MyChildrenComp	src/Menu.c	/^int MyChildrenComp(Menu_Node *goal, Menu_Node *base)
 NODE	include/Menu.h	/^	NODE, LEAF$/;"	e	enum:__anon9
 NOIRE	include/Step.h	/^	NOIRE		= 4,	\/*!< Noire, 16 x base *\/$/;"	e	enum:__anon5
 NONE	include/Events.h	19;"	d
+NOTE_BASE_SPACE	include/Images.h	35;"	d
 NOTE_DEFAULT	include/Step.h	/^	NOTE_DEFAULT 		= 0,		\/*!< Aucun *\/$/;"	e	enum:__anon3
 NOTE_DOUBLEFLAT	include/Step.h	/^	NOTE_DOUBLEFLAT		= 0x08,		\/*!< Note double-bémolisée *\/$/;"	e	enum:__anon3
 NOTE_DOUBLEPOINTED	include/Step.h	/^	NOTE_DOUBLEPOINTED	= 0x20,		\/*!< Note double-pointée *\/$/;"	e	enum:__anon3
@@ -293,7 +299,7 @@ NOTE_LINKED	include/Step.h	/^	NOTE_LINKED		= 0x80		\/*!< Note prolongée *\/$/;"
 NOTE_NATURAL	include/Step.h	/^	NOTE_NATURAL		= 0x40,		\/*!< Note avec un bécare *\/$/;"	e	enum:__anon3
 NOTE_POINTED	include/Step.h	/^	NOTE_POINTED		= 0x10,		\/*!< Note pointée *\/$/;"	e	enum:__anon3
 NOTE_SHARP	include/Step.h	/^	NOTE_SHARP		= 0x01,		\/*!< Note diésée *\/$/;"	e	enum:__anon3
-NOTE_SPACE	include/Images.h	35;"	d
+NOTE_SPACE	include/Images.h	36;"	d
 NPAGE	include/Window.h	26;"	d
 Natural	include/Images.h	/^	SDL_Surface *Natural;$/;"	m	struct:Graphics
 NodeArray_Add	src/Menu.c	/^int NodeArray_Add(Node_Array *na, const char *name, int need_select, Node_Type type, int (*f)(void))$/;"	f
@@ -352,11 +358,13 @@ Point_Alloc	src/System.c	/^Point *Point_Alloc(Uint x, Uint y)$/;"	f
 Point_Free	src/System.c	/^void Point_Free(Point **pt)$/;"	f
 Port   e et Partition	report/Med-Rapport.tex	/^\\end{itemize}$/;"	u
 PowerOfBezier	src/Images.c	/^int PowerOfBezier(SDL_Surface *dest, const int *x, const int *y, int n, Color color)$/;"	f
+Pr   sentation	report/pres/main.tex	/^}$/;"	s
+Print_DetermineNoteSpace	src/Window.c	/^int Print_DetermineNoteSpace(Score *score, SDL_Rect *base_pos, int i_step)$/;"	f
 QUADRUPLECROCHE	include/Step.h	/^	QUADRUPLECROCHE	= 64	\/*!< Quadruple, 1 x base *\/$/;"	e	enum:__anon5
 QUEUE	include/Images.h	32;"	d
 QUEUE_BORDER	include/Images.h	34;"	d
 QUIT	include/Events.h	13;"	d
-RATIO_LITTLE	include/Images.h	37;"	d
+RATIO_LITTLE	include/Images.h	38;"	d
 RED	include/System.h	/^	RED	= 31,$/;"	e	enum:__anon7
 RONDE	include/Step.h	/^	RONDE 		= 1,	\/*!< Ronde, 64 x base *\/$/;"	e	enum:__anon5
 RealDuration	src/Step.c	/^int RealDuration(Note_Duration duration, Note_Flags flags)$/;"	f
@@ -763,6 +771,7 @@ r	include/Events.h	/^	double 		r; \/* zoom *\/$/;"	m	struct:EventData
 r	include/Images.h	/^	Uint r : 8;$/;"	m	struct:Color
 random_note	src/Test.c	/^Note_Duration random_note(void)$/;"	f
 ratio	include/Window.h	/^	double ratio;$/;"	m	struct:WindowData
+realSpace	include/Window.h	/^	int realSpace;$/;"	m	struct:WindowData
 rect	include/Events.h	/^	SDL_Rect 	rect;$/;"	m	struct:Area
 rest	include/Events.h	/^	char 		rest;	$/;"	m	struct:Toolbar
 rest	include/Step.h	/^	char rest; 			\/*!< Silence = 1, Note = 0 *\/$/;"	m	struct:Note

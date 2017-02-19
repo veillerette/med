@@ -43,6 +43,7 @@ typedef enum {
 typedef struct WindowData WindowData;
 struct WindowData
 {
+	int realSpace;
 	SDL_Surface *screen;
 	
 	int width;

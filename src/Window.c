@@ -29,6 +29,8 @@ WindowData *WindowData_Alloc(void)
 	temp->quavers = NULL;
 	temp->sum_duration = 0;
 	
+	temp->realSpace = NOTE_BASE_SPACE;
+	
 	return temp;
 }
 
@@ -615,7 +617,7 @@ int Window_GetSumStep(Step *step, int durbefore, int dur)
 	while(note != NULL && dur > 0)
 	{
 		if(note->note->flags & NOTE_SHARP)
-			n_alt += HEAD_W*3.0/4;
+			n_alt += HEAD_W;
 			
 		else if(note->note->flags & NOTE_FLAT)
 			n_alt += HEAD_W*3.0/4;
@@ -1421,6 +1423,69 @@ int Staff_Print(Staff *staff, SDL_Rect *base_pos)
 	return 1;
 }*/
 
+int Print_DetermineNoteSpace(Score *score, SDL_Rect *base_pos, int i_step)
+{
+	int i,j;
+	int c = 1;
+	int n_steps = -2;
+	int tmp_size, total_size = 0;
+	SDL_Rect *rect = SDL_SetRect(base_pos->x, base_pos->y, base_pos->w, base_pos->h);
+	int normal_size = Window->body[0]->w - 60 - base_pos->x;
+	if((NULL == score) || (NULL == base_pos))
+		return 0;
+	
+	Window->realSpace = NOTE_BASE_SPACE;
+	return 1;
+	printf("determine base_pos : x=%d y=%d, i_step = %d\n", base_pos->x, base_pos->y, i_step);
+	
+	
+	for(i = i_step; i < score->lst[0]->n && c; i++)
+	{
+		tmp_size = Window_GetSize(score, i, *(score->lst[0]->steps + i));
+		if(tmp_size+rect->x > Window->body[0]->w - 60)
+		{
+			c = 0;
+			n_steps = i;
+			break;
+		}	
+		if(c)
+		{
+			total_size += tmp_size;
+			rect->x += tmp_size;
+		}
+	}
+	printf("n_steps = %d total=%d normal = %d\n", n_steps, total_size, normal_size);
+	
+	if(n_steps == -2 && (score->lst[0]->n - i_step) > 8)
+		n_steps = score->lst[0]->n;
+	else if(n_steps == -2)
+		return 1;
+	
+	while(total_size < normal_size-60)
+	{
+		Window->realSpace++;
+		total_size = 0;
+		for(i = i_step; i < n_steps; i++)
+		{
+			tmp_size = Window_GetSize(score, i, *(score->lst[0]->steps + i));
+			total_size += tmp_size;
+		}
+	}
+	Window->realSpace--;
+	
+	total_size = 0;
+	for(i = i_step; i < n_steps; i++)
+	{
+		tmp_size = Window_GetSize(score, i, *(score->lst[0]->steps + i));
+		total_size += tmp_size;
+	}
+	
+	printf("n_steps = %d total=%d normal = %d\n", n_steps, total_size, normal_size);
+	
+
+	return 1;
+}
+
 int Score_Print(Score *score, SDL_Rect *base_pos)
 {
 	int i = 0, j = 0, k = 0;
@@ -1432,9 +1497,12 @@ int Score_Print(Score *score, SDL_Rect *base_pos)
 	int begin_y = base_pos->y;
 	int sauv2_x, sauv2_y;
 	int show_scorejoin = 1;
+	int redetermine = 1;
 	Staff *staff = NULL;
 	Window->_linked = 0;
 	SDL_Rect goal = {0, 0, 0, 0};
+	int cleArm = 0;
+	
 	if(Window->pos_link != NULL)
 		free(Window->pos_link);
 	Window->pos_link = NULL;
@@ -1445,17 +1513,23 @@ int Score_Print(Score *score, SDL_Rect *base_pos)
 	{
 		for(k = 0; k < score->n; k++)
 		{
-			if(Window_GetSize(score, i, *(score->lst[k]->steps + i))+base_pos->x > Window->body[0]->w - 60)
+			if(i== 0 || (Window_GetSize(score, i, *(score->lst[k]->steps + i))+base_pos->x > Window->body[0]->w - 60))
 			{
-				base_pos->x = 100;
-				base_pos->y += (390*score->n);
-				show_scorejoin = 1;
-				if((base_pos->y+300*score->n) > (Window->body[0]->h - HEAD_H*6))
+				redetermine = 1;
+				if (i != 0)
 				{
-					nbody++;
-					base_pos->y = begin_y;
-					if(nbody == Window->nb_body)
-						Window_AddEmptyBody();
+					printf("retour à la ligne base_pos->x=%d\n", base_pos->x);
+					base_pos->x = 100;
+					base_pos->y += (390*score->n);
+					show_scorejoin = 1;
+					if((base_pos->y+300*score->n) > (Window->body[0]->h - HEAD_H*5))
+					{
+						nbody++;
+						base_pos->y = begin_y;
+						if(nbody == Window->nb_body)
+							Window_AddEmptyBody();
+					}
+					cleArm = 1;
 				}
 				break;
 			}
@@ -1471,22 +1545,36 @@ int Score_Print(Score *score, SDL_Rect *base_pos)
 			sauv2_y = base_pos->y;
 			goal.x = sauv2_x;
 			goal.y = sauv2_y;
-			if(0 == i || (*(staff->steps + i))->cle != sauv_cle[k])
+			if(0 == i || (*(staff->steps + i))->cle != sauv_cle[k] || cleArm)
 			{
 				Cle_Print(*(staff->steps + i), base_pos, NPAGE);
 				sauv_cle[k] = (*(staff->steps + i))->cle;
 			}
-			if(0 == i || (*(staff->steps + i))->sign != sauv)
+			if(0 == i || (*(staff->steps + i))->sign != sauv || cleArm)
 			{
 				Armure_Print(*(staff->steps + i), base_pos, NPAGE);
 				sauv = (*(staff->steps + i))->sign;
+				if(redetermine && cleArm)
+				{
+					Print_DetermineNoteSpace(score, base_pos, i);
+					redetermine = 0;
+				}
+				if(k == score->n-1)
+					cleArm = 0;
+				
 			}
+			
 			if(0 == i || (*(staff->steps + i))->num != num || (*(staff->steps + i))->den != den)
 			{
 				base_pos->x += HEAD_W;
 				Step_PrintMesure(*(staff->steps + i), base_pos, NPAGE);
 				num = (*(staff->steps + i))->num;
 				den = (*(staff->steps + i))->den;
+				if(redetermine)
+				{
+					Print_DetermineNoteSpace(score, base_pos, i);
+					redetermine = 0;
+				}
 			}
 			if(Step_Print(score, staff, *(staff->steps + i), i, base_pos, NPAGE, nbody) == -2)
 				continue;
@@ -1547,8 +1635,8 @@ int Window_LittleEvent(SDL_Event event, double *r, int *c, int *mouse,
 			{
 				case SDL_BUTTON_WHEELDOWN:
 					(*r)++;
-					if(*r > 3)
-						*r = 3;
+					if(*r > 6)
+						*r = 6;
 					else
 						*m=1;
 					break;
