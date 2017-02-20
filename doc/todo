@@ -17,7 +17,8 @@
 [OK] Sauvegarde dans MED/ABC du tempo + Ouverture MED/ABC du Tempo
 [OK]- Bécarre
 [OK]- Double-dièse
-[OK]- Plus de déplacements de la souris lorsqu'un élement est sélectionné
+[OK]- Plus de déplacements de la souris lorsqu'un élement est sélectionné et hover
+[OK]- Barres de mesures sur toutes les portées
 
 <<< Bugs >>>
 - Modification temps réelle à la selection

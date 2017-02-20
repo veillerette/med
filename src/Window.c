@@ -1331,7 +1331,7 @@ int Step_Print(Score *score, Staff *staff, Step *step, int id_step, SDL_Rect *ba
 void Window_DrawStaff(int x, int y, int x_end, SDL_Surface *dest)
 {
 	int i,j;
-	boxRGBA(dest, x, y, x+2, y+HEAD_H*4, 0, 0, 0, 255);
+	/*boxRGBA(dest, x, y, x+2, y+HEAD_H*4, 0, 0, 0, 255);*/
 	for(j = 0; j < 5; j++)
 	{
 		for(i = 0; i < STAFF_H; i++)
@@ -1339,7 +1339,7 @@ void Window_DrawStaff(int x, int y, int x_end, SDL_Surface *dest)
 			hlineRGBA(dest, x, x_end, y+i+j*(HEAD_H), 0, 0, 0, 255);
 		}
 	}
-	boxRGBA(dest, x_end, y, x_end+2, y+HEAD_H*4, 0, 0, 0, 255);
+	/*boxRGBA(dest, x_end, y, x_end+2, y+HEAD_H*4, 0, 0, 0, 255);*/
 }
 
 int Step_PrintMesure(Step *step, SDL_Rect *base_pos, SDL_Surface *dest)
@@ -1579,6 +1579,8 @@ int Score_Print(Score *score, SDL_Rect *base_pos)
 			if(Step_Print(score, staff, *(staff->steps + i), i, base_pos, NPAGE, nbody) == -2)
 				continue;
 			Window_DrawStaff(sauv2_x, sauv2_y, base_pos->x, NPAGE);
+			if(k == score->n-1)
+				boxRGBA(NPAGE, base_pos->x, sauv_y, base_pos->x+2, sauv_y+(score->n-1)*380+HEAD_H*4, 0, 0, 0, 255);
 			goal.w = base_pos->x - goal.x;
 			goal.h = HEAD_H * 4;
 			EventData_Add(main_events, Area_Set(goal, nbody, OBJECT_STEP, staff, i, k));
