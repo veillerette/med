@@ -402,7 +402,7 @@ int Events_PollMouse(SDL_Event event)
 					main_events->tools.doublesharp = temp->flags & NOTE_DOUBLESHARP;
 					main_events->tools.doubleflat = temp->flags & NOTE_DOUBLEFLAT;
 					main_events->tools.natural = temp->flags & NOTE_NATURAL;
-					main_events->tools.statusdur = 1*(temp->flags & NOTE_POINTED) + 2*(temp->flags & NOTE_DOUBLEPOINTED);
+					main_events->tools.statusdur = 1*((temp->flags & NOTE_POINTED) != 0) + 2*((temp->flags & NOTE_DOUBLEPOINTED) != 0);
 				}
 				
 				if(area != NULL && area->type == OBJECT_STEP)

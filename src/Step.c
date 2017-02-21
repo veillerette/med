@@ -183,7 +183,6 @@ int ToNote_ChangeRestStatus(ToNote *notes, int id, char newStatus)
 	{
 		if(notes->note != NULL)
 		{
-			notes->note->flags = NOTE_DEFAULT;
 			notes->note->rest = newStatus;
 		}
 		return 0;

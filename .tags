@@ -63,7 +63,7 @@ BlitCenter	src/Menu.c	/^static void BlitCenter(SDL_Surface *src, SDL_Rect *src_r
 Bugs connus	report/Med-Rapport.tex	/^\\vskip 0.6in$/;"	s
 ButtonRect	src/Menu.c	/^void ButtonRect(int x, int y, SDL_Rect rect, int *valid, int *refresh)$/;"	f
 CC	Makefile	/^CC=colorgcc$/;"	m
-CFLAGS	Makefile	/^CFLAGS=-ansi -Wall -Wextra -O3$/;"	m
+CFLAGS	Makefile	/^CFLAGS=-ansi -Wall -Wextra -O3 -DDEBUG$/;"	m
 CLE_FA	include/Step.h	/^	CLE_FA 		= 2,	\/*!< Clé de Fa Quatrième *\/$/;"	e	enum:__anon6
 CLE_SOL	include/Step.h	/^	CLE_SOL 	= 1,	\/*!< Clé de Sol Seconde *\/$/;"	e	enum:__anon6
 CLE_UT3	include/Step.h	/^	CLE_UT3,$/;"	e	enum:__anon6
@@ -96,7 +96,7 @@ Cle_Print	src/Window.c	/^int Cle_Print(Step *step, SDL_Rect *base_pos, SDL_Surfa
 Cle_Sol	include/Images.h	/^	SDL_Surface *Cle_Sol;$/;"	m	struct:Graphics
 Color	include/Images.h	/^struct Color$/;"	s
 Color	include/Images.h	/^typedef struct Color Color;$/;"	t	typeref:struct:Color
-Configuration Audio	report/Med-Rapport.tex	/^Une fois un fichier valider, le programme détermine avec l'extension si c'est un fichier ABC ou MED et tente de l'ouvrir. Un message d'erreur s'affiche en cas d'échec.\\\\$/;"	s
+Compilation et Lancement	report/Med-Rapport.tex	/^\\chapter{Eléments Techniques}$/;"	s
 Console_Parser	src/Parser.c	/^int Console_Parser(void)$/;"	f
 ConvertDisplayFormat	src/Images.c	/^SDL_Surface *ConvertDisplayFormat(SDL_Surface *src)$/;"	f
 ConvertStringToID	src/Step.c	/^char ConvertStringToID(const char *note)$/;"	f
@@ -139,6 +139,7 @@ ESP_BODY	include/Window.h	20;"	d
 EVENT_ADDNOTE	include/Events.h	/^	EVENT_ADDNOTE	= 0x0040,$/;"	e	enum:__anon14
 EXE	Makefile	/^EXE=prog$/;"	m
 EXPLORER_FONT	include/Explorer.h	19;"	d
+El   ments Techniques	report/Med-Rapport.tex	/^\\newpage$/;"	c
 El   ments techniques	report/pres/main.tex	/^}$/;"	u
 Entry	include/File.h	/^struct Entry$/;"	s
 Entry	include/File.h	/^typedef struct Entry Entry;$/;"	t	typeref:struct:Entry
@@ -157,7 +158,6 @@ EventData_SetZoom	src/Events.c	/^int EventData_SetZoom(EventData *ed, double zoo
 Events_GetAreaByPixelAndType	src/Events.c	/^Area *Events_GetAreaByPixelAndType(int x, int y, Object_Type type)$/;"	f
 Events_PollKeyboard	src/Events.c	/^int Events_PollKeyboard(SDL_Event event)$/;"	f
 Events_PollMouse	src/Events.c	/^int Events_PollMouse(SDL_Event event)$/;"	f
-Explorateur de fichier	report/Med-Rapport.tex	/^\\newpage$/;"	s
 Explorer	include/Explorer.h	/^struct Explorer$/;"	s
 Explorer	include/Explorer.h	/^typedef struct Explorer Explorer;$/;"	t	typeref:struct:Explorer
 Explorer_Body	src/Explorer.c	/^void Explorer_Body(Explorer *e)$/;"	f
@@ -200,6 +200,7 @@ File_isExt	src/File.c	/^int File_isExt(const char *name, const char *ext)$/;"	f
 FindExpandZone	src/Menu.c	/^Menu_Node *FindExpandZone(Menu *menu, Menu_Node *mn, int clic_x, int clic_y)$/;"	f
 FindNodeByZone	src/Menu.c	/^Menu_Node *FindNodeByZone(Menu *menu, int clic_x, int clic_y)$/;"	f
 Flat	include/Images.h	/^	SDL_Surface *Flat;$/;"	m	struct:Graphics
+Format MED	report/Med-Rapport.tex	/^\\end{lstlisting}$/;"	s
 Fr   quences de base	report/Med-Rapport.tex	/^\\end{itemize}$/;"	u
 GET_STR	include/Explorer.h	18;"	d
 GREEN	include/System.h	/^	GREEN	= 32,$/;"	e	enum:__anon7
@@ -234,14 +235,15 @@ Images_InvertBlack	src/Images.c	/^int Images_InvertBlack(SDL_Surface *surf)$/;"	
 Impl   mentations	report/Med-Rapport.tex	/^\\end{figure}$/;"	c
 InitToolbar	src/Events.c	/^Toolbar InitToolbar(void)$/;"	f
 Integer_Alloc	src/Audio.c	/^int *Integer_Alloc(int n)$/;"	f
-Interface g   n   rale	report/Med-Rapport.tex	/^\\chapter{Manuel d'utilisation}$/;"	s
 Interface_Main	src/Interface.c	/^extern int Interface_Main(int argc, char *argv[])$/;"	f
 Interface_Quit	src/Interface.c	/^static void Interface_Quit(Menu **menu)$/;"	f	file:
 Introduction	report/pres/main.tex	/^}$/;"	u
 InvertBoolean	src/Menu.c	/^int InvertBoolean(char *boolean)$/;"	f
+L interface se d   compose en trois parties    begin  itemize	report/Med-Rapport.tex	/^Etant donné leurs structures, l'importation de fichiers .med est impossible d'une architecture à une autre (notamment 32\/64 bits)$/;"	c
 LEAF	include/Menu.h	/^	NODE, LEAF$/;"	e	enum:__anon9
 Launch_Med	include/Interface.h	12;"	d
-Le mode Ajout	report/Med-Rapport.tex	/^\\end{itemize}$/;"	u
+Le mode Ajout	report/Med-Rapport.tex	/^ \\vskip 0.2in$/;"	u
+Le mode Edition	report/Med-Rapport.tex	/^\\vskip 0.2in$/;"	u
 Lecture	report/Med-Rapport.tex	/^Pour le mixage de plusieurs ondes audios simultanées (plusieurs portées jouant en même temps), le programme effectue la moyenne de toutes les ondes non nulles.$/;"	u
 LittleImages	src/Images.c	/^Graphics *LittleImages = NULL;$/;"	v
 MAGENTA	include/System.h	/^	MAGENTA	= 35,$/;"	e	enum:__anon7
@@ -253,6 +255,7 @@ MODE_ADD	include/Events.h	/^	MODE_ADD$/;"	e	enum:__anon15
 MODE_EDIT	include/Events.h	/^	MODE_EDIT,$/;"	e	enum:__anon15
 M_PI	include/Audio.h	21;"	d
 MainEvents_AssociateScore	src/Events.c	/^void MainEvents_AssociateScore(Score *score)$/;"	f
+Manuel d utilisation}
 Menu	include/Menu.h	/^struct Menu$/;"	s
 Menu	include/Menu.h	/^typedef struct Menu Menu;$/;"	t	typeref:struct:Menu
 MenuNode_Alloc	src/Menu.c	/^Menu_Node *MenuNode_Alloc(const char *name, int need_select, Node_Type type, int (*f)(void))$/;"	f
@@ -351,6 +354,7 @@ OBJECT_SIGN	include/Events.h	/^	OBJECT_SIGN	= 0x0008,$/;"	e	enum:__anon14
 OBJECT_STEP	include/Events.h	/^	OBJECT_STEP	= 0x0010,$/;"	e	enum:__anon14
 Object_Type	include/Events.h	/^	} Object_Type;$/;"	t	typeref:enum:__anon14
 Partition	report/Med-Rapport.tex	/^\\chapter{Implémentations}$/;"	s
+Perspectives	report/Med-Rapport.tex	/^En dessous, on sélectionne les fréquences de notes souhaitées$/;"	c
 PixelInRect	src/Events.c	/^int PixelInRect(int x, int y, SDL_Rect rect)$/;"	f
 Point	include/System.h	/^struct Point$/;"	s
 Point	include/System.h	/^typedef struct Point Point;$/;"	t	typeref:struct:Point
@@ -780,6 +784,7 @@ rot_noteW	include/Images.h	/^	int rot_noteW;$/;"	m	struct:Graphics
 score	include/Audio.h	/^	Score *score;			\/*!< Partition *\/$/;"	m	struct:AudioConfig
 score	include/Events.h	/^	Score *		score;$/;"	m	struct:EventData
 screen	include/Window.h	/^	SDL_Surface *screen;$/;"	m	struct:WindowData
+section{Interface générale}
 select	include/Explorer.h	/^	int select;$/;"	m	struct:Explorer
 select	include/Menu.h	/^	Menu_Node *select;$/;"	m	struct:Menu
 sharp	include/Events.h	/^	char 		sharp;$/;"	m	struct:Toolbar

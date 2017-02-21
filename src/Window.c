@@ -694,6 +694,8 @@ int Window_GetSpaceNote(Score *score, int idStep, Step *step, Note *note, int id
 	
 	if(note->flags & NOTE_POINTED)
 		res = (Window_GetNeperianSum(realMin, note->duration)) * NOTE_SPACE * 1.5;
+	else if(note->flags & NOTE_DOUBLEPOINTED)
+		res = (Window_GetNeperianSum(realMin, note->duration)) * NOTE_SPACE * 1.75;
 	else
 		res = (Window_GetNeperianSum(realMin, note->duration)) * NOTE_SPACE;
 	
@@ -1580,7 +1582,7 @@ int Score_Print(Score *score, SDL_Rect *base_pos)
 				continue;
 			Window_DrawStaff(sauv2_x, sauv2_y, base_pos->x, NPAGE);
 			if(k == score->n-1)
-				boxRGBA(NPAGE, base_pos->x, sauv_y, base_pos->x+2, sauv_y+(score->n-1)*380+HEAD_H*4, 0, 0, 0, 255);
+				boxRGBA(NPAGE, base_pos->x, sauv_y, base_pos->x+1, sauv_y+(score->n-1)*380+HEAD_H*4, 0, 0, 0, 255);
 			goal.w = base_pos->x - goal.x;
 			goal.h = HEAD_H * 4;
 			EventData_Add(main_events, Area_Set(goal, nbody, OBJECT_STEP, staff, i, k));
@@ -1600,6 +1602,15 @@ int Score_Print(Score *score, SDL_Rect *base_pos)
 				aalineRGBA(NPAGE, sauv_x-25, base_pos->y-380+HEAD_H*2, sauv_x-5,
 							base_pos->y-380+HEAD_H*4+line, 0, 0, 0, 255);
 			}
+			for(line = 0; line < 3; line++)
+			{
+				aalineRGBA(NPAGE, sauv_x-25+line-1, sauv_y+HEAD_H*2, sauv_x-25+line-1, 
+							base_pos->y-380+HEAD_H*2, 0, 0, 0, 255);
+				aalineRGBA(NPAGE, sauv_x-25+line-1, sauv_y+HEAD_H*2, sauv_x-5-1,
+							 sauv_y-line, 0, 0, 0, 255);
+				aalineRGBA(NPAGE, sauv_x-25-1, base_pos->y-380+HEAD_H*2, sauv_x-5-1,
+							base_pos->y-380+HEAD_H*4+line, 0, 0, 0, 255);
+			}
 			
 			show_scorejoin = 0;
 		}
@@ -1608,6 +1619,18 @@ int Score_Print(Score *score, SDL_Rect *base_pos)
 		
 		base_pos->y = sauv_y;
 		i++;
+	}
+	
+	if(nbody < Window->nb_body-1)
+	{
+		for(i = nbody+1; i < Window->nb_body; i++)
+		{
+			SDL_FreeSurface(Window->body[i]);
+			SDL_FreeSurface(Window->body_use[i]);
+		}
+		Window->body = realloc(Window->body, sizeof(SDL_Surface *) * (nbody+1));
+		Window->body_use = realloc(Window->body_use, sizeof(SDL_Surface *) * (nbody+1));
+		Window->nb_body = nbody+1;
 	}
 	
 	return 1;
