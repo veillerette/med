@@ -418,11 +418,14 @@ int Menu_ConfigAudio(void)
 	int isFreq[12] = {0};
 	char buf[8];
 	int direction = 0;
+	int ctrl = 0;
 	
 	for(i = 0; i < 6; i++)
 		freqNotes[i] = SDL_SetLocalRect(box.x+box.w/4+50, box.y+280+50*i, 100, 40);
 	for(i = 6; i < 12; i++)
 		freqNotes[i] = SDL_SetLocalRect(box.x+2*box.w/4+50, box.y+280+50*(i-6), 100, 40);
+	
+
 		
 		
 	while(c)
@@ -431,6 +434,24 @@ int Menu_ConfigAudio(void)
 		{
 			
 			Window_InteractBackground(box, r, g, b, header1, isValid, valid);
+				
+			fastTextNote(box.x+box.w/4, box.y+300, "DO");
+			fastTextNote(box.x+2*box.w/4, box.y+300, "FA#");
+			
+			fastTextNote(box.x+box.w/4, box.y+350, "DO#");
+			fastTextNote(box.x+2*box.w/4, box.y+350, "SOL");
+			
+			fastTextNote(box.x+box.w/4, box.y+400, "RE");
+			fastTextNote(box.x+2*box.w/4, box.y+400, "SOL#");
+			
+			fastTextNote(box.x+box.w/4, box.y+450, "RE#");
+			fastTextNote(box.x+2*box.w/4, box.y+450, "LA");
+			
+			fastTextNote(box.x+box.w/4, box.y+500, "MI");
+			fastTextNote(box.x+2*box.w/4, box.y+500, "LA#");
+			
+			fastTextNote(box.x+box.w/4, box.y+550, "FA");
+			fastTextNote(box.x+2*box.w/4, box.y+550, "SI");
 			
 			
 			if(isSinus)
@@ -483,7 +504,7 @@ int Menu_ConfigAudio(void)
 				}
 			}
 			temp = -56;
-			for(i2 = fusion.x; i2 < fusion.x + fusion.w; i2 += 0.1)
+			for(i2 = fusion.x; i2 < fusion.x + fusion.w; i2 += 1)
 			{
 				for(j = 0; j < 8; j++)
 				{
@@ -497,23 +518,7 @@ int Menu_ConfigAudio(void)
 			}
 			
 			
-			fastTextNote(box.x+box.w/4, box.y+300, "DO");
-			fastTextNote(box.x+2*box.w/4, box.y+300, "FA#");
 			
-			fastTextNote(box.x+box.w/4, box.y+350, "DO#");
-			fastTextNote(box.x+2*box.w/4, box.y+350, "SOL");
-			
-			fastTextNote(box.x+box.w/4, box.y+400, "RE");
-			fastTextNote(box.x+2*box.w/4, box.y+400, "SOL#");
-			
-			fastTextNote(box.x+box.w/4, box.y+450, "RE#");
-			fastTextNote(box.x+2*box.w/4, box.y+450, "LA");
-			
-			fastTextNote(box.x+box.w/4, box.y+500, "MI");
-			fastTextNote(box.x+2*box.w/4, box.y+500, "LA#");
-			
-			fastTextNote(box.x+box.w/4, box.y+550, "FA");
-			fastTextNote(box.x+2*box.w/4, box.y+550, "SI");
 			
 			for(i = 0; i < 12; i++)
 			{
@@ -583,7 +588,7 @@ int Menu_ConfigAudio(void)
 				{
 					for(i = 0; i < 12; i++)
 					{
-						if(PixelInRect(x, y, freqNotes[i]))
+						if(PixelInRect(x, y, freqNotes[i]) || ctrl)
 						{
 							if(i != 11 && tab[i]+0.1*direction >= tab[i+1])
 								continue;
@@ -599,7 +604,7 @@ int Menu_ConfigAudio(void)
 				{
 					for(i = 0; i < 12; i++)
 					{
-						if(PixelInRect(x, y, freqNotes[i]))
+						if(PixelInRect(x, y, freqNotes[i]) || ctrl)
 						{
 							tab[i] = BASE_DO*pow(1.059463, i % 12);
 							refresh = 1;
@@ -642,7 +647,28 @@ int Menu_ConfigAudio(void)
 				break;
 				
 			case SDL_KEYDOWN:
-				return FORCE_MAJ;
+				switch(event.key.keysym.sym)
+				{
+					case SDLK_RCTRL:
+					case SDLK_LCTRL:
+						ctrl = 1;
+						break;
+					default:
+						return FORCE_MAJ;
+				}
+				break;
+				
+			case SDL_KEYUP:
+				switch(event.key.keysym.sym)
+				{
+					case SDLK_RCTRL:
+					case SDLK_LCTRL:
+						ctrl = 0;
+						break;
+					default:
+						return FORCE_MAJ;
+				}
+				break;
 		}
 		SDL_Delay(2);
 	}
@@ -1748,7 +1774,6 @@ int ToolBar_PollMouse(Menu *menu, SDL_Event event)
 			x = event.button.x;
 			y = event.button.y;
 			
-			printf("A\n");
 			if(x >= 866+45 && x <= 906+45 && y >= 39 && y <= 69)
 			{
 				switch(event.button.button)
@@ -1761,7 +1786,6 @@ int ToolBar_PollMouse(Menu *menu, SDL_Event event)
 						return FORCE_MAJ;
 				}
 			}
-			printf("B\n");
 			if(x >= volumeX && x <= volumeX+15 && y >= dy-20 && y <= dy+20)
 			{
 				switch(event.button.button)
@@ -1774,10 +1798,8 @@ int ToolBar_PollMouse(Menu *menu, SDL_Event event)
 						return FORCE_MAJ;
 				}
 			}
-			printf("C\n");
 			if(y<dy-20 || y > dy+20)
 				return NONE;
-			printf("D\n");
 			if(x >= playingX && x <= playingX+40 && y >= dy-20 && y <= dy+20)
 			{
 				if(Audio_isPlaying())
@@ -1790,7 +1812,7 @@ int ToolBar_PollMouse(Menu *menu, SDL_Event event)
 				}
 				return FORCE_MAJ;
 			}
-				printf("E\n");
+
 			for(i = 0; i < 7; i++)
 			{
 				if(x >= 60+i*45 && x <= 100+i*45 &&
@@ -1820,7 +1842,7 @@ int ToolBar_PollMouse(Menu *menu, SDL_Event event)
 					return FORCE_MAJ;
 				}
 			}
-			printf("F\n");
+
 			for(i = 0; i < 5; i++)
 			{
 				if(x >= 410+i*45 && x <= 450+i*45 && 
@@ -1830,7 +1852,7 @@ int ToolBar_PollMouse(Menu *menu, SDL_Event event)
 					break;
 				}
 			}
-			printf("G\n");
+
 			for(i = 0; i < 5; i++)
 			{
 				if(x >= 410+i*45 && x <= 450+i*45 && 
@@ -1841,7 +1863,7 @@ int ToolBar_PollMouse(Menu *menu, SDL_Event event)
 				else
 					goal_alt = -1;
 				none = 0;
-				printf("goal_alt = %d\n", goal_alt);
+
 				if(goal_alt >= 0)
 				{
 					switch(goal_alt)
@@ -1896,9 +1918,9 @@ int ToolBar_PollMouse(Menu *menu, SDL_Event event)
 							
 							#ifdef DEBUG
 							printf("Add note real time flags = %X\n", temp->flags);
-							#endif
 							
 							printf("Step_AddNote flags=%x\n", temp->flags);
+							#endif
 							
 							Step_AddNote(sn->val->step,
 									sn->val->id_note,

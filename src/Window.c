@@ -1063,13 +1063,13 @@ int Note_Print(Score *score, Staff *staff, Step *step, int id_step, int id_note,
 						
 						if(Window->quavers->totalheight/Window->quavers->n <= -45)
 						{
-							real_h0 = Window->quavers->tab[0]->y+2*QUEUE + 14 + HEAD_H;
-							real_h1 = Window->quavers->tab[Window->quavers->n - 1]->y+2*QUEUE + 14+HEAD_H;
+							real_h0 = Window->quavers->tab[0]->y+2*QUEUE + 44 + HEAD_H;
+							real_h1 = Window->quavers->tab[Window->quavers->n - 1]->y+2*QUEUE + 44+HEAD_H;
 						}
 						else
 						{
-							real_h0 = Window->quavers->tab[0]->y;
-							real_h1 = Window->quavers->tab[Window->quavers->n - 1]->y;
+							real_h0 = Window->quavers->tab[0]->y - 30;
+							real_h1 = Window->quavers->tab[Window->quavers->n - 1]->y - 30;
 						}
 						
 						if(((Dots_CalcCoef(Window->quavers) < -MAX_A_QUAVER
@@ -1132,7 +1132,9 @@ int Note_Print(Score *score, Staff *staff, Step *step, int id_step, int id_note,
 								{
 									real_hsep = Dots_EvaluateYFromX(Window->quavers, Window->quavers->tab[j]->x);
 									if(Window->quavers->totalheight/Window->quavers->n <= -45)
-										real_hsep += 2*QUEUE + 14 + HEAD_H;
+										real_hsep += 2*QUEUE + 44 + HEAD_H;
+									else
+										real_hsep -= 30;
 								}
 								
 								if(Window->quavers->totalheight/Window->quavers->n <= -45)
@@ -1427,7 +1429,7 @@ int Staff_Print(Staff *staff, SDL_Rect *base_pos)
 
 int Print_DetermineNoteSpace(Score *score, SDL_Rect *base_pos, int i_step)
 {
-	int i,j;
+	int i;
 	int c = 1;
 	int n_steps = -2;
 	int tmp_size, total_size = 0;
@@ -1438,8 +1440,9 @@ int Print_DetermineNoteSpace(Score *score, SDL_Rect *base_pos, int i_step)
 	
 	Window->realSpace = NOTE_BASE_SPACE;
 	
+	#ifdef DEBUG
 	printf("determine base_pos : x=%d y=%d, i_step = %d\n", base_pos->x, base_pos->y, i_step);
-	
+	#endif
 	
 	for(i = i_step; i < score->lst[0]->n && c; i++)
 	{
@@ -1456,7 +1459,9 @@ int Print_DetermineNoteSpace(Score *score, SDL_Rect *base_pos, int i_step)
 			rect->x += tmp_size;
 		}
 	}
+	#ifdef DEBUG
 	printf("n_steps = %d total=%d normal = %d\n", n_steps, total_size, normal_size);
+	#endif
 	
 	if(n_steps == -2 && (score->lst[0]->n - i_step) > 8)
 		n_steps = score->lst[0]->n;
@@ -1482,7 +1487,9 @@ int Print_DetermineNoteSpace(Score *score, SDL_Rect *base_pos, int i_step)
 		total_size += tmp_size;
 	}
 	
+	#ifdef DEBUG
 	printf("n_steps = %d total=%d normal = %d\n", n_steps, total_size, normal_size);
+	#endif
 	
 
 	return 1;
@@ -1520,7 +1527,6 @@ int Score_Print(Score *score, SDL_Rect *base_pos)
 				redetermine = 1;
 				if (i != 0)
 				{
-					printf("retour à la ligne base_pos->x=%d\n", base_pos->x);
 					base_pos->x = 100;
 					base_pos->y += (390*score->n);
 					show_scorejoin = 1;

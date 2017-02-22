@@ -21,6 +21,9 @@
 #define M_PI 3.141592654
 #endif
 
+/*
+261.63 / 264
+*/
 #define BASE_DO 264
 
 /**

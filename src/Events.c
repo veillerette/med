@@ -68,7 +68,7 @@ void Area_Console(Area *area)
 {
 	if(NULL == area)
 		return;
-	return;
+
 	printf("Area, \t(%d, %d)  %d<=>  %d/|\\ type=%X next=%p\n", 
 			area->rect.x, area->rect.y, area->rect.w, area->rect.h,
 			(unsigned int)area->type, (void *)area->next);
@@ -419,8 +419,6 @@ int Events_PollMouse(SDL_Event event)
 					return NONE;
 				main_events->select = area;
 				*/
-				printf("area = %p\n", area);
-				
 				if(NULL == area)
 				{
 					if(!Select_isEmpty())
@@ -853,12 +851,10 @@ void Select_Debug(void)
 	int i;
 	Select_Node *sn = NULL;
 	
-	printf("Selections : \n");
 	sn = main_events->tabselect->first;
 	i = 0;
 	while(sn != NULL)
 	{
-		printf("%d -> %p type=%d\n", i, (void *)sn->val, sn->val->type);
 		i++;
 		sn = sn->next;
 	}

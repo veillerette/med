@@ -55,7 +55,6 @@ int ABC_FindKeyFromStr(char *text)
 	int i;
 	if(NULL == text)
 		return 0;
-	printf("key = %d %d\n", text[0], text[1]);
 	for(i = -7; i <= 7; i++)
 	{
 		if(!strcmp(ABC_Keys[2*(i+7)], text))
@@ -145,19 +144,19 @@ int ABC_ParseHeader(Score *score, FILE *f)
 								break;
 							}
 						}
-						printf("k = %d\n", k);
+
 						if(k == n)
 							break;
 						base = atoi(text + 2);
-						printf("base = %d\n", base);
+
 						if(base < 2 || base > 16)
 							break;
 						dest = atoi(text + k + 1);
-						printf("dest = %d\n", dest);
+
 						if(dest < 20 || dest > 300)
 							break;
 						dest = dest * 1.0 * (4/base);
-						printf("Set Tempo to %d\n", dest);
+
 						Score_SetTempo(score, dest);
 					}
 				}
@@ -751,7 +750,7 @@ extern Score *ABC_ParseFile(const char *path)
 
 	}
 	while(car != EOF);
-	printf("H\n");
+
 	fclose(f);
 	return score;
 }
