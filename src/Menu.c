@@ -393,7 +393,7 @@ int Menu_ConfigAudio(void)
 	int header1 = 30;
 	int r = 50, g = 50, b = 255;
 	int h = Window->height, w = Window->width;
-	SDL_Rect box = SDL_SetLocalRect(w/2-((w*0.55)/2), h/2-(h/3), w*0.55, h*2/3);
+	SDL_Rect box = SDL_SetLocalRect(w/2-((w*0.55)/2), h/2-(h/2.75), w*0.55, h*2/2.75);
 	SDL_Rect valid = SDL_SetLocalRect(box.x+box.w/2-50, box.y+box.h-50, 100, 40);
 	int w_tree = (box.w - 220)/3;
 	int esp = 40;
