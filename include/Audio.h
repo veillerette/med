@@ -21,6 +21,7 @@
 #define M_PI 3.141592654
 #endif
 
+#define BASE_DO 264
 
 /**
  * \struct Représente un signal audio à travers une fonction qui le modélise.

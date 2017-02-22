@@ -59,6 +59,7 @@ Audio_isPlaying	src/Audio.c	/^int Audio_isPlaying(void)$/;"	f
 Autres op   rations	report/pres/main.tex	/^}$/;"	u
 BASE_BODY_X	include/Window.h	21;"	d
 BASE_BODY_Y	include/Window.h	22;"	d
+BASE_DO	include/Audio.h	24;"	d
 BLACK	include/System.h	/^	BLACK 	= 30,$/;"	e	enum:__anon7
 BLANCHE	include/Step.h	/^	BLANCHE		= 2,	\/*!< Blanche, 32 x base *\/$/;"	e	enum:__anon5
 BLUE	include/System.h	/^	BLUE	= 34,$/;"	e	enum:__anon7
@@ -243,6 +244,7 @@ InitToolbar	src/Events.c	/^Toolbar InitToolbar(void)$/;"	f
 Integer_Alloc	src/Audio.c	/^int *Integer_Alloc(int n)$/;"	f
 Interface_Main	src/Interface.c	/^extern int Interface_Main(int argc, char *argv[])$/;"	f
 Interface_Quit	src/Interface.c	/^static void Interface_Quit(Menu **menu)$/;"	f	file:
+Introduction	report/pres/main.tex	/^}$/;"	s
 InvertBoolean	src/Menu.c	/^int InvertBoolean(char *boolean)$/;"	f
 L interface se d   compose en trois parties    begin  itemize	report/Med-Rapport.tex	/^Etant donné leurs structures, l'importation de fichiers .med est impossible d'une architecture à une autre (notamment 32\/64 bits)$/;"	c
 LEAF	include/Menu.h	/^	NODE, LEAF$/;"	e	enum:__anon9
@@ -367,7 +369,6 @@ Point_Alloc	src/System.c	/^Point *Point_Alloc(Uint x, Uint y)$/;"	f
 Point_Free	src/System.c	/^void Point_Free(Point **pt)$/;"	f
 Port   e et Partition	report/Med-Rapport.tex	/^\\end{itemize}$/;"	u
 PowerOfBezier	src/Images.c	/^int PowerOfBezier(SDL_Surface *dest, const int *x, const int *y, int n, Color color)$/;"	f
-Pr   sentation	report/pres/main.tex	/^}$/;"	s
 Print_DetermineNoteSpace	src/Window.c	/^int Print_DetermineNoteSpace(Score *score, SDL_Rect *base_pos, int i_step)$/;"	f
 QUADRUPLECROCHE	include/Step.h	/^	QUADRUPLECROCHE	= 64	\/*!< Quadruple, 1 x base *\/$/;"	e	enum:__anon5
 QUEUE	include/Images.h	32;"	d

@@ -170,7 +170,7 @@ void FillTabFreq(double *t)
 {
 	int i;
 	for(i = 0; i < 12; i++)
-		t[i] = 261.63*pow(1.059463, i % 12);
+		t[i] = BASE_DO*pow(1.059463, i % 12);
 }
 
 AudioConfig *AudioConfig_DevInit(int askFreq, Uint16 format, Uint8 channels, Uint16 samples,
@@ -290,7 +290,7 @@ double GetFreqFromId(int id)
 
 double GetFreqFromIdFromTab(int id)
 {
-	return (32.7) * pow(2.0, id / 12 - 2) * (main_audio->tabFreq[id % 12]/261.63);
+	return (32.7) * pow(2.0, id / 12 - 2) * (main_audio->tabFreq[id % 12]/BASE_DO);
 }
 
 int GetRealId(Note *note)

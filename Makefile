@@ -11,7 +11,11 @@ FILEO:= $(patsubst $(SRC)%.c,$(OBJ)%.o,$(FILEC))
 $(EXE): $(FILEO)
 	$(CC) -o $(EXE) $^ $(CFLAGS) $(CLIBS)
 
-$(OBJ)%.o: $(SRC)%.c
+obj/main.o:src/main.c
+	@if [ ! -d "$(OBJ)" ]; then mkdir $(OBJ); fi;	
+	$(CC) -o $@ -c $< $(CFLAGS)
+	
+$(OBJ)%.o: $(SRC)%.c $(INCL)%.h
 	@if [ ! -d "$(OBJ)" ]; then mkdir $(OBJ); fi;	
 	$(CC) -o $@ -c $< $(CFLAGS)
 	

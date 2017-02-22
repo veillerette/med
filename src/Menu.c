@@ -601,7 +601,7 @@ int Menu_ConfigAudio(void)
 					{
 						if(PixelInRect(x, y, freqNotes[i]))
 						{
-							tab[i] = 261.63*pow(1.059463, i % 12);
+							tab[i] = BASE_DO*pow(1.059463, i % 12);
 							refresh = 1;
 						}
 					}
@@ -1930,6 +1930,7 @@ int ToolBar_PollMouse(Menu *menu, SDL_Event event)
 							break;
 						case 4:
 							main_events->tools.natural = 0;
+							break;
 					}
 				}
 			}
@@ -1968,6 +1969,8 @@ int ToolBar_PollMouse(Menu *menu, SDL_Event event)
 						temp->flags |= NOTE_DOUBLESHARP;
 					else if(main_events->tools.doubleflat)
 						temp->flags |= NOTE_DOUBLEFLAT;
+					else if(main_events->tools.natural)
+						temp->flags |= NOTE_NATURAL;
 					switch(main_events->tools.statusdur)
 					{
 						case 1:
