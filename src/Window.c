@@ -363,16 +363,7 @@ int Window_ApplyZoom(double zoom)
 		}
 		else
 		{
-			if(Window->ratio == zoom)
-			{
-				#ifdef DEBUG
-				printf("Image_MyShrinkRaw\n");
-				#endif
-				
-				Image_MyShrinkRaw(Window->body_use[i], Window->body[i], (int)zoom);
-			}
-			else
-				Window->body_use[i] = shrinkSurface(Window->body[i], (int)zoom, (int)zoom);
+			Window->body_use[i] = shrinkSurface(Window->body[i], (int)zoom, (int)zoom);
 		}
 		
 		memtest(Window->body_use[i]);
