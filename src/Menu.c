@@ -359,13 +359,48 @@ void ButtonRect(int x, int y, SDL_Rect rect, int *valid, int *refresh)
 	}
 }
 
+void AffBox(SDL_Rect re, int rounded, int r, int g, int b)
+{
+	roundedBoxRGBA(Window->screen, re.x, re.y, 
+			re.x+re.w, re.y+re.h, rounded, r, g, b, 255);	
+}
+
+double functionCarre(double x)
+{
+	double s = sin(x);
+	return (s > 0)?1:(s < 0)?-1:0;
+}
+
+double functionFusion(double x)
+{
+	return (sin(x)+functionCarre(x))/2;
+}
+
+void fastTextNote(int x, int y, char *note)
+{
+	SDL_Color text = {90, 90, 90, 0};
+	Moteur_WriteText(x, y, note, 30,
+			FONT_INTERFACE, text,
+			TEXT_BLENDED, TEXT_CENTER,
+			Window->screen);
+}
+
+
+
 int Menu_ConfigAudio(void)
 {
+	double *tab = main_audio->tabFreq;
 	int header1 = 30;
 	int r = 50, g = 50, b = 255;
 	int h = Window->height, w = Window->width;
-	SDL_Rect box = SDL_SetLocalRect(w/2-((w*0.55)/2), h/2-(h/4), w*0.55, h*0.5);
+	SDL_Rect box = SDL_SetLocalRect(w/2-((w*0.55)/2), h/2-(h/3), w*0.55, h*2/3);
 	SDL_Rect valid = SDL_SetLocalRect(box.x+box.w/2-50, box.y+box.h-50, 100, 40);
+	int w_tree = (box.w - 220)/3;
+	int esp = 40;
+	
+	SDL_Rect sinus = SDL_SetLocalRect((box.x+box.w/2)-w_tree*1.5-esp, box.y+80, w_tree, 150);
+	SDL_Rect carre = SDL_SetLocalRect((box.x+box.w/2)-w_tree*0.5, box.y+80, w_tree, 150);
+	SDL_Rect fusion = SDL_SetLocalRect((box.x+box.w/2)+w_tree*0.5+esp, box.y+80, w_tree, 150);
 	
 	int c = 1;
 	int x,y;
@@ -373,13 +408,130 @@ int Menu_ConfigAudio(void)
 	int isValid=0;
 	int refresh = 1;
 	SDL_Event event;
+	int isSinus = 0, isCarre = 0, isFusion = 1;
+	int choice = 2;
+	int rounded = 5;
+	int i,j;
+	double i2;
+	double temp = -56;
+	SDL_Rect freqNotes[12];
+	int isFreq[12] = {0};
+	char buf[8];
+	int direction = 0;
 	
+	for(i = 0; i < 6; i++)
+		freqNotes[i] = SDL_SetLocalRect(box.x+box.w/4+50, box.y+280+50*i, 100, 40);
+	for(i = 6; i < 12; i++)
+		freqNotes[i] = SDL_SetLocalRect(box.x+2*box.w/4+50, box.y+280+50*(i-6), 100, 40);
+		
+		
 	while(c)
 	{
 		if(refresh)
 		{
 			
 			Window_InteractBackground(box, r, g, b, header1, isValid, valid);
+			
+			
+			if(isSinus)
+				AffBox(sinus, rounded, 180, 220, 255);
+			else
+				AffBox(sinus, rounded, 240, 240, 240);
+			
+			if(isCarre)
+				AffBox(carre, rounded, 180, 220, 255);
+			else
+				AffBox(carre, rounded, 240, 240, 240);
+			if(isFusion)
+				AffBox(fusion, rounded, 180, 220, 255);
+			else
+				AffBox(fusion, rounded, 240, 240, 240);
+			
+			switch(choice)
+			{
+				case 0:
+					AffBox(sinus, rounded, 120, 190, 255);
+					break;
+				case 1:
+					AffBox(carre, rounded, 120, 190, 255);
+					break;
+				case 2:
+					AffBox(fusion, rounded, 120, 190, 255);
+					break;
+			}	
+			
+			for(i = sinus.x; i < sinus.x + sinus.w; i++)
+			{
+				for(j = 0; j < 8; j++)
+				{
+					boxRGBA(Window->screen, i, -j+sinus.y+sinus.h/2+sin((i-sinus.x)/10.0)*(sinus.h*0.5/2),
+						i, -j+sinus.y+sinus.h/2+sin((i-sinus.x)/10.0)*(sinus.h*0.5/2), 0, 0, 0, 255);	
+				}
+			}
+			
+			for(i = carre.x; i < carre.x + carre.w; i++)
+			{
+				for(j = 0; j < 8; j++)
+				{
+					if(functionCarre((i-carre.x)/10.0) != temp)
+						boxRGBA(Window->screen, i, carre.y+carre.h/2+1*(carre.h*0.5/2),
+						i, -7+carre.y+carre.h/2+(-1)*(carre.h*0.5/2), 0, 0, 0, 255);
+						
+					temp = functionCarre((i-carre.x)/10.0);
+					boxRGBA(Window->screen, i, -j+carre.y+carre.h/2+temp*(carre.h*0.5/2),
+						i, -j+carre.y+carre.h/2+temp*(carre.h*0.5/2), 0, 0, 0, 255);	
+				}
+			}
+			temp = -56;
+			for(i2 = fusion.x; i2 < fusion.x + fusion.w; i2 += 0.1)
+			{
+				for(j = 0; j < 8; j++)
+				{
+					if(temp != -56)
+					boxRGBA(Window->screen, (int)i2, -j+fusion.y+fusion.h/2+functionFusion((i2-carre.x)/10.0)*(fusion.h*0.5/2),
+						(int)i2, -j+fusion.y+fusion.h/2+temp*(fusion.h*0.5/2), 0, 0, 0, 255);
+					temp = functionFusion((i2-carre.x)/10.0);
+					boxRGBA(Window->screen, (int)i2, -j+fusion.y+fusion.h/2+temp*(fusion.h*0.5/2),
+						(int)i2, -j+fusion.y+fusion.h/2+temp*(fusion.h*0.5/2), 0, 0, 0, 255);
+				}
+			}
+			
+			
+			fastTextNote(box.x+box.w/4, box.y+300, "DO");
+			fastTextNote(box.x+2*box.w/4, box.y+300, "FA#");
+			
+			fastTextNote(box.x+box.w/4, box.y+350, "DO#");
+			fastTextNote(box.x+2*box.w/4, box.y+350, "SOL");
+			
+			fastTextNote(box.x+box.w/4, box.y+400, "RE");
+			fastTextNote(box.x+2*box.w/4, box.y+400, "SOL#");
+			
+			fastTextNote(box.x+box.w/4, box.y+450, "RE#");
+			fastTextNote(box.x+2*box.w/4, box.y+450, "LA");
+			
+			fastTextNote(box.x+box.w/4, box.y+500, "MI");
+			fastTextNote(box.x+2*box.w/4, box.y+500, "LA#");
+			
+			fastTextNote(box.x+box.w/4, box.y+550, "FA");
+			fastTextNote(box.x+2*box.w/4, box.y+550, "SI");
+			
+			for(i = 0; i < 12; i++)
+			{
+				sprintf(buf, "%.1f Hz", tab[i]);
+				if(isFreq[i])
+				{
+					AffBox(freqNotes[i], rounded, 180, 220, 255);
+				}
+				else
+				{
+					AffBox(freqNotes[i], rounded, 240, 240, 240);
+				}
+				Moteur_WriteText(freqNotes[i].x+freqNotes[i].w/2,
+					freqNotes[i].y+freqNotes[i].h/2, buf, 	
+					22, FONT_INTERFACE, text,
+					TEXT_BLENDED, TEXT_CENTER,
+					Window->screen);
+			}
 			
 				
 			Moteur_WriteText(box.x + box.w/2, box.y+header1/2, "Configuration Audio", header1-5,
@@ -403,6 +555,12 @@ int Menu_ConfigAudio(void)
 				y = event.motion.y;
 				
 				ButtonRect(x, y, valid, &isValid, &refresh);
+				ButtonRect(x, y, sinus, &isSinus, &refresh);
+				ButtonRect(x, y, carre, &isCarre, &refresh);
+				ButtonRect(x, y, fusion, &isFusion, &refresh);
+				
+				for(i = 0; i < 12; i++)
+					ButtonRect(x, y, freqNotes[i], &isFreq[i], &refresh);
 				
 				break;
 				
@@ -410,14 +568,81 @@ int Menu_ConfigAudio(void)
 				x = event.button.x;
 				y = event.button.y;
 
+
+				switch(event.button.button)
+				{
+					case SDL_BUTTON_WHEELDOWN:
+						direction = -1;
+						break;
+					case SDL_BUTTON_WHEELUP:
+						direction = 1;
+						break;
+				}
+				if(event.button.button == SDL_BUTTON_WHEELUP
+				|| event.button.button == SDL_BUTTON_WHEELDOWN)
+				{
+					for(i = 0; i < 12; i++)
+					{
+						if(PixelInRect(x, y, freqNotes[i]))
+						{
+							if(i != 11 && tab[i]+0.1*direction >= tab[i+1])
+								continue;
+							if(i != 0 && tab[i]+0.1*direction < tab[i-1])
+								continue;
+							tab[i] += (double)direction * 0.1;
+							refresh = 1;
+						}
+					}
+					continue;
+				}
+				if(event.button.button == SDL_BUTTON_MIDDLE)
+				{
+					for(i = 0; i < 12; i++)
+					{
+						if(PixelInRect(x, y, freqNotes[i]))
+						{
+							tab[i] = 261.63*pow(1.059463, i % 12);
+							refresh = 1;
+						}
+					}
+				}
+				
 				if(PixelInRect(x, y, valid))
 				{
+					switch(choice)
+					{
+						case 0:
+							Audio_ChangeFunction(sinusoide);
+							break;
+						case 1:
+							Audio_ChangeFunction(fcarre);
+							break;
+						case 2:
+							Audio_ChangeFunction(mixSinCarre);
+							break;
+					}
 					return FORCE_MAJ;
+				}
+				
+				if(PixelInRect(x, y, sinus) && choice != 0)
+				{
+					choice = 0;
+					refresh = 1;
+				}
+				if(PixelInRect(x, y, carre) && choice != 1)
+				{
+					choice = 1;
+					refresh = 1;
+				}
+				if(PixelInRect(x, y, fusion) && choice != 2)
+				{
+					choice = 2;
+					refresh = 1;
 				}
 				break;
 				
-			case SDL_KEYUP:
-				return 0;
+			case SDL_KEYDOWN:
+				return FORCE_MAJ;
 		}
 		SDL_Delay(2);
 	}

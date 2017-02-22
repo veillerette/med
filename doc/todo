@@ -10,8 +10,8 @@
 [OK]- Changer Volume dans la toolbar
 [OK]- Changer Tempo dans la toolbar
 [OK]- Armures -> Step
-[70%]- Changer l'armure grâce au menu
-- Supprimer doubles affichages Dieze/Bémol dans une mesure
+[OK]- Changer l'armure grâce au menu
+>NO<- Supprimer doubles affichages Dieze/Bémol dans une mesure => Finalement NON
 [OK]- Ajout de plusieurs mesures en fin (scroll souris)
 [OK]- Clé de fa (Manque graphismes)
 [OK] Sauvegarde dans MED/ABC du tempo + Ouverture MED/ABC du Tempo
@@ -21,12 +21,12 @@
 [OK]- Barres de mesures sur toutes les portées
 
 <<< Bugs >>>
-- Modification temps réelle à la selection
+[50%]- Modification temps réelle à la selection
 [80%]- Note pointée (modification temps réel à la sélection, affichage)
 - Problèmes mesures 5/4, 4/2, 5/2
 [OK]- Correction bug croches bizarres (dans le mozart notamment) ????
 [OK]- Bug à l'ajout de 4/5ème portée
-[95%]- Bugs à l'alignement dièzes/bémols !
+[95%]- Bugs à l'alignement dièzes/bémols ?
 [OK]- valgrind et Score_AddEmpty()
 [OK]- Score_Free d'un ABC
 [OK]- Ouverture fichier ABC bizarres
@@ -40,15 +40,15 @@
 [OK]- Sauvegarde/Ouverture Fichier
 [OK]- Explorateur de fichier du disque
 [70%]- Explorateur pour sauvegarde (Manque création nouveau fichier)
-- Menu configuration audio ondes
-[80%]- Fenêtre Nouveau Fichier
+[OK]- Menu configuration audio ondes
+[OK]- Fenêtre Nouveau Fichier
 [OK]- Import/Export fichier partition
 [OK]- Export fichier ABC
 [OK]- Alignement Justifié Partition 
 
 <<< Améliorations possibles >>>
-[90%]- Importation fichiers ABC
+[OK]- Importation fichiers ABC
 - Export WAV
 - Patch MIDI
-- Remplissage de chaque ligne de portée au maximum
+[OK]- Remplissage de chaque ligne de portée au maximum
 

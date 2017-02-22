@@ -23,6 +23,7 @@ ABC_WriteStep	src/ABC.c	/^int ABC_WriteStep(FILE *f, Step *step, Note_Duration b
 ABC_isNote	src/ABC.c	/^int ABC_isNote(char note)$/;"	f
 ABC_replaceSlash	src/ABC.c	/^void ABC_replaceSlash(char *str)$/;"	f
 ABS	include/Window.h	23;"	d
+AffBox	src/Menu.c	/^void AffBox(SDL_Rect re, int rounded, int r, int g, int b)$/;"	f
 Area	include/Events.h	/^struct Area$/;"	s
 Area	include/Events.h	/^typedef struct Area Area;$/;"	t	typeref:struct:Area
 Area_Alloc	src/Events.c	/^Area *Area_Alloc(SDL_Rect rect, int nbody, Object_Type type)$/;"	f
@@ -38,6 +39,7 @@ AudioConfig_Free	src/Audio.c	/^void AudioConfig_Free(AudioConfig **ac)$/;"	f
 AudioConfig_Init	src/Audio.c	/^AudioConfig *AudioConfig_Init(void)$/;"	f
 AudioConfig_SetVolume	src/Audio.c	/^void AudioConfig_SetVolume(AudioConfig *ac, int newVolume)$/;"	f
 Audio_AssignateScore	src/Audio.c	/^void Audio_AssignateScore(Score *score)$/;"	f
+Audio_ChangeFunction	src/Audio.c	/^int Audio_ChangeFunction(double (*f)(int, double, int))$/;"	f
 Audio_GetFracVolume	src/Audio.c	/^double Audio_GetFracVolume(void)$/;"	f
 Audio_GetTempo	src/Audio.c	/^int Audio_GetTempo(void)$/;"	f
 Audio_GetVolume	src/Audio.c	/^int Audio_GetVolume(void)$/;"	f
@@ -54,6 +56,7 @@ Audio_SetTempo	src/Audio.c	/^void Audio_SetTempo(int newTempo)$/;"	f
 Audio_SetVolume	src/Audio.c	/^void Audio_SetVolume(int newVolume)$/;"	f
 Audio_isInit	src/Audio.c	/^int Audio_isInit(void)$/;"	f
 Audio_isPlaying	src/Audio.c	/^int Audio_isPlaying(void)$/;"	f
+Autres op   rations	report/pres/main.tex	/^}$/;"	u
 BASE_BODY_X	include/Window.h	21;"	d
 BASE_BODY_Y	include/Window.h	22;"	d
 BLACK	include/System.h	/^	BLACK 	= 30,$/;"	e	enum:__anon7
@@ -63,7 +66,7 @@ BlitCenter	src/Menu.c	/^static void BlitCenter(SDL_Surface *src, SDL_Rect *src_r
 Bugs connus	report/Med-Rapport.tex	/^\\vskip 0.6in$/;"	s
 ButtonRect	src/Menu.c	/^void ButtonRect(int x, int y, SDL_Rect rect, int *valid, int *refresh)$/;"	f
 CC	Makefile	/^CC=colorgcc$/;"	m
-CFLAGS	Makefile	/^CFLAGS=-ansi -Wall -Wextra -O3 -DDEBUG$/;"	m
+CFLAGS	Makefile	/^CFLAGS=-ansi -Wall -Wextra -O3$/;"	m
 CLE_FA	include/Step.h	/^	CLE_FA 		= 2,	\/*!< Clé de Fa Quatrième *\/$/;"	e	enum:__anon6
 CLE_SOL	include/Step.h	/^	CLE_SOL 	= 1,	\/*!< Clé de Sol Seconde *\/$/;"	e	enum:__anon6
 CLE_UT3	include/Step.h	/^	CLE_UT3,$/;"	e	enum:__anon6
@@ -79,6 +82,7 @@ Channel	include/Audio.h	/^typedef struct Channel Channel;$/;"	t	typeref:struct:C
 Channel_Add	src/Audio.c	/^int Channel_Add(Channel *chan, Wave *wave)$/;"	f
 Channel_Alloc	src/Audio.c	/^Channel *Channel_Alloc(void)$/;"	f
 Channel_Calc	src/Audio.c	/^double Channel_Calc(AudioConfig *ac, Channel *chan)$/;"	f
+Channel_ChangeFunction	src/Audio.c	/^void Channel_ChangeFunction(Channel *chan, double (*f)(int, double, int))$/;"	f
 Channel_ChangeOctave	src/Audio.c	/^void Channel_ChangeOctave(Channel *chan, double freq)$/;"	f
 Channel_ChangeOne	src/Audio.c	/^void Channel_ChangeOne(Channel *chan, double freq)$/;"	f
 Channel_CreateOne	src/Audio.c	/^Channel *Channel_CreateOne(double freq, double (*f)(int, double, int))$/;"	f
@@ -108,6 +112,7 @@ CreateFlat	src/Images.c	/^SDL_Surface *CreateFlat(int size_w, int size_h)$/;"	f
 CreateNatural	src/Images.c	/^SDL_Surface *CreateNatural(int size_w, int size_h)$/;"	f
 CreateSharp	src/Images.c	/^SDL_Surface *CreateSharp(int size_w, int size_h)$/;"	f
 Create_Little	src/Images.c	/^SDL_Surface *Create_Little(SDL_Surface *src, int ratioX, int ratioY)$/;"	f
+D   mo	report/pres/main.tex	/^}$/;"	s
 DOUBLECROCHE	include/Step.h	/^	DOUBLECROCHE	= 16, 	\/*!< Double, 4 x base *\/$/;"	e	enum:__anon5
 DT_DIR	include/File.h	43;"	d
 DT_REG	include/File.h	39;"	d
@@ -140,7 +145,6 @@ EVENT_ADDNOTE	include/Events.h	/^	EVENT_ADDNOTE	= 0x0040,$/;"	e	enum:__anon14
 EXE	Makefile	/^EXE=prog$/;"	m
 EXPLORER_FONT	include/Explorer.h	19;"	d
 El   ments Techniques	report/Med-Rapport.tex	/^\\newpage$/;"	c
-El   ments techniques	report/pres/main.tex	/^}$/;"	u
 Entry	include/File.h	/^struct Entry$/;"	s
 Entry	include/File.h	/^typedef struct Entry Entry;$/;"	t	typeref:struct:Entry
 Entry_Alloc	src/File.c	/^Entry *Entry_Alloc(const char *name, Entry_Type type, int size)$/;"	f
@@ -197,6 +201,7 @@ File_WriteScore	src/File.c	/^int File_WriteScore(FILE *f, Score *score)$/;"	f
 File_WriteStaff	src/File.c	/^int File_WriteStaff(FILE *f, Staff *staff)$/;"	f
 File_WriteStep	src/File.c	/^int File_WriteStep(FILE *f, Step *step)$/;"	f
 File_isExt	src/File.c	/^int File_isExt(const char *name, const char *ext)$/;"	f
+FillTabFreq	src/Audio.c	/^void FillTabFreq(double *t)$/;"	f
 FindExpandZone	src/Menu.c	/^Menu_Node *FindExpandZone(Menu *menu, Menu_Node *mn, int clic_x, int clic_y)$/;"	f
 FindNodeByZone	src/Menu.c	/^Menu_Node *FindNodeByZone(Menu *menu, int clic_x, int clic_y)$/;"	f
 Flat	include/Images.h	/^	SDL_Surface *Flat;$/;"	m	struct:Graphics
@@ -211,6 +216,7 @@ GenList_Alloc	src/System.c	/^GenList *GenList_Alloc(void)$/;"	f
 GenList_Free	src/System.c	/^void GenList_Free(GenList **lst)$/;"	f
 GenList_Get	src/System.c	/^void *GenList_Get(GenList *lst, const char *name)$/;"	f
 GetFreqFromId	src/Audio.c	/^double GetFreqFromId(int id)$/;"	f
+GetFreqFromIdFromTab	src/Audio.c	/^double GetFreqFromIdFromTab(int id)$/;"	f
 GetRealId	src/Audio.c	/^int GetRealId(Note *note)$/;"	f
 Graphics	include/Images.h	/^struct Graphics$/;"	s
 Graphics	include/Images.h	/^typedef struct Graphics Graphics;$/;"	t	typeref:struct:Graphics
@@ -237,7 +243,6 @@ InitToolbar	src/Events.c	/^Toolbar InitToolbar(void)$/;"	f
 Integer_Alloc	src/Audio.c	/^int *Integer_Alloc(int n)$/;"	f
 Interface_Main	src/Interface.c	/^extern int Interface_Main(int argc, char *argv[])$/;"	f
 Interface_Quit	src/Interface.c	/^static void Interface_Quit(Menu **menu)$/;"	f	file:
-Introduction	report/pres/main.tex	/^}$/;"	u
 InvertBoolean	src/Menu.c	/^int InvertBoolean(char *boolean)$/;"	f
 L interface se d   compose en trois parties    begin  itemize	report/Med-Rapport.tex	/^Etant donné leurs structures, l'importation de fichiers .med est impossible d'une architecture à une autre (notamment 32\/64 bits)$/;"	c
 LEAF	include/Menu.h	/^	NODE, LEAF$/;"	e	enum:__anon9
@@ -382,6 +387,7 @@ Rest_CreateQuaver	src/Images.c	/^SDL_Surface *Rest_CreateQuaver(int size_w, int 
 Rest_Crotchet	include/Images.h	/^	SDL_Surface *Rest_Crotchet;$/;"	m	struct:Graphics
 Rest_Long	include/Images.h	/^	SDL_Surface *Rest_Long;$/;"	m	struct:Graphics
 Rest_Quaver	include/Images.h	/^	SDL_Surface *Rest_Quaver;$/;"	m	struct:Graphics
+S   lections	report/pres/main.tex	/^}$/;"	u
 SDLColor_Set	src/Images.c	/^SDL_Color SDLColor_Set(int r, int g, int b)$/;"	f
 SDL_CreateSurface	src/Images.c	/^SDL_Surface *SDL_CreateSurface(int w, int h)$/;"	f
 SDL_CreateWhiteKeySurface	src/Images.c	/^SDL_Surface *SDL_CreateWhiteKeySurface(int w, int h)$/;"	f
@@ -637,7 +643,6 @@ base	include/Explorer.h	/^	SDL_Rect base;$/;"	m	struct:Explorer
 body	include/Window.h	/^	SDL_Surface **body; \/* The bigs surfaces (pages) *\/$/;"	m	struct:WindowData
 body_use	include/Window.h	/^	SDL_Surface **body_use; \/* Surface for uses (pages) *\/$/;"	m	struct:WindowData
 c	src/Interface.c	/^clock_t a,b,c,d,e,f,g, h, m, n, o, p;$/;"	v
-carre	src/Audio.c	/^double carre(int x, double freq, int hardwareFreq)$/;"	f
 carreHarmo	src/Audio.c	/^double carreHarmo(int x, double freq, int hardwareFreq)$/;"	f
 channels	include/Audio.h	/^	Channel **channels;	\/*!< Tableau dynamique des voix *\/$/;"	m	struct:Mixer
 cle	include/Step.h	/^	Cle cle : 16;			\/*!< Clé de la mesure *\/$/;"	m	struct:Step
@@ -660,6 +665,8 @@ f	include/Audio.h	/^	double (*f)(int x, double freq, int hardwareFreq);	\/*!< Fo
 f	include/Menu.h	/^			int (*f)(void);$/;"	m	struct:Menu_Node::__anon10::__anon11
 f	src/Interface.c	/^clock_t a,b,c,d,e,f,g, h, m, n, o, p;$/;"	v
 famous	include/System.h	/^	int famous;$/;"	m	struct:NodeList
+fastTextNote	src/Menu.c	/^void fastTextNote(int x, int y, char *note)$/;"	f
+fcarre	src/Audio.c	/^double fcarre(int x, double freq, int hardwareFreq)$/;"	f
 find2min	src/Step.c	/^int find2min(int n)$/;"	f
 find2rest	src/Step.c	/^Note_Duration *find2rest(int duration)$/;"	f
 first	include/Events.h	/^	Select_Node *first;$/;"	m	struct:Selection
@@ -668,6 +675,8 @@ flags	include/Step.h	/^	Step_Flags flags : 16;		\/*!< Attributs de la mesure *\/
 flat	include/Events.h	/^	char 		flat;$/;"	m	struct:Toolbar
 font	include/Menu.h	/^	TTF_Font *font;$/;"	m	struct:Menu
 freq	include/Audio.h	/^	double freq;						\/*!< Fréquence *\/$/;"	m	struct:Wave
+functionCarre	src/Menu.c	/^double functionCarre(double x)$/;"	f
+functionFusion	src/Menu.c	/^double functionFusion(double x)$/;"	f
 g	include/Images.h	/^	Uint g : 8;$/;"	m	struct:Color
 g	src/Interface.c	/^clock_t a,b,c,d,e,f,g, h, m, n, o, p;$/;"	v
 globalVolume	include/Audio.h	/^	int globalVolume;		\/*!< Volume global *\/$/;"	m	struct:AudioConfig
@@ -801,6 +810,7 @@ steps	include/Staff.h	/^	Step **steps; \/* dynamic tab *\/$/;"	m	struct:Staff
 sum_duration	include/Window.h	/^	Note_Duration sum_duration;$/;"	m	struct:WindowData
 tab	include/File.h	/^	Entry **tab;$/;"	m	struct:Directory
 tab	include/System.h	/^	Point **tab;$/;"	m	struct:Dots
+tabFreq	include/Audio.h	/^	double tabFreq[12];			\/*!< Tableaux de configuration des fréquences *\/$/;"	m	struct:AudioConfig
 tabselect	include/Events.h	/^	Selection *	tabselect;$/;"	m	struct:EventData
 tempo	include/Staff.h	/^	int tempo;$/;"	m	struct:Score
 text	include/Staff.h	/^	char *text;$/;"	m	struct:Sign

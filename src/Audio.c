@@ -166,6 +166,13 @@ void Mixer_Quit(Mixer *mixer)
 	mixer->m = 0;
 }
 
+void FillTabFreq(double *t)
+{
+	int i;
+	for(i = 0; i < 12; i++)
+		t[i] = 261.63*pow(1.059463, i % 12);
+}
+
 AudioConfig *AudioConfig_DevInit(int askFreq, Uint16 format, Uint8 channels, Uint16 samples,
 					void (*callback)(void *, Uint8 *, int), void *userdata,
 					int globalVolume)
@@ -191,6 +198,8 @@ AudioConfig *AudioConfig_DevInit(int askFreq, Uint16 format, Uint8 channels, Uin
 	spec.callback = callback;
 	spec.userdata = userdata;
 
+	FillTabFreq(ac->tabFreq);
+	
 	if(SDL_Init(SDL_INIT_AUDIO) < 0)
 	{
 		colorprintf(RED, "Error with SDL_Init(SDL_INIT_AUDIO)\n");
@@ -276,11 +285,18 @@ void AudioConfig_SetVolume(AudioConfig *ac, int newVolume)
 
 double GetFreqFromId(int id)
 {
-	return (33.0) * pow(2.0, id / 12 - 2) * pow(1.059463, id % 12) ;
+	return (32.7) * pow(2.0, id / 12 - 2) * pow(1.059463, id % 12) ;
+}
+
+double GetFreqFromIdFromTab(int id)
+{
+	return (32.7) * pow(2.0, id / 12 - 2) * (main_audio->tabFreq[id % 12]/261.63);
 }
 
 int GetRealId(Note *note)
 {
+	if(note->flags & NOTE_NATURAL)
+		return note->note;
 	return note->note 	+ ((note->flags & NOTE_SHARP) != 0)
 				+ 2 * ((note->flags & NOTE_DOUBLESHARP) != 0)
 				- ((note->flags & NOTE_FLAT) != 0)
@@ -292,7 +308,7 @@ double Note_GetFreq(Note *note)
 	if(NULL == note)
 		return 0.;
 
-	return GetFreqFromId(GetRealId(note));
+	return GetFreqFromIdFromTab(GetRealId(note));
 }
 
 double Wave_Calc(AudioConfig *ac, Wave *wave)
@@ -357,6 +373,13 @@ void Channel_ChangeOne(Channel *chan, double freq)
 		chan->waves[i]->freq = freq;
 }
 
+void Channel_ChangeFunction(Channel *chan, double (*f)(int, double, int))
+{
+	int i;
+	for(i = 0; i < chan->n; i++)
+		chan->waves[i]->f = f;
+}
+
 Channel *Channel_CreateSimplyOctave(double freq, double (*f)(int, double, int))
 {
 	int i;
@@ -404,14 +427,14 @@ double sinusoide(int x, double freq, int hardwareFreq)
 	return sin(1.0 * M_PI * freq * x / hardwareFreq);
 }
 
-double carre(int x, double freq, int hardwareFreq)
+double fcarre(int x, double freq, int hardwareFreq)
 {
 	return (sinusoide(x, freq, hardwareFreq) > 0)?1.0:-1.0 ;
 }
 
 double mixSinCarre(int x, double freq, int hardwareFreq)
 {
-	return carre(x, freq, hardwareFreq) + sinusoide(x, freq, hardwareFreq);
+	return fcarre(x, freq, hardwareFreq) + sinusoide(x, freq, hardwareFreq);
 }
 
 double carreHarmo(int x, double freq, int hardwareFreq)
@@ -420,7 +443,7 @@ double carreHarmo(int x, double freq, int hardwareFreq)
 	double sum = 0.;
 
 	for(i = 0; i < 4; i++)
-		sum += carre(x, freq*pow(2.0, i), hardwareFreq);
+		sum += fcarre(x, freq*pow(2.0, i), hardwareFreq);
 
 	return sum;
 }
@@ -675,3 +698,18 @@ double Audio_GetFracVolume(void)
 	}
 	return 0.;
 }
+
+int Audio_ChangeFunction(double (*f)(int, double, int))
+{
+	if(main_audio != NULL)
+	{
+		int i;
+		for(i = 0; i < main_audio->mixer.n; i++)
+			Channel_ChangeFunction(main_audio->mixer.channels[i], f);
+		return 1;
+	}
+	return 0;
+}
+
+
+

@@ -85,6 +85,8 @@ struct AudioConfig
 					
 	SDL_Thread **threads;		/*!< Les différents threads des voix */
 	int need_refresh;		/*!< Demande de rafraichissement de l'écran */
+
+	double tabFreq[12];			/*!< Tableaux de configuration des fréquences */
 };
 
 
@@ -92,6 +94,11 @@ struct AudioConfig
 		DEV FUNCTIONS
 ******************************************************/
 
+void FillTabFreq(double *t);
+
+double GetFreqFromId(int id);
+
+double GetFreqFromIdFromTab(int id);
 
 /**
  * \brief Alloue un nouveau signal.
@@ -244,6 +251,8 @@ Channel *Channel_CreateOne(double freq, double (*f)(int, double, int));
 
 void Channel_ChangeOne(Channel *chan, double freq);
 
+void Channel_ChangeFunction(Channel *chan, double (*f)(int, double, int));
+
 Channel *Channel_CreateSimplyOctave(double freq, double (*f)(int, double, int));
 
 void Channel_ChangeOctave(Channel *chan, double freq);
@@ -287,7 +296,7 @@ double sinusoide(int x, double freq, int hardwareFreq);
  *
  * \return Valeur f(x) associée
  */
-double carre(int x, double freq, int hardwareFreq);
+double fcarre(int x, double freq, int hardwareFreq);
 
 
 /**
@@ -301,6 +310,7 @@ double carre(int x, double freq, int hardwareFreq);
  */
 double carreHarmo(int x, double freq, int hardwareFreq);
 
+double mixSinCarre(int x, double freq, int hardwareFreq);
 
 /*****************************************************
 		PLAYING FUNCTIONS
@@ -436,6 +446,7 @@ int Audio_GetVolume(void);
  */
 double Audio_GetFracVolume(void);
 
+int Audio_ChangeFunction(double (*f)(int, double, int));
 
 /*****************************************************
 ******************************************************/

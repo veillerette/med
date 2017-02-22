@@ -94,6 +94,8 @@ extern int Interface_Main(int argc, char *argv[])
 	Menu_Console(menu->lst, 0);
 
 
+	
+
 	SDL_Flip(Window->screen);
 
 	time = SDL_GetTicks();
