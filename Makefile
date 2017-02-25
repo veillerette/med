@@ -1,6 +1,6 @@
 CC=colorgcc
 CFLAGS=-ansi -Wall -Wextra -O3
-CLIBS=-lm -lSDL -lSDL_gfx -lSDL_ttf -lreadline
+CLIBS=-lm -lSDL -lSDL_gfx -lSDL_ttf -lreadline -lfluidsynth
 EXE=prog
 OBJ=obj/
 SRC=src/

@@ -32,34 +32,54 @@ Area_Free	src/Events.c	/^void Area_Free(Area **area)$/;"	f
 Area_FreeRec	src/Events.c	/^void Area_FreeRec(Area *area)$/;"	f
 Area_Set	src/Events.c	/^Area *Area_Set(SDL_Rect rect, int nbody, Object_Type type, ...)$/;"	f
 Armure_Print	src/Window.c	/^int Armure_Print(Step *step, SDL_Rect *base_pos, SDL_Surface *dest)$/;"	f
-AudioConfig	include/Audio.h	/^struct AudioConfig$/;"	s
-AudioConfig	include/Audio.h	/^typedef struct AudioConfig AudioConfig;$/;"	t	typeref:struct:AudioConfig
-AudioConfig_DevInit	src/Audio.c	/^AudioConfig *AudioConfig_DevInit(int askFreq, Uint16 format, Uint8 channels, Uint16 samples,$/;"	f
-AudioConfig_Free	src/Audio.c	/^void AudioConfig_Free(AudioConfig **ac)$/;"	f
-AudioConfig_Init	src/Audio.c	/^AudioConfig *AudioConfig_Init(void)$/;"	f
-AudioConfig_SetVolume	src/Audio.c	/^void AudioConfig_SetVolume(AudioConfig *ac, int newVolume)$/;"	f
-Audio_AssignateScore	src/Audio.c	/^void Audio_AssignateScore(Score *score)$/;"	f
-Audio_ChangeFunction	src/Audio.c	/^int Audio_ChangeFunction(double (*f)(int, double, int))$/;"	f
-Audio_GetFracVolume	src/Audio.c	/^double Audio_GetFracVolume(void)$/;"	f
-Audio_GetTempo	src/Audio.c	/^int Audio_GetTempo(void)$/;"	f
-Audio_GetVolume	src/Audio.c	/^int Audio_GetVolume(void)$/;"	f
-Audio_GoToStep	src/Audio.c	/^void Audio_GoToStep(int id_step)$/;"	f
-Audio_Init	src/Audio.c	/^void Audio_Init(AudioConfig *ac)$/;"	f
-Audio_KillThreads	src/Audio.c	/^int Audio_KillThreads(void)$/;"	f
-Audio_Pause	src/Audio.c	/^void Audio_Pause(void)$/;"	f
-Audio_Play	src/Audio.c	/^void Audio_Play(void)$/;"	f
-Audio_PlayStaffThread	src/Audio.c	/^int Audio_PlayStaffThread(void *data)$/;"	f
-Audio_PlayStep	src/Audio.c	/^int Audio_PlayStep(Step *step, Channel *chan)$/;"	f
-Audio_Quit	src/Audio.c	/^void Audio_Quit(void)$/;"	f
-Audio_RegulariseWave	src/Audio.c	/^int Audio_RegulariseWave(Sint16 *stream, int len)$/;"	f
-Audio_SetTempo	src/Audio.c	/^void Audio_SetTempo(int newTempo)$/;"	f
-Audio_SetVolume	src/Audio.c	/^void Audio_SetVolume(int newVolume)$/;"	f
-Audio_isInit	src/Audio.c	/^int Audio_isInit(void)$/;"	f
-Audio_isPlaying	src/Audio.c	/^int Audio_isPlaying(void)$/;"	f
+AudioConfig	old_audio/Audio.h	/^struct AudioConfig$/;"	s
+AudioConfig	old_audio/Audio.h	/^typedef struct AudioConfig AudioConfig;$/;"	t	typeref:struct:AudioConfig
+AudioConfig_DevInit	old_audio/Audio.c	/^AudioConfig *AudioConfig_DevInit(int askFreq, Uint16 format, Uint8 channels, Uint16 samples,$/;"	f
+AudioConfig_Free	old_audio/Audio.c	/^void AudioConfig_Free(AudioConfig **ac)$/;"	f
+AudioConfig_Init	old_audio/Audio.c	/^AudioConfig *AudioConfig_Init(void)$/;"	f
+AudioConfig_Init	src/Fluid.c	/^FluidAudioConfig *AudioConfig_Init(void)$/;"	f
+AudioConfig_SetVolume	old_audio/Audio.c	/^void AudioConfig_SetVolume(AudioConfig *ac, int newVolume)$/;"	f
+Audio_AssignateScore	old_audio/Audio.c	/^void Audio_AssignateScore(Score *score)$/;"	f
+Audio_AssignateScore	src/Fluid.c	/^void Audio_AssignateScore(Score *score)$/;"	f
+Audio_ChangeFunction	old_audio/Audio.c	/^int Audio_ChangeFunction(double (*f)(int, double, int))$/;"	f
+Audio_ChangeFunction	src/Fluid.c	/^int Audio_ChangeFunction(double (*f)(int, double, int))$/;"	f
+Audio_GetFracVolume	old_audio/Audio.c	/^double Audio_GetFracVolume(void)$/;"	f
+Audio_GetFracVolume	src/Fluid.c	/^double Audio_GetFracVolume(void)$/;"	f
+Audio_GetTempo	old_audio/Audio.c	/^int Audio_GetTempo(void)$/;"	f
+Audio_GetTempo	src/Fluid.c	/^int Audio_GetTempo(void)$/;"	f
+Audio_GetVolume	old_audio/Audio.c	/^int Audio_GetVolume(void)$/;"	f
+Audio_GetVolume	src/Fluid.c	/^int Audio_GetVolume(void)$/;"	f
+Audio_GoToStep	old_audio/Audio.c	/^void Audio_GoToStep(int id_step)$/;"	f
+Audio_GoToStep	src/Fluid.c	/^void Audio_GoToStep(int id_step)$/;"	f
+Audio_Init	old_audio/Audio.c	/^void Audio_Init(AudioConfig *ac)$/;"	f
+Audio_Init	src/Fluid.c	/^int Audio_Init(FluidAudioConfig *config)$/;"	f
+Audio_KillThreads	old_audio/Audio.c	/^int Audio_KillThreads(void)$/;"	f
+Audio_KillThreads	src/Fluid.c	/^int Audio_KillThreads(void)$/;"	f
+Audio_Pause	old_audio/Audio.c	/^void Audio_Pause(void)$/;"	f
+Audio_Pause	src/Fluid.c	/^void Audio_Pause(void)$/;"	f
+Audio_Play	old_audio/Audio.c	/^void Audio_Play(void)$/;"	f
+Audio_Play	src/Fluid.c	/^int Audio_Play(void)$/;"	f
+Audio_PlayStaffThread	old_audio/Audio.c	/^int Audio_PlayStaffThread(void *data)$/;"	f
+Audio_PlayStaffThread	src/Fluid.c	/^int Audio_PlayStaffThread(void *data)$/;"	f
+Audio_PlayStep	old_audio/Audio.c	/^int Audio_PlayStep(Step *step, Channel *chan)$/;"	f
+Audio_PlayStep	src/Fluid.c	/^int Audio_PlayStep(Step *step)$/;"	f
+Audio_Quit	old_audio/Audio.c	/^void Audio_Quit(void)$/;"	f
+Audio_Quit	src/Fluid.c	/^void Audio_Quit(void)$/;"	f
+Audio_RegulariseWave	old_audio/Audio.c	/^int Audio_RegulariseWave(Sint16 *stream, int len)$/;"	f
+Audio_SetTempo	old_audio/Audio.c	/^void Audio_SetTempo(int newTempo)$/;"	f
+Audio_SetTempo	src/Fluid.c	/^void Audio_SetTempo(int newTempo)$/;"	f
+Audio_SetVolume	old_audio/Audio.c	/^void Audio_SetVolume(int newVolume)$/;"	f
+Audio_SetVolume	src/Fluid.c	/^void Audio_SetVolume(int newVolume)$/;"	f
+Audio_StopPlayingNotes	src/Fluid.c	/^void Audio_StopPlayingNotes(void)$/;"	f
+Audio_isInit	old_audio/Audio.c	/^int Audio_isInit(void)$/;"	f
+Audio_isInit	src/Fluid.c	/^int Audio_isInit(void)$/;"	f
+Audio_isPlaying	old_audio/Audio.c	/^int Audio_isPlaying(void)$/;"	f
+Audio_isPlaying	src/Fluid.c	/^int Audio_isPlaying(void)$/;"	f
 Autres op   rations	report/pres/main.tex	/^}$/;"	u
 BASE_BODY_X	include/Window.h	21;"	d
 BASE_BODY_Y	include/Window.h	22;"	d
-BASE_DO	include/Audio.h	27;"	d
+BASE_DO	include/Fluid.h	19;"	d
+BASE_DO	old_audio/Audio.h	27;"	d
 BLACK	include/System.h	/^	BLACK 	= 30,$/;"	e	enum:__anon7
 BLANCHE	include/Step.h	/^	BLANCHE		= 2,	\/*!< Blanche, 32 x base *\/$/;"	e	enum:__anon5
 BLUE	include/System.h	/^	BLUE	= 34,$/;"	e	enum:__anon7
@@ -72,27 +92,27 @@ CLE_FA	include/Step.h	/^	CLE_FA 		= 2,	\/*!< Clé de Fa Quatrième *\/$/;"	e	enu
 CLE_SOL	include/Step.h	/^	CLE_SOL 	= 1,	\/*!< Clé de Sol Seconde *\/$/;"	e	enum:__anon6
 CLE_UT3	include/Step.h	/^	CLE_UT3,$/;"	e	enum:__anon6
 CLE_UT4	include/Step.h	/^	CLE_UT4$/;"	e	enum:__anon6
-CLIBS	Makefile	/^CLIBS=-lm -lSDL -lSDL_gfx -lSDL_ttf -lreadline$/;"	m
+CLIBS	Makefile	/^CLIBS=-lm -lSDL -lSDL_gfx -lSDL_ttf -lreadline -lfluidsynth$/;"	m
 CROCHE	include/Step.h	/^	CROCHE		= 8,	\/*!< Croche, 8 x base *\/$/;"	e	enum:__anon5
 CYAN	include/System.h	/^	CYAN	= 36,$/;"	e	enum:__anon7
 ChangeCleToFa	src/Menu.c	/^int ChangeCleToFa(void)$/;"	f
 ChangeCleToSol	src/Menu.c	/^int ChangeCleToSol(void)$/;"	f
 ChangeTonality	src/Menu.c	/^int ChangeTonality(signed char new)$/;"	f
-Channel	include/Audio.h	/^struct Channel$/;"	s
-Channel	include/Audio.h	/^typedef struct Channel Channel;$/;"	t	typeref:struct:Channel
-Channel_Add	src/Audio.c	/^int Channel_Add(Channel *chan, Wave *wave)$/;"	f
-Channel_Alloc	src/Audio.c	/^Channel *Channel_Alloc(void)$/;"	f
-Channel_Calc	src/Audio.c	/^double Channel_Calc(AudioConfig *ac, Channel *chan)$/;"	f
-Channel_ChangeFunction	src/Audio.c	/^void Channel_ChangeFunction(Channel *chan, double (*f)(int, double, int))$/;"	f
-Channel_ChangeOctave	src/Audio.c	/^void Channel_ChangeOctave(Channel *chan, double freq)$/;"	f
-Channel_ChangeOne	src/Audio.c	/^void Channel_ChangeOne(Channel *chan, double freq)$/;"	f
-Channel_CreateOne	src/Audio.c	/^Channel *Channel_CreateOne(double freq, double (*f)(int, double, int))$/;"	f
-Channel_CreateSimplyOctave	src/Audio.c	/^Channel *Channel_CreateSimplyOctave(double freq, double (*f)(int, double, int))$/;"	f
-Channel_Delete	src/Audio.c	/^int Channel_Delete(Channel *chan, int id)$/;"	f
-Channel_Disable	src/Audio.c	/^void Channel_Disable(Channel *chan)$/;"	f
-Channel_Enable	src/Audio.c	/^void Channel_Enable(Channel *chan)$/;"	f
-Channel_Free	src/Audio.c	/^void Channel_Free(Channel **chan)$/;"	f
-Channel_ReRoll	src/Audio.c	/^int Channel_ReRoll(Channel *chan)$/;"	f
+Channel	old_audio/Audio.h	/^struct Channel$/;"	s
+Channel	old_audio/Audio.h	/^typedef struct Channel Channel;$/;"	t	typeref:struct:Channel
+Channel_Add	old_audio/Audio.c	/^int Channel_Add(Channel *chan, Wave *wave)$/;"	f
+Channel_Alloc	old_audio/Audio.c	/^Channel *Channel_Alloc(void)$/;"	f
+Channel_Calc	old_audio/Audio.c	/^double Channel_Calc(AudioConfig *ac, Channel *chan)$/;"	f
+Channel_ChangeFunction	old_audio/Audio.c	/^void Channel_ChangeFunction(Channel *chan, double (*f)(int, double, int))$/;"	f
+Channel_ChangeOctave	old_audio/Audio.c	/^void Channel_ChangeOctave(Channel *chan, double freq)$/;"	f
+Channel_ChangeOne	old_audio/Audio.c	/^void Channel_ChangeOne(Channel *chan, double freq)$/;"	f
+Channel_CreateOne	old_audio/Audio.c	/^Channel *Channel_CreateOne(double freq, double (*f)(int, double, int))$/;"	f
+Channel_CreateSimplyOctave	old_audio/Audio.c	/^Channel *Channel_CreateSimplyOctave(double freq, double (*f)(int, double, int))$/;"	f
+Channel_Delete	old_audio/Audio.c	/^int Channel_Delete(Channel *chan, int id)$/;"	f
+Channel_Disable	old_audio/Audio.c	/^void Channel_Disable(Channel *chan)$/;"	f
+Channel_Enable	old_audio/Audio.c	/^void Channel_Enable(Channel *chan)$/;"	f
+Channel_Free	old_audio/Audio.c	/^void Channel_Free(Channel **chan)$/;"	f
+Channel_ReRoll	old_audio/Audio.c	/^int Channel_ReRoll(Channel *chan)$/;"	f
 Cle	include/Step.h	/^	} Cle;$/;"	t	typeref:enum:__anon6
 Cle_Fa	include/Images.h	/^	SDL_Surface *Cle_Fa;$/;"	m	struct:Graphics
 Cle_GetFromId	src/Step.c	/^char *Cle_GetFromId(Cle cle)$/;"	f
@@ -202,10 +222,18 @@ File_WriteScore	src/File.c	/^int File_WriteScore(FILE *f, Score *score)$/;"	f
 File_WriteStaff	src/File.c	/^int File_WriteStaff(FILE *f, Staff *staff)$/;"	f
 File_WriteStep	src/File.c	/^int File_WriteStep(FILE *f, Step *step)$/;"	f
 File_isExt	src/File.c	/^int File_isExt(const char *name, const char *ext)$/;"	f
-FillTabFreq	src/Audio.c	/^void FillTabFreq(double *t)$/;"	f
+FillTabFreq	old_audio/Audio.c	/^void FillTabFreq(double *t)$/;"	f
 FindExpandZone	src/Menu.c	/^Menu_Node *FindExpandZone(Menu *menu, Menu_Node *mn, int clic_x, int clic_y)$/;"	f
 FindNodeByZone	src/Menu.c	/^Menu_Node *FindNodeByZone(Menu *menu, int clic_x, int clic_y)$/;"	f
 Flat	include/Images.h	/^	SDL_Surface *Flat;$/;"	m	struct:Graphics
+FluidAudioConfig	include/Fluid.h	/^struct FluidAudioConfig$/;"	s
+FluidAudioConfig	include/Fluid.h	/^typedef struct FluidAudioConfig FluidAudioConfig;$/;"	t	typeref:struct:FluidAudioConfig
+FluidAudio_Alloc	src/Fluid.c	/^FluidAudioConfig *FluidAudio_Alloc(void)$/;"	f
+FluidAudio_Free	src/Fluid.c	/^void FluidAudio_Free(FluidAudioConfig **fac)$/;"	f
+FluidSettings	include/Fluid.h	/^struct FluidSettings$/;"	s
+FluidSettings	include/Fluid.h	/^typedef struct FluidSettings FluidSettings;$/;"	t	typeref:struct:FluidSettings
+FluidSettings_Alloc	src/Fluid.c	/^FluidSettings *FluidSettings_Alloc(void)$/;"	f
+FluidSettings_Free	src/Fluid.c	/^void FluidSettings_Free(FluidSettings **fs)$/;"	f
 Format MED	report/Med-Rapport.tex	/^\\end{lstlisting}$/;"	s
 Fr   quences de base	report/Med-Rapport.tex	/^\\end{itemize}$/;"	u
 GET_STR	include/Explorer.h	18;"	d
@@ -216,9 +244,10 @@ GenList_Add	src/System.c	/^int GenList_Add(GenList *lst, const char *name, void 
 GenList_Alloc	src/System.c	/^GenList *GenList_Alloc(void)$/;"	f
 GenList_Free	src/System.c	/^void GenList_Free(GenList **lst)$/;"	f
 GenList_Get	src/System.c	/^void *GenList_Get(GenList *lst, const char *name)$/;"	f
-GetFreqFromId	src/Audio.c	/^double GetFreqFromId(int id)$/;"	f
-GetFreqFromIdFromTab	src/Audio.c	/^double GetFreqFromIdFromTab(int id)$/;"	f
-GetRealId	src/Audio.c	/^int GetRealId(Note *note)$/;"	f
+GetFreqFromId	old_audio/Audio.c	/^double GetFreqFromId(int id)$/;"	f
+GetFreqFromIdFromTab	old_audio/Audio.c	/^double GetFreqFromIdFromTab(int id)$/;"	f
+GetRealId	old_audio/Audio.c	/^int GetRealId(Note *note)$/;"	f
+GetRealId	src/Fluid.c	/^int GetRealId(Note *note)$/;"	f
 Graphics	include/Images.h	/^struct Graphics$/;"	s
 Graphics	include/Images.h	/^typedef struct Graphics Graphics;$/;"	t	typeref:struct:Graphics
 Graphics_Alloc	src/Images.c	/^Graphics *Graphics_Alloc(void)$/;"	f
@@ -241,7 +270,8 @@ Images_DrawRotNote	src/Images.c	/^int Images_DrawRotNote(SDL_Surface *surf, int 
 Images_InvertBlack	src/Images.c	/^int Images_InvertBlack(SDL_Surface *surf)$/;"	f
 Impl   mentations	report/Med-Rapport.tex	/^\\end{figure}$/;"	c
 InitToolbar	src/Events.c	/^Toolbar InitToolbar(void)$/;"	f
-Integer_Alloc	src/Audio.c	/^int *Integer_Alloc(int n)$/;"	f
+Integer_Alloc	old_audio/Audio.c	/^int *Integer_Alloc(int n)$/;"	f
+Integer_Alloc	src/Fluid.c	/^int *Integer_Alloc(int n)$/;"	f
 Interface_Main	src/Interface.c	/^extern int Interface_Main(int argc, char *argv[])$/;"	f
 Interface_Quit	src/Interface.c	/^static void Interface_Quit(Menu **menu)$/;"	f	file:
 Introduction	report/pres/main.tex	/^}$/;"	s
@@ -254,13 +284,14 @@ Le mode Edition	report/Med-Rapport.tex	/^\\vskip 0.2in$/;"	u
 Lecture	report/Med-Rapport.tex	/^Pour le mixage de plusieurs ondes audios simultanées (plusieurs portées jouant en même temps), le programme effectue la moyenne de toutes les ondes non nulles.$/;"	u
 LittleImages	src/Images.c	/^Graphics *LittleImages = NULL;$/;"	v
 MAGENTA	include/System.h	/^	MAGENTA	= 35,$/;"	e	enum:__anon7
-MAIN_CALLBACK	src/Audio.c	/^void MAIN_CALLBACK(void *userdata, Uint8 *stream, int len)$/;"	f
+MAIN_CALLBACK	old_audio/Audio.c	/^void MAIN_CALLBACK(void *userdata, Uint8 *stream, int len)$/;"	f
 MAX_A_QUAVER	include/Window.h	27;"	d
 MENU_FONT	include/Menu.h	15;"	d
 MENU_SIZETEXT	include/Menu.h	16;"	d
 MODE_ADD	include/Events.h	/^	MODE_ADD$/;"	e	enum:__anon15
 MODE_EDIT	include/Events.h	/^	MODE_EDIT,$/;"	e	enum:__anon15
-M_PI	include/Audio.h	21;"	d
+M_PI	include/Fluid.h	16;"	d
+M_PI	old_audio/Audio.h	21;"	d
 MainEvents_AssociateScore	src/Events.c	/^void MainEvents_AssociateScore(Score *score)$/;"	f
 Manuel d utilisation}
 Menu	include/Menu.h	/^struct Menu$/;"	s
@@ -285,12 +316,12 @@ Menu_OpenFile	src/Menu.c	/^int Menu_OpenFile(void)$/;"	f
 Menu_PollMouse	src/Menu.c	/^int Menu_PollMouse(Menu *menu, SDL_Event event)$/;"	f
 Menu_SauvFileABC	src/Menu.c	/^int Menu_SauvFileABC(void)$/;"	f
 Menu_SauvFileMED	src/Menu.c	/^int Menu_SauvFileMED(void)$/;"	f
-Mixer	include/Audio.h	/^struct Mixer$/;"	s
-Mixer	include/Audio.h	/^typedef struct Mixer Mixer;$/;"	t	typeref:struct:Mixer
-Mixer_Add	src/Audio.c	/^int Mixer_Add(Mixer *mixer, Channel *chan)$/;"	f
-Mixer_Calc	src/Audio.c	/^double Mixer_Calc(AudioConfig *ac, Mixer *mixer)$/;"	f
-Mixer_Init	src/Audio.c	/^void Mixer_Init(Mixer *mixer)$/;"	f
-Mixer_Quit	src/Audio.c	/^void Mixer_Quit(Mixer *mixer)$/;"	f
+Mixer	old_audio/Audio.h	/^struct Mixer$/;"	s
+Mixer	old_audio/Audio.h	/^typedef struct Mixer Mixer;$/;"	t	typeref:struct:Mixer
+Mixer_Add	old_audio/Audio.c	/^int Mixer_Add(Mixer *mixer, Channel *chan)$/;"	f
+Mixer_Calc	old_audio/Audio.c	/^double Mixer_Calc(AudioConfig *ac, Mixer *mixer)$/;"	f
+Mixer_Init	old_audio/Audio.c	/^void Mixer_Init(Mixer *mixer)$/;"	f
+Mixer_Quit	old_audio/Audio.c	/^void Mixer_Quit(Mixer *mixer)$/;"	f
 Mode	include/Events.h	/^	} Mode;$/;"	t	typeref:enum:__anon15
 Moteur_WriteParagraph	src/Text.c	/^int Moteur_WriteParagraph(int x, int y, int max_w, const char *text_paragraph, int size, int esp,$/;"	f
 Moteur_WriteText	src/Text.c	/^int Moteur_WriteText(int x, int y, const char *text, int size,$/;"	f
@@ -344,7 +375,7 @@ Note_CrotchetInv	include/Images.h	/^	SDL_Surface *Note_CrotchetInv;$/;"	m	struct
 Note_Duration	include/Step.h	/^	} Note_Duration;$/;"	t	typeref:enum:__anon5
 Note_Flags	include/Step.h	/^	} Note_Flags;$/;"	t	typeref:enum:__anon3
 Note_Free	src/Step.c	/^void Note_Free(Note **note)$/;"	f
-Note_GetFreq	src/Audio.c	/^double Note_GetFreq(Note *note)$/;"	f
+Note_GetFreq	old_audio/Audio.c	/^double Note_GetFreq(Note *note)$/;"	f
 Note_Print	src/Window.c	/^int Note_Print(Score *score, Staff *staff, Step *step, int id_step, int id_note, Note *note, SDL_Rect *base_pos, SDL_Surface *dest, int nbody)$/;"	f
 Note_RealDuration	src/Step.c	/^int Note_RealDuration(Note *note, Step *step)$/;"	f
 Note_White	include/Images.h	/^	SDL_Surface *Note_White;$/;"	m	struct:Graphics
@@ -363,6 +394,12 @@ Object_Type	include/Events.h	/^	} Object_Type;$/;"	t	typeref:enum:__anon14
 Partition	report/Med-Rapport.tex	/^\\chapter{Implémentations}$/;"	s
 Perspectives	report/Med-Rapport.tex	/^En dessous, on sélectionne les fréquences de notes souhaitées$/;"	c
 PixelInRect	src/Events.c	/^int PixelInRect(int x, int y, SDL_Rect rect)$/;"	f
+PlayingNotes	include/Fluid.h	/^struct PlayingNotes$/;"	s
+PlayingNotes	include/Fluid.h	/^typedef struct PlayingNotes PlayingNotes;$/;"	t	typeref:struct:PlayingNotes
+PlayingNotes_Init	src/Fluid.c	/^PlayingNotes *PlayingNotes_Init(void)$/;"	f
+Playing_AddNote	src/Fluid.c	/^int Playing_AddNote(Note *note)$/;"	f
+Playing_RemoveNote	src/Fluid.c	/^int Playing_RemoveNote(Note *note)$/;"	f
+Playing_isNote	src/Fluid.c	/^int Playing_isNote(Note *note)$/;"	f
 Point	include/System.h	/^struct Point$/;"	s
 Point	include/System.h	/^typedef struct Point Point;$/;"	t	typeref:struct:Point
 Point_Alloc	src/System.c	/^Point *Point_Alloc(Uint x, Uint y)$/;"	f
@@ -403,6 +440,7 @@ SIGN_TEMPO	include/Staff.h	/^	SIGN_TEMPO	= 0x01,$/;"	e	enum:__anon13
 SIGN_TITLE	include/Staff.h	/^	SIGN_TITLE	= 0x08$/;"	e	enum:__anon13
 SIGN_VELOCITY	include/Staff.h	/^	SIGN_VELOCITY	= 0x02,$/;"	e	enum:__anon13
 SIZE_BODY	include/Window.h	25;"	d
+SOUNDFONT_FILE	include/Fluid.h	21;"	d
 SRC	Makefile	/^SRC=src\/$/;"	m
 STAFF_BASE	include/Staff.h	7;"	d
 STAFF_H	include/Images.h	33;"	d
@@ -517,7 +555,8 @@ TEXT_LEFT	include/Text.h	/^	TEXT_LEFT	= 0x01,$/;"	e	enum:__anon1
 TEXT_RIGHT	include/Text.h	/^	TEXT_RIGHT	= 0x04$/;"	e	enum:__anon1
 TEXT_SOLID	include/Text.h	/^	TEXT_SOLID	= 0x01,$/;"	e	enum:__anon2
 TRIPLECROCHE	include/Step.h	/^	TRIPLECROCHE	= 32,	\/*!< Triple, 2 x base *\/$/;"	e	enum:__anon5
-Tempo_GetMsTempo	src/Audio.c	/^int Tempo_GetMsTempo(void)$/;"	f
+Tempo_GetMsTempo	old_audio/Audio.c	/^int Tempo_GetMsTempo(void)$/;"	f
+Tempo_GetMsTempo	src/Fluid.c	/^int Tempo_GetMsTempo(void)$/;"	f
 TerminalColor	include/System.h	/^	} TerminalColor;$/;"	t	typeref:enum:__anon7
 TestOK	include/Window.h	24;"	d
 Test_ConvertStringToId	src/Test.c	/^int Test_ConvertStringToId(void)$/;"	f
@@ -549,11 +588,11 @@ Toolbar_PrintMode	src/Menu.c	/^void Toolbar_PrintMode(Menu *menu)$/;"	f
 Toolbar_PrintNote	src/Menu.c	/^void Toolbar_PrintNote(Menu *menu)$/;"	f
 Uint	include/System.h	/^typedef unsigned int Uint;$/;"	t
 WHITE	include/System.h	/^	WHITE	= 37$/;"	e	enum:__anon7
-Wave	include/Audio.h	/^struct Wave$/;"	s
-Wave	include/Audio.h	/^typedef struct Wave Wave;$/;"	t	typeref:struct:Wave
-Wave_Alloc	src/Audio.c	/^Wave *Wave_Alloc(double (*f)(int,double, int), double freq, int volume)$/;"	f
-Wave_Calc	src/Audio.c	/^double Wave_Calc(AudioConfig *ac, Wave *wave)$/;"	f
-Wave_Free	src/Audio.c	/^void Wave_Free(Wave **wave)$/;"	f
+Wave	old_audio/Audio.h	/^struct Wave$/;"	s
+Wave	old_audio/Audio.h	/^typedef struct Wave Wave;$/;"	t	typeref:struct:Wave
+Wave_Alloc	old_audio/Audio.c	/^Wave *Wave_Alloc(double (*f)(int,double, int), double freq, int volume)$/;"	f
+Wave_Calc	old_audio/Audio.c	/^double Wave_Calc(AudioConfig *ac, Wave *wave)$/;"	f
+Wave_Free	old_audio/Audio.c	/^void Wave_Free(Wave **wave)$/;"	f
 Window	src/Window.c	/^WindowData *Window = NULL;$/;"	v
 WindowData	include/Window.h	/^struct WindowData$/;"	s
 WindowData	include/Window.h	/^typedef struct WindowData WindowData;$/;"	t	typeref:struct:WindowData
@@ -611,10 +650,11 @@ __5Arm	src/Menu.c	/^int __5Arm(void){ return ChangeTonality(5); }$/;"	f
 __6Arm	src/Menu.c	/^int __6Arm(void){ return ChangeTonality(6); }$/;"	f
 __7Arm	src/Menu.c	/^int __7Arm(void){ return ChangeTonality(7); }$/;"	f
 __HEAD_ABC__	include/ABC.h	10;"	d
-__HEAD_AUDIO__	include/Audio.h	10;"	d
+__HEAD_AUDIO__	old_audio/Audio.h	10;"	d
 __HEAD_EVENTS__	include/Events.h	2;"	d
 __HEAD_EXPLORER__	include/Explorer.h	2;"	d
 __HEAD_FILE__	include/File.h	2;"	d
+__HEAD_FLUID__	include/Fluid.h	2;"	d
 __HEAD_IMAGES__	include/Images.h	2;"	d
 __HEAD_INTERFACE__	include/Interface.h	2;"	d
 __HEAD_MENU__	include/Menu.h	2;"	d
@@ -637,6 +677,7 @@ _mem	src/System.c	/^extern void _mem(void *ptr, const char *str, const char *fil
 a	include/Images.h	/^	Uint a : 8;$/;"	m	struct:Color
 a	src/Interface.c	/^clock_t a,b,c,d,e,f,g, h, m, n, o, p;$/;"	v
 abc_error	src/ABC.c	/^char abc_error[50] = "";$/;"	v
+adriver	include/Fluid.h	/^	fluid_audio_driver_t *  adriver;$/;"	m	struct:FluidSettings
 b	include/Images.h	/^	Uint b : 8;$/;"	m	struct:Color
 b	src/Interface.c	/^clock_t a,b,c,d,e,f,g, h, m, n, o, p;$/;"	v
 base	include/Events.h	/^	SDL_Rect *	base;$/;"	m	struct:EventData
@@ -644,8 +685,9 @@ base	include/Explorer.h	/^	SDL_Rect base;$/;"	m	struct:Explorer
 body	include/Window.h	/^	SDL_Surface **body; \/* The bigs surfaces (pages) *\/$/;"	m	struct:WindowData
 body_use	include/Window.h	/^	SDL_Surface **body_use; \/* Surface for uses (pages) *\/$/;"	m	struct:WindowData
 c	src/Interface.c	/^clock_t a,b,c,d,e,f,g, h, m, n, o, p;$/;"	v
-carreHarmo	src/Audio.c	/^double carreHarmo(int x, double freq, int hardwareFreq)$/;"	f
-channels	include/Audio.h	/^	Channel **channels;	\/*!< Tableau dynamique des voix *\/$/;"	m	struct:Mixer
+carreHarmo	old_audio/Audio.c	/^double carreHarmo(int x, double freq, int hardwareFreq)$/;"	f
+carreHarmo	src/Fluid.c	/^double carreHarmo(int x, double freq, int hardwareFreq)$/;"	f
+channels	old_audio/Audio.h	/^	Channel **channels;	\/*!< Tableau dynamique des voix *\/$/;"	m	struct:Mixer
 cle	include/Step.h	/^	Cle cle : 16;			\/*!< Clé de la mesure *\/$/;"	m	struct:Step
 colorprintf	src/System.c	/^extern int colorprintf(TerminalColor color, const char *format, ...)$/;"	f
 comp_duration	src/Step.c	/^int comp_duration(const void *p, const void *p2)$/;"	f
@@ -662,12 +704,13 @@ dst	include/Explorer.h	/^	SDL_Surface *dst;$/;"	m	struct:Explorer
 duration	include/Events.h	/^	Note_Duration 	duration;$/;"	m	struct:Toolbar
 duration	include/Step.h	/^	Note_Duration duration : 8;	\/*!< Durée d'une note\/silence *\/$/;"	m	struct:Note
 e	src/Interface.c	/^clock_t a,b,c,d,e,f,g, h, m, n, o, p;$/;"	v
-f	include/Audio.h	/^	double (*f)(int x, double freq, int hardwareFreq);	\/*!< Fonction du signal, en général sin\/carre *\/$/;"	m	struct:Wave
 f	include/Menu.h	/^			int (*f)(void);$/;"	m	struct:Menu_Node::__anon10::__anon11
+f	old_audio/Audio.h	/^	double (*f)(int x, double freq, int hardwareFreq);	\/*!< Fonction du signal, en général sin\/carre *\/$/;"	m	struct:Wave
 f	src/Interface.c	/^clock_t a,b,c,d,e,f,g, h, m, n, o, p;$/;"	v
 famous	include/System.h	/^	int famous;$/;"	m	struct:NodeList
 fastTextNote	src/Menu.c	/^void fastTextNote(int x, int y, char *note)$/;"	f
-fcarre	src/Audio.c	/^double fcarre(int x, double freq, int hardwareFreq)$/;"	f
+fcarre	old_audio/Audio.c	/^double fcarre(int x, double freq, int hardwareFreq)$/;"	f
+fcarre	src/Fluid.c	/^double fcarre(int x, double freq, int hardwareFreq)$/;"	f
 find2min	src/Step.c	/^int find2min(int n)$/;"	f
 find2rest	src/Step.c	/^Note_Duration *find2rest(int duration)$/;"	f
 first	include/Events.h	/^	Select_Node *first;$/;"	m	struct:Selection
@@ -675,14 +718,15 @@ flags	include/Step.h	/^	Note_Flags flags : 24;		\/*!< Attributs d'une note *\/$/
 flags	include/Step.h	/^	Step_Flags flags : 16;		\/*!< Attributs de la mesure *\/$/;"	m	struct:Step
 flat	include/Events.h	/^	char 		flat;$/;"	m	struct:Toolbar
 font	include/Menu.h	/^	TTF_Font *font;$/;"	m	struct:Menu
-freq	include/Audio.h	/^	double freq;						\/*!< Fréquence *\/$/;"	m	struct:Wave
+freq	old_audio/Audio.h	/^	double freq;						\/*!< Fréquence *\/$/;"	m	struct:Wave
 functionCarre	src/Menu.c	/^double functionCarre(double x)$/;"	f
 functionFusion	src/Menu.c	/^double functionFusion(double x)$/;"	f
 g	include/Images.h	/^	Uint g : 8;$/;"	m	struct:Color
 g	src/Interface.c	/^clock_t a,b,c,d,e,f,g, h, m, n, o, p;$/;"	v
-globalVolume	include/Audio.h	/^	int globalVolume;		\/*!< Volume global *\/$/;"	m	struct:AudioConfig
+globalVolume	include/Fluid.h	/^	int globalVolume;$/;"	m	struct:FluidAudioConfig
+globalVolume	old_audio/Audio.h	/^	int globalVolume;		\/*!< Volume global *\/$/;"	m	struct:AudioConfig
 h	src/Interface.c	/^clock_t a,b,c,d,e,f,g, h, m, n, o, p;$/;"	v
-hardware	include/Audio.h	/^	SDL_AudioSpec hardware;		\/*!< Spécifications hardware disponibles *\/$/;"	m	struct:AudioConfig
+hardware	old_audio/Audio.h	/^	SDL_AudioSpec hardware;		\/*!< Spécifications hardware disponibles *\/$/;"	m	struct:AudioConfig
 header1	include/Explorer.h	/^	int header1;$/;"	m	struct:Explorer
 header2	include/Explorer.h	/^	int header2;$/;"	m	struct:Explorer
 header3	include/Explorer.h	/^	int header3;$/;"	m	struct:Explorer
@@ -700,8 +744,9 @@ id	include/System.h	/^	int id;$/;"	m	struct:NodeList
 id_note	include/Events.h	/^			int 	id_note;$/;"	m	struct:Area::__anon16::__anon17
 id_note_add	include/Events.h	/^			int 	id_note_add; \/* only when type=EVENT_ADDNOTE *\/$/;"	m	struct:Area::__anon16::__anon18
 id_staff	include/Events.h	/^			int 	id_staff;$/;"	m	struct:Area::__anon16::__anon18
-id_step	include/Audio.h	/^	int id_step;			\/*!< Position du curseur de lecture *\/$/;"	m	struct:AudioConfig
 id_step	include/Events.h	/^			int 	id_step;$/;"	m	struct:Area::__anon16::__anon18
+id_step	include/Fluid.h	/^	int id_step;			\/*!< Position du curseur de lecture *\/$/;"	m	struct:FluidAudioConfig
+id_step	old_audio/Audio.h	/^	int id_step;			\/*!< Position du curseur de lecture *\/$/;"	m	struct:AudioConfig
 last	include/Events.h	/^	Select_Node *last;$/;"	m	struct:Selection
 last	include/Explorer.h	/^	SDL_Event last;$/;"	m	struct:Explorer
 lastArea	include/Events.h	/^	Area *		lastArea;$/;"	m	struct:EventData
@@ -712,34 +757,39 @@ lst	include/Menu.h	/^	Node_Array *lst;$/;"	m	struct:Menu
 lst	include/Staff.h	/^	Staff **lst;$/;"	m	struct:Score
 lst	include/System.h	/^	NodeList *lst;$/;"	m	struct:GenList
 lst_famous	include/System.h	/^	int lst_famous;$/;"	m	struct:GenList
-m	include/Audio.h	/^	int m;			\/*!< Place allouée *\/$/;"	m	struct:Mixer
-m	include/Audio.h	/^	int m;		\/*!< Place disponible *\/$/;"	m	struct:Channel
 m	include/File.h	/^	int m;$/;"	m	struct:Directory
+m	include/Fluid.h	/^	int m;$/;"	m	struct:PlayingNotes
+m	old_audio/Audio.h	/^	int m;			\/*!< Place allouée *\/$/;"	m	struct:Mixer
+m	old_audio/Audio.h	/^	int m;		\/*!< Place disponible *\/$/;"	m	struct:Channel
 m	src/Interface.c	/^clock_t a,b,c,d,e,f,g, h, m, n, o, p;$/;"	v
-main_audio	src/Audio.c	/^AudioConfig *main_audio = NULL;$/;"	v
+main_audio	old_audio/Audio.c	/^AudioConfig *main_audio = NULL;$/;"	v
+main_audio	src/Fluid.c	/^FluidAudioConfig *main_audio = NULL;$/;"	v
 main_events	src/Events.c	/^EventData *main_events = NULL;$/;"	v
 max	include/Menu.h	/^	int max;$/;"	m	struct:Node_Array
 max	include/Staff.h	/^	int max;$/;"	m	struct:Staff
-maxVolume	include/Audio.h	/^	int maxVolume;			\/*!< Volume maximal autorisé *\/$/;"	m	struct:AudioConfig
+maxVolume	include/Fluid.h	/^	int maxVolume;$/;"	m	struct:FluidAudioConfig
+maxVolume	old_audio/Audio.h	/^	int maxVolume;			\/*!< Volume maximal autorisé *\/$/;"	m	struct:AudioConfig
 max_height	include/Window.h	/^	int max_height;$/;"	m	struct:WindowData
 max_width	include/Window.h	/^	int max_width;$/;"	m	struct:WindowData
 memtest	include/System.h	15;"	d
 menu	include/Window.h	/^	SDL_Surface *menu; \/* top *\/$/;"	m	struct:WindowData
 menu_no_action	src/Menu.c	/^int menu_no_action(void)$/;"	f
-mixSinCarre	src/Audio.c	/^double mixSinCarre(int x, double freq, int hardwareFreq)$/;"	f
-mixer	include/Audio.h	/^	Mixer mixer;			\/*!< Ensemble des voix *\/$/;"	m	struct:AudioConfig
+mixSinCarre	old_audio/Audio.c	/^double mixSinCarre(int x, double freq, int hardwareFreq)$/;"	f
+mixSinCarre	src/Fluid.c	/^double mixSinCarre(int x, double freq, int hardwareFreq)$/;"	f
+mixer	old_audio/Audio.h	/^	Mixer mixer;			\/*!< Ensemble des voix *\/$/;"	m	struct:AudioConfig
 mode	include/Events.h	/^	Mode 		mode;$/;"	m	struct:EventData
 mode	include/Menu.h	/^	SDL_Rect mode;$/;"	m	struct:Menu
 my_split	src/Parser.c	/^char **my_split(char *base, int *argc)$/;"	f
-n	include/Audio.h	/^	int n;			\/*!< Nombre *\/$/;"	m	struct:Mixer
-n	include/Audio.h	/^	int n;		\/*!< Nombre *\/$/;"	m	struct:Channel
 n	include/Events.h	/^	int 		n;$/;"	m	struct:EventData
 n	include/File.h	/^	int n;$/;"	m	struct:Directory
+n	include/Fluid.h	/^	int n;$/;"	m	struct:PlayingNotes
 n	include/Menu.h	/^	int n;$/;"	m	struct:Node_Array
 n	include/Staff.h	/^	int n;$/;"	m	struct:Score
 n	include/Staff.h	/^	int n;$/;"	m	struct:Staff
 n	include/System.h	/^	int n;$/;"	m	struct:Dots
 n	include/System.h	/^	int n;$/;"	m	struct:GenList
+n	old_audio/Audio.h	/^	int n;			\/*!< Nombre *\/$/;"	m	struct:Mixer
+n	old_audio/Audio.h	/^	int n;		\/*!< Nombre *\/$/;"	m	struct:Channel
 n	src/Interface.c	/^clock_t a,b,c,d,e,f,g, h, m, n, o, p;$/;"	v
 name	include/File.h	/^	char *name;$/;"	m	struct:Directory
 name	include/File.h	/^	char *name;$/;"	m	struct:Entry
@@ -749,7 +799,8 @@ name	include/System.h	/^	char *name;$/;"	m	struct:NodeList
 natural	include/Events.h	/^	char		natural;$/;"	m	struct:Toolbar
 nb_body	include/Window.h	/^	int nb_body;$/;"	m	struct:WindowData
 nbody	include/Events.h	/^	int		nbody;$/;"	m	struct:Area
-need_refresh	include/Audio.h	/^	int need_refresh;		\/*!< Demande de rafraichissement de l'écran *\/$/;"	m	struct:AudioConfig
+need_refresh	include/Fluid.h	/^	int need_refresh;		\/*!< Demande de rafraichissement de l'écran *\/$/;"	m	struct:FluidAudioConfig
+need_refresh	old_audio/Audio.h	/^	int need_refresh;		\/*!< Demande de rafraichissement de l'écran *\/$/;"	m	struct:AudioConfig
 need_select	include/Menu.h	/^			int need_select;$/;"	m	struct:Menu_Node::__anon10::__anon11
 next	include/Events.h	/^	Area *		next;$/;"	m	struct:Area
 next	include/Events.h	/^	Select_Node *next;$/;"	m	struct:Select_Node
@@ -762,14 +813,15 @@ nextcar	src/ABC.c	/^int nextcar(FILE *f)$/;"	f
 note	include/Step.h	/^	Note *note;		\/*!< Note courante *\/$/;"	m	struct:ToNote
 note	include/Step.h	/^	char note; 			\/*!< Hauteur d'une note, A0=21, B1=22 ...*\/$/;"	m	struct:Note
 note1_center	include/Images.h	/^	SDL_Rect *note1_center;$/;"	m	struct:Graphics
-note_playing	include/Audio.h	/^	Note *note_playing;	\/*!< Si on = 1, renvoie vers la note jouée à ce moment *\/$/;"	m	struct:Channel
+note_playing	old_audio/Audio.h	/^	Note *note_playing;	\/*!< Si on = 1, renvoie vers la note jouée à ce moment *\/$/;"	m	struct:Channel
 notes	include/Step.h	/^	ToNote *notes;			\/*!< Liste chainées des notes *\/$/;"	m	struct:Step
 num	include/Step.h	/^	int num;			\/*!< Numérateur de la fraction de mesure *\/$/;"	m	struct:Step
 o	src/Interface.c	/^clock_t a,b,c,d,e,f,g, h, m, n, o, p;$/;"	v
-on	include/Audio.h	/^	int on;		\/*!< Une note est-telle en cours d'être joué sur ce channel ? *\/$/;"	m	struct:Channel
+on	old_audio/Audio.h	/^	int on;		\/*!< Une note est-telle en cours d'être joué sur ce channel ? *\/$/;"	m	struct:Channel
 p	src/Interface.c	/^clock_t a,b,c,d,e,f,g, h, m, n, o, p;$/;"	v
 pal	include/Window.h	/^	SDL_Surface *pal; \/* left *\/$/;"	m	struct:WindowData
-playing	include/Audio.h	/^	int playing;			\/*!< Boolean, 1 = joue, 0 = ne joue pas *\/$/;"	m	struct:AudioConfig
+playing	include/Fluid.h	/^	int playing;			\/*!< Boolean, 1 = joue, 0 = ne joue pas *\/$/;"	m	struct:FluidAudioConfig
+playing	old_audio/Audio.h	/^	int playing;			\/*!< Boolean, 1 = joue, 0 = ne joue pas *\/$/;"	m	struct:AudioConfig
 pos	include/Explorer.h	/^	SDL_Rect *pos;$/;"	m	struct:Explorer
 pos	include/Menu.h	/^	SDL_Rect pos;$/;"	m	struct:Menu_Node
 pos_BreveLong	include/Images.h	/^	SDL_Rect *pos_BreveLong;$/;"	m	struct:Graphics
@@ -791,32 +843,42 @@ rest	include/Events.h	/^	char 		rest;	$/;"	m	struct:Toolbar
 rest	include/Step.h	/^	char rest; 			\/*!< Silence = 1, Note = 0 *\/$/;"	m	struct:Note
 rot_noteH	include/Images.h	/^	int rot_noteH;$/;"	m	struct:Graphics
 rot_noteW	include/Images.h	/^	int rot_noteW;$/;"	m	struct:Graphics
-score	include/Audio.h	/^	Score *score;			\/*!< Partition *\/$/;"	m	struct:AudioConfig
 score	include/Events.h	/^	Score *		score;$/;"	m	struct:EventData
+score	include/Fluid.h	/^	Score *score;			\/*!< Partition *\/$/;"	m	struct:FluidAudioConfig
+score	old_audio/Audio.h	/^	Score *score;			\/*!< Partition *\/$/;"	m	struct:AudioConfig
 screen	include/Window.h	/^	SDL_Surface *screen;$/;"	m	struct:WindowData
 section{Interface générale}
 select	include/Explorer.h	/^	int select;$/;"	m	struct:Explorer
 select	include/Menu.h	/^	Menu_Node *select;$/;"	m	struct:Menu
+settings	include/Fluid.h	/^	FluidSettings *settings;$/;"	m	struct:FluidAudioConfig
+settings	include/Fluid.h	/^	fluid_settings_t *      settings;$/;"	m	struct:FluidSettings
 sharp	include/Events.h	/^	char 		sharp;$/;"	m	struct:Toolbar
 sign	include/Events.h	/^		Sign **sign; \/* OBJECT_SIGN *\/$/;"	m	union:Area::__anon16
 sign	include/Step.h	/^	signed char sign;		\/*!< Armure de la mesure *\/$/;"	m	struct:Step
 signs	include/Staff.h	/^	Sign *signs;$/;"	m	struct:Score
-sinusoide	src/Audio.c	/^double sinusoide(int x, double freq, int hardwareFreq)$/;"	f
+sinusoide	old_audio/Audio.c	/^double sinusoide(int x, double freq, int hardwareFreq)$/;"	f
+sinusoide	src/Fluid.c	/^double sinusoide(int x, double freq, int hardwareFreq)$/;"	f
 size	include/File.h	/^	int size;$/;"	m	struct:Entry
+soundfont	include/Fluid.h	/^	int                     soundfont;$/;"	m	struct:FluidSettings
 staff	include/Events.h	/^			Staff *	staff;$/;"	m	struct:Area::__anon16::__anon18
 state	include/Window.h	/^	Window_State state;$/;"	m	struct:WindowData
 statusdur	include/Events.h	/^	int 		statusdur;$/;"	m	struct:Toolbar
 step	include/Events.h	/^			Step *	step;$/;"	m	struct:Area::__anon16::__anon17
 steps	include/Staff.h	/^	Step **steps; \/* dynamic tab *\/$/;"	m	struct:Staff
 sum_duration	include/Window.h	/^	Note_Duration sum_duration;$/;"	m	struct:WindowData
+synth	include/Fluid.h	/^	fluid_synth_t *         synth;$/;"	m	struct:FluidSettings
 tab	include/File.h	/^	Entry **tab;$/;"	m	struct:Directory
+tab	include/Fluid.h	/^	Note **tab;$/;"	m	struct:PlayingNotes
 tab	include/System.h	/^	Point **tab;$/;"	m	struct:Dots
-tabFreq	include/Audio.h	/^	double tabFreq[12];			\/*!< Tableaux de configuration des fréquences *\/$/;"	m	struct:AudioConfig
+tabFreq	include/Fluid.h	/^	double tabFreq[12];$/;"	m	struct:FluidAudioConfig
+tabFreq	old_audio/Audio.h	/^	double tabFreq[12];			\/*!< Tableaux de configuration des fréquences *\/$/;"	m	struct:AudioConfig
+tabplaying	include/Fluid.h	/^	PlayingNotes *tabplaying;$/;"	m	struct:FluidAudioConfig
 tabselect	include/Events.h	/^	Selection *	tabselect;$/;"	m	struct:EventData
 tempo	include/Staff.h	/^	int tempo;$/;"	m	struct:Score
 text	include/Staff.h	/^	char *text;$/;"	m	struct:Sign
 text_color	src/System.c	/^extern int text_color(TerminalColor color)$/;"	f
-threads	include/Audio.h	/^	SDL_Thread **threads;		\/*!< Les différents threads des voix *\/$/;"	m	struct:AudioConfig
+threads	include/Fluid.h	/^	SDL_Thread **threads;$/;"	m	struct:FluidAudioConfig
+threads	old_audio/Audio.h	/^	SDL_Thread **threads;		\/*!< Les différents threads des voix *\/$/;"	m	struct:AudioConfig
 time	include/Staff.h	/^	Uint time;$/;"	m	struct:Sign
 tools	include/Events.h	/^	Toolbar 	tools;$/;"	m	struct:EventData
 totalheight	include/System.h	/^	int totalheight;$/;"	m	struct:Dots
@@ -827,9 +889,9 @@ type	include/Staff.h	/^	Sign_Type type : 16;$/;"	m	struct:Sign
 val	include/Events.h	/^	Area *val;$/;"	m	struct:Select_Node
 valid	include/Explorer.h	/^	SDL_Rect valid;$/;"	m	struct:Explorer
 value	include/Staff.h	/^	Uint value : 16;$/;"	m	struct:Sign
-volume	include/Audio.h	/^	int volume; \/* 0 to 100 *\/				\/*!< Volume du signal *\/$/;"	m	struct:Wave
-waves	include/Audio.h	/^	Wave **waves;	\/*!< Différents harmoniques *\/$/;"	m	struct:Channel
+volume	old_audio/Audio.h	/^	int volume; \/* 0 to 100 *\/				\/*!< Volume du signal *\/$/;"	m	struct:Wave
+waves	old_audio/Audio.h	/^	Wave **waves;	\/*!< Différents harmoniques *\/$/;"	m	struct:Channel
 width	include/Window.h	/^	int width;$/;"	m	struct:WindowData
-x	include/Audio.h	/^	unsigned long x;		\/*!< Incrémenteur dans le temps*\/$/;"	m	struct:AudioConfig
 x	include/System.h	/^	Uint x : 16;$/;"	m	struct:Point
+x	old_audio/Audio.h	/^	unsigned long x;		\/*!< Incrémenteur dans le temps*\/$/;"	m	struct:AudioConfig
 y	include/System.h	/^	Uint y : 16;$/;"	m	struct:Point

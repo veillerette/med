@@ -452,6 +452,8 @@ int Window_MyEventBlit(Object_Type type, int nbody, SDL_Surface *surf, SDL_Rect 
 
 int Window_isNotePlaying(Note *note)
 {
+	return Playing_isNote(note);
+	/*
 	if(main_audio != NULL)
 	{
 		if(Audio_isPlaying())
@@ -463,7 +465,7 @@ int Window_isNotePlaying(Note *note)
 			return 0;
 		}
 	}
-	return 0;
+	return 0;*/
 }
 
 int Window_TestBox(SDL_Surface *dest, SDL_Rect *pos, int zoom)

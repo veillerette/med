@@ -30,7 +30,7 @@
 [OK]- valgrind et Score_AddEmpty()
 [OK]- Score_Free d'un ABC
 [OK]- Ouverture fichier ABC bizarres
--Croches parfois trop proches des têtes (uniquement vers le bas)
+[OK]-Croches parfois trop proches des têtes (uniquement vers le bas)
 [OK]- Freeze curseur de lecture / Petites latences de suivi
 
 <<< Majors >>>
@@ -50,5 +50,5 @@
 [OK]- Importation fichiers ABC
 - Export WAV
 - Patch MIDI
-[OK]- Remplissage de chaque ligne de portée au maximum
+[OK]- Remplissage de chaque ligne de portée au maximum (Justification)
 
