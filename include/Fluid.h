@@ -2,7 +2,6 @@
 #define __HEAD_FLUID__
 
 #include "System.h"
-#include <fluidsynth.h>
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -11,6 +10,7 @@
 #include <SDL/SDL.h>
 #include <SDL/SDL_audio.h>
 #include <math.h>
+#include <dlfcn.h>
 
 #ifndef M_PI
 #define M_PI 3.141592654
@@ -19,14 +19,15 @@
 #define BASE_DO 264
 
 #define SOUNDFONT_FILE "media/gu.sf2"
+#define LIBFLUID_PATH "media/libfluidsynth.so"
 
 typedef struct FluidSettings FluidSettings;
 struct FluidSettings
 {
-	fluid_settings_t *      settings;
-	fluid_synth_t *         synth;
-	fluid_audio_driver_t *  adriver;
-	int                     soundfont;
+	void *      	settings;
+	void *         	synth;
+	void *  	adriver;
+	int             soundfont;
 };
 
 typedef struct PlayingNotes PlayingNotes;
@@ -52,9 +53,20 @@ struct FluidAudioConfig
 	
 	
 	PlayingNotes *tabplaying;
+	void *libfluid;
 };
 
-
+extern void (*fluid_noteon)();
+extern void *(*new_fluid_settings)();
+extern void *(*new_fluid_synth)();
+extern void (*fluid_settings_setstr)();
+extern void *(*new_fluid_audio_driver)();
+extern int (*fluid_synth_sfload)();
+extern void (*fluid_synth_noteoff)();
+extern void (*delete_fluid_audio_driver)();
+extern void (*delete_fluid_synth)();
+extern void (*delete_fluid_settings)();
+extern void (*fluid_synth_program_change)();
 
 int Audio_PlayStep(Step *step);
 
@@ -113,6 +125,9 @@ double sinusoide(int x, double freq, int hardwareFreq);
 double fcarre(int x, double freq, int hardwareFreq);
 double carreHarmo(int x, double freq, int hardwareFreq);
 double mixSinCarre(int x, double freq, int hardwareFreq);
+
+
+
 
 
 extern FluidAudioConfig *main_audio;

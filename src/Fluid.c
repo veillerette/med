@@ -1,6 +1,17 @@
 #include "../include/Fluid.h"
 
 FluidAudioConfig *main_audio = NULL;
+void (*fluid_noteon)() = NULL;
+void *(*new_fluid_settings)() = NULL;
+void *(*new_fluid_synth)() = NULL;
+void (*fluid_settings_setstr)() = NULL;
+void *(*new_fluid_audio_driver)() = NULL;
+int (*fluid_synth_sfload)() = NULL;
+void (*fluid_synth_noteoff)() = NULL;
+void (*delete_fluid_audio_driver)() = NULL;
+void (*delete_fluid_synth)() = NULL;
+void (*delete_fluid_settings)() = NULL;
+void (*fluid_synth_program_change)() = NULL;
 
 FluidSettings *FluidSettings_Alloc(void)
 {
@@ -53,10 +64,28 @@ FluidAudioConfig *FluidAudio_Alloc(void)
 	temp->id_step = 0;
 	temp->playing = 0;
 	temp->need_refresh = 0;
+	temp->libfluid = dlopen(LIBFLUID_PATH, RTLD_LAZY);
+	if(temp->libfluid == NULL)
+	{
+		printf("Unable to find the fluidsynth lib in %s\n", LIBFLUID_PATH);
+		memtest(temp->libfluid);
+	}
+	
+	fluid_noteon = dlsym(temp->libfluid, "fluid_synth_noteon");
+	new_fluid_settings = dlsym(temp->libfluid, "new_fluid_settings");
+	new_fluid_synth = dlsym(temp->libfluid, "new_fluid_synth");
+	fluid_settings_setstr = dlsym(temp->libfluid, "fluid_settings_setstr");
+	new_fluid_audio_driver = dlsym(temp->libfluid, "new_fluid_audio_driver");
+	fluid_synth_sfload = dlsym(temp->libfluid, "fluid_synth_sfload");
+	fluid_synth_noteoff = dlsym(temp->libfluid, "fluid_synth_noteoff");
+	delete_fluid_audio_driver = dlsym(temp->libfluid, "delete_fluid_audio_driver");
+	delete_fluid_synth = dlsym(temp->libfluid, "delete_fluid_synth");
+	delete_fluid_settings = dlsym(temp->libfluid, "delete_fluid_settings");
+	fluid_synth_program_change = dlsym(temp->libfluid, "fluid_synth_program_change");
+	
 	temp->settings = FluidSettings_Alloc();
 	temp->threads = NULL;
 	temp->tabplaying = PlayingNotes_Init();
-	
 	return temp;
 }
 
@@ -140,6 +169,9 @@ void FluidAudio_Free(FluidAudioConfig **fac)
 		{
 			FluidSettings_Free(&((*fac)->settings));
 		}
+		
+		dlclose((*fac)->libfluid);
+		
 		free(*fac);
 		*fac = NULL;
 	}
@@ -194,8 +226,8 @@ int Audio_PlayStep(Step *step)
 	{
 		if(!note->note->rest)
 		{
-			fluid_synth_noteon(main_audio->settings->synth, 0,
-				 GetRealId(note->note), 80);
+			fluid_noteon(main_audio->settings->synth, 0,
+				 GetRealId(note->note), 20);
 		}
 		
 		Playing_AddNote(note->note);
@@ -218,6 +250,8 @@ int Audio_PlayStep(Step *step)
 	}
 	while(note != NULL);
 
+
+	fluid_synth_program_change(main_audio->settings->synth, 0, 0);
 	return 1;
 }
 
